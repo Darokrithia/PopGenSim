@@ -1,3 +1,4 @@
+4| Added multi-threading code by Alan R. Rogers
 3| Added gitignore
 2| Added version history to help detail changes
 1| Initialized directory with README
