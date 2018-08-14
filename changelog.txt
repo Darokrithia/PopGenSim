@@ -1,5 +1,5 @@
-1| VERSION 0.000
+3| Added gitignore
+2| Added version history to help detail changes
+1| Initialized directory with README
  |==========================================================
-2| Initialized directory with README
-3| Added version history to help detail changes
-4| Added gitignore
+0| VERSION 0.000 (Program Genesis)
