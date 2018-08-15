@@ -23,7 +23,7 @@ void Qepo_mate(Qepo* child, Qepo* p1, Qepo* p2){
 	//NOTE: this crossover algorith is very simple and will be suject to change
 	int split = (chrom_size/2);		//half and half
 	memcpy(child->dna_array, p1->dna_array, (split*sizeof(double)));	//get from p1
-	memcpy(child->dna_array, (p2->dna_array + (split*sizeof(double))), (chrom_size-split*sizeof(double)));	//get from p2
+	memcpy((child->dna_array + split), p2->dna_array + split, (chrom_size-split)*sizeof(double));	//get from p2
 
 	child-> val = 0;
 
