@@ -14,3 +14,5 @@ change A.
 
 # Documentation
 Will be filled in once program is finished
+
+#VERSION 0.1.0
