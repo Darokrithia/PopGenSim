@@ -1,3 +1,5 @@
+5| Implemented basic allocation and freeing for Qepos as
+ | well as the ability for mating for Qepos to mate
 4| Added multi-threading code by Alan R. Rogers
 3| Added gitignore
 2| Added version history to help detail changes
