@@ -5,6 +5,14 @@ destination := $(HOME)/bin
 opt :=  -O0 -fno-inline-functions      # For debugging
 
 # Flags to determine the warning messages issued by the compiler
+
+targets := 
+
+tests := xjobqueue xqepo
+
+CC := gcc
+
+
 warn := \
  -Wall \
  -Wcast-align \
@@ -26,10 +34,19 @@ lib := -L/usr/local/lib -lgsl -lgslcblas -lpthread -lm
 .c.o:
 	$(CC) $(CFLAGS) $(incl) -c -o ${@F}  $<
 
+all : $(targets)
+
+test : $(tests)
+
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o
 xjobqueue : $(XJOBQUEUE)
 	$(CC) $(CFLAGS) -o $@ $(XJOBQUEUE) $(lib)
+
+# test qepo.c
+XQEPO := xqepo.o qepo.o
+xqepo : $(XQEPO)
+	$(CC) $(CFLAGS) -o $@ $(XQEPO) $(lib)
 
 # Make dependencies file
 depend : *.c *.h
