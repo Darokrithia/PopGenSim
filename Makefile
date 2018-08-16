@@ -6,7 +6,7 @@ opt :=  -O0 -fno-inline-functions      # For debugging
 
 # Flags to determine the warning messages issued by the compiler
 
-targets := 
+targets := polygensim
 
 tests := xjobqueue xqepo
 
@@ -37,6 +37,11 @@ lib := -L/usr/local/lib -lgsl -lgslcblas -lpthread -lm
 all : $(targets)
 
 test : $(tests)
+
+# test polygensim.c
+POLYGENSIM := polygensim.o qepo.o jobqueue.o
+polygensim : $(POLYGENSIM)
+	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
 
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o

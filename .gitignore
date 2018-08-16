@@ -1,5 +1,7 @@
 depend
 jobqueue.o
+polygensim
+polygensim.o
 qepo.o
 xjobqueue
 xjobqueue.o
