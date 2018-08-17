@@ -70,7 +70,7 @@ int main(int argc, char **argv){
 		}
 	}
 
-	printf("generation 0:\n");
+	printf("Generation 0:\n");
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
 		for(int j = 0; j < chrom_size; j++){
@@ -88,7 +88,7 @@ int main(int argc, char **argv){
 		parents = temp;
 	}
 
-	printf("generation %u:\n", num_gens);
+	printf("Generation %u:\n", num_gens);
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
 		for(int j = 0; j < chrom_size; j++){

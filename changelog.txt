@@ -1,14 +1,16 @@
 
-9| Made the back bone of PolygenSim
-8| Renamed Qepos Degnome (digital genome)
- |==========================================================
-7| VERSION 0.1.0 (Qepo Creation)
-6| Made a test program for qepo
-5| Implemented basic allocation and freeing for Qepos as
- | well as the ability for mating for Qepos to mate
-4| Added multi-threading code by Alan R. Rogers
-3| Added gitignore
-2| Added version history to help detail changes
-1| Initialized directory with README
- |==========================================================
-0| VERSION 0.0.0 (Program Genesis)
+	|=====================================================
+10	| VERSION 0.1.2 (Defining Degnomes)
+9	| Made the back bone of PolygenSim
+8	| Renamed Qepos Degnome (digital genome)
+ 	|=====================================================
+7	| VERSION 0.1.0 (Qepo Creation)
+6	| Made a test program for qepo
+5	|Implemented basic allocation and freeing for Qepos as
+ 	| well as the ability for mating for Qepos to mate
+4	| Added multi-threading code by Alan R. Rogers
+3	| Added gitignore
+2	| Added version history to help detail changes
+1	| Initialized directory with README
+ 	|=====================================================
+0	| VERSION 0.0.0 (Program Genesis)
