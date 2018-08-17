@@ -17,7 +17,7 @@ Degnome* Degnome_new(){
 	return q;
 }
 
-void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2){
+void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 	
 	//Cross over
 	//NOTE: this crossover algorith is very simple and will be suject to change
@@ -27,9 +27,12 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2){
 
 	child-> hat_size = 0;
 
+	double mutation;
+
 	for (int i = 0; i < chrom_size; i++){
 		//mutate
-		child->dna_array[i] += 0.0;
+		mutation = gsl_ran_gaussian_ziggurat(rng, 2.0);
+		child->dna_array[i] += mutation;
 		//calculate hat_sizeue
 		child->hat_size += child->dna_array[i];
 	}

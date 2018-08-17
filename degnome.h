@@ -2,6 +2,8 @@
 #define DEGNOME
 
 #include <stdlib.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 //Degnomedia Rogerus
 typedef struct Degnome Degnome;
@@ -12,7 +14,7 @@ struct Degnome {
 };
 
 Degnome* Degnome_new(void);
-void Degnome_mate(Degnome* location, Degnome* p1, Degnome* p2);
+void Degnome_mate(Degnome* location, Degnome* p1, Degnome* p2, gsl_rng* rng);
 void Degnome_free(Degnome* q);
 
 int chrom_size;

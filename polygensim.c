@@ -69,7 +69,7 @@ int main(int argc, char **argv){
     time_t currtime = time(NULL);                  // time
     unsigned long pid = (unsigned long) getpid();  // process id
     rngseed = currtime ^ pid;                      // random seed
-    gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+    gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
 
 	Degnome* parents;
 	Degnome* children;
@@ -96,7 +96,7 @@ int main(int argc, char **argv){
 		for(int j = 0; j < chrom_size; j++){
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
-		printf("\n");
+		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
 
 	for(int i = 0; i < num_gens; i++){
@@ -140,7 +140,7 @@ int main(int argc, char **argv){
 
 			// printf("m:%u, d:%u\n", m,d);
 
-			Degnome_mate(children + j, parents + m, parents + d);		//Will be selective
+			Degnome_mate(children + j, parents + m, parents + d, rng);		//Will be selective
 		}
 		temp = children;
 		children = parents;
@@ -153,7 +153,7 @@ int main(int argc, char **argv){
 		for(int j = 0; j < chrom_size; j++){
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
-		printf("\n");
+		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
 
 	gsl_rng_free (rng);
