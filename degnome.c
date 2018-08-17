@@ -27,13 +27,20 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 
 	child-> hat_size = 0;
 
+	//mutate
 	double mutation;
+	int num_mutations = gsl_ran_poisson(rng, 1.0);
+	int mutation_location;
+
+	for (int i = 0; i < num_mutations; i++){
+		mutation_location = gsl_rng_uniform_int(rng, chrom_size);
+		mutation = gsl_ran_gaussian_ziggurat(rng, 2.0);
+		child->dna_array[mutation_location] += mutation;
+	}
+
+	//calculate hat_size
 
 	for (int i = 0; i < chrom_size; i++){
-		//mutate
-		mutation = gsl_ran_gaussian_ziggurat(rng, 2.0);
-		child->dna_array[i] += mutation;
-		//calculate hat_sizeue
 		child->hat_size += child->dna_array[i];
 	}
 
