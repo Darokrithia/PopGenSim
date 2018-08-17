@@ -1,6 +1,6 @@
 # PolygenSim
-Simulates polygenic evolution of Quantitative Evolving
-Polygenic Organisms or QEPOs
+Simulates polygenic evolution of quanitative traits in
+Digital Genomes aka Degnomes
 
 # Change Log
 As well as git commits, I will be keeping track of progress

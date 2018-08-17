@@ -1,5 +1,5 @@
 #include "jobqueue.h"
-#include "qepo.h"
+#include "degnome.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -51,9 +51,49 @@ int main(int argc, char **argv){
 		}
 	}
 
+	Degnome* parents;
+	Degnome* children;
+	Degnome* temp;
+
 	printf("%u, %u, %u\n", chrom_size, pop_size, num_gens);
 
-	Qepo* generation_e;			//even generations 
-	Qepo* generation_o;			//odd generations
-	printf("yeet\n");
+	parents = malloc(pop_size*sizeof(Degnome));
+	children = malloc(pop_size*sizeof(Degnome));
+
+	for (int i = 0; i < pop_size; i++){
+		parents[i].dna_array = malloc(chrom_size*sizeof(double));
+		children[i].dna_array = malloc(chrom_size*sizeof(double));
+
+		for(int j = 0; j < chrom_size; j++){
+			parents[i].dna_array[j] = (i+j);	//children isn't initiilized
+			parents[i].hat_size += (i+j);
+		}
+	}
+
+	printf("generation 0:\n");
+	for(int i = 0; i < pop_size; i++){
+		printf("Degnome %u\n", i);
+		for(int j = 0; j < chrom_size; j++){
+			printf("%lf\t", parents[i].dna_array[j]);
+		}
+		printf("\n");
+	}
+
+	for(int i = 0; i < num_gens; i++){
+		for(int j = 0; j < pop_size; j++){
+			Degnome_mate(&children[j], &parents[pop_size-(j+1)], &parents[pop_size-1]);		//Will be selective
+		}
+		temp = children;
+		children = parents;
+		parents = temp;
+	}
+
+	printf("generation %u:\n", num_gens);
+	for(int i = 0; i < pop_size; i++){
+		printf("Degnome %u\n", i);
+		for(int j = 0; j < chrom_size; j++){
+			printf("%lf\t", parents[i].dna_array[j]);
+		}
+		printf("\n");
+	}
 }

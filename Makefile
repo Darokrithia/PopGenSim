@@ -8,7 +8,7 @@ opt :=  -O0 -fno-inline-functions      # For debugging
 
 targets := polygensim
 
-tests := xjobqueue xqepo
+tests := xdegnome xjobqueue
 
 CC := gcc
 
@@ -39,19 +39,19 @@ all : $(targets)
 test : $(tests)
 
 # test polygensim.c
-POLYGENSIM := polygensim.o qepo.o jobqueue.o
+POLYGENSIM := polygensim.o degnome.o jobqueue.o
 polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
+
+# test degnome.c
+XDEGNOME := xdegnome.o degnome.o
+xdegnome : $(XDEGNOME)
+	$(CC) $(CFLAGS) -o $@ $(XDEGNOME) $(lib)
 
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o
 xjobqueue : $(XJOBQUEUE)
 	$(CC) $(CFLAGS) -o $@ $(XJOBQUEUE) $(lib)
-
-# test qepo.c
-XQEPO := xqepo.o qepo.o
-xqepo : $(XQEPO)
-	$(CC) $(CFLAGS) -o $@ $(XQEPO) $(lib)
 
 # Make dependencies file
 depend : *.c *.h

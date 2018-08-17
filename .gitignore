@@ -1,9 +1,9 @@
+degnome.o
 depend
 jobqueue.o
 polygensim
 polygensim.o
-qepo.o
+xdegnome.o
+xdegnome
 xjobqueue
 xjobqueue.o
-xqepo.o
-xqepo

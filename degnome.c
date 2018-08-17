@@ -1,23 +1,23 @@
 /**
-@file qepo.c
-@page qepo
+@file degnome.c
+@page degnome
 @author Daniel R. Tabin
-@brief Quantitive Evolition Polygenic Organism
+@brief Digital Genomes aka Degnomes
 
 This program will be used to simulated Polygenic evoltion of
-quantitative traits by using QEPOs as defined above.
+quantitative traits by using Degnomes as defined above.
 */
-#include "qepo.h"
+#include "degnome.h"
 #include <string.h>
 
-Qepo* Qepo_new(){
-	Qepo* q = malloc(sizeof(Qepo));
+Degnome* Degnome_new(){
+	Degnome* q = malloc(sizeof(Degnome));
 	q->dna_array = malloc(chrom_size*sizeof(double));
 
 	return q;
 }
 
-void Qepo_mate(Qepo* child, Qepo* p1, Qepo* p2){
+void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2){
 	
 	//Cross over
 	//NOTE: this crossover algorith is very simple and will be suject to change
@@ -25,19 +25,19 @@ void Qepo_mate(Qepo* child, Qepo* p1, Qepo* p2){
 	memcpy(child->dna_array, p1->dna_array, (split*sizeof(double)));	//get from p1
 	memcpy((child->dna_array + split), p2->dna_array + split, (chrom_size-split)*sizeof(double));	//get from p2
 
-	child-> val = 0;
+	child-> hat_size = 0;
 
 	for (int i = 0; i < chrom_size; i++){
 		//mutate
 		child->dna_array[i] += 0.0;
-		//calculate value
-		child->val += child->dna_array[i];
+		//calculate hat_sizeue
+		child->hat_size += child->dna_array[i];
 	}
 
 	//and we are done!
 }
 
-void Qepo_free(Qepo* q){
+void Degnome_free(Degnome* q){
 	free(q->dna_array);
 	free(q);
 }
