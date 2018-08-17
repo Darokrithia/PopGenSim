@@ -81,7 +81,7 @@ int main(int argc, char **argv){
 
 	for(int i = 0; i < num_gens; i++){
 		for(int j = 0; j < pop_size; j++){
-			Degnome_mate(&children[j], &parents[pop_size-(j+1)], &parents[pop_size-1]);		//Will be selective
+			Degnome_mate(&children[j], &parents[pop_size-(j+1)], &parents[j]);		//Will be selective
 		}
 		temp = children;
 		children = parents;

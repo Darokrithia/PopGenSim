@@ -1,4 +1,3 @@
-
 	|=====================================================
 10	| VERSION 0.1.2 (Defining Degnomes)
 9	| Made the back bone of PolygenSim
