@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <time.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <limits.h>
 
 void usage(void);
 double get_fitness(double hat_size);
@@ -14,6 +19,9 @@ const char *usageMsg =
     "number of generations that the simulation will run  They can be in\n"
     "any order, and not all are needed.  Default CL is 50, default PS is\n"
     "100, and the default G is 1000.\n";
+
+pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
+unsigned long rngseed=0;
 
 int pop_size;
 int num_gens;
@@ -57,6 +65,11 @@ int main(int argc, char **argv){
 			usage();
 		}
 	}
+
+    time_t currtime = time(NULL);                  // time
+    unsigned long pid = (unsigned long) getpid();  // process id
+    rngseed = currtime ^ pid;                      // random seed
+    gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
 
 	Degnome* parents;
 	Degnome* children;
@@ -102,21 +115,20 @@ int main(int argc, char **argv){
 		}
 
 		for(int j = 0; j < pop_size; j++){
-			const gsl_rng_type * T;
-			gsl_rng * r;
+
+		    pthread_mutex_lock(&seedLock);
+			gsl_rng_set(rng, rngseed);
+		    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+    		pthread_mutex_unlock(&seedLock);
 
 			int m, d;
 
-			gsl_rng_env_setup();
-			T = gsl_rng_default;
-			r = gsl_rng_alloc (T);
-
-			double win_m = gsl_rng_uniform(r);
+			double win_m = gsl_rng_uniform(rng);
 			win_m *= total_hat_size;
-			double win_d = gsl_rng_uniform(r);
+			double win_d = gsl_rng_uniform(rng);
 			win_d *= total_hat_size;
 
-			printf("win_m:%lf, wind:%lf, max: %lf\n", win_m,win_d,total_hat_size);
+			// printf("win_m:%lf, wind:%lf, max: %lf\n", win_m,win_d,total_hat_size);
 
 			for (m = 0; cum_hat_size[m] < win_m; m++){
 				continue;
@@ -126,10 +138,9 @@ int main(int argc, char **argv){
 				continue;
 			}
 
-			printf("m:%u, d:%u\n", m,d);
+			// printf("m:%u, d:%u\n", m,d);
 
 			Degnome_mate(children + j, parents + m, parents + d);		//Will be selective
-			gsl_rng_free (r);
 		}
 		temp = children;
 		children = parents;
@@ -144,4 +155,6 @@ int main(int argc, char **argv){
 		}
 		printf("\n");
 	}
+
+	gsl_rng_free (rng);
 }

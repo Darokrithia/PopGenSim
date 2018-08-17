@@ -1,4 +1,8 @@
 	|=====================================================
+13	| VERSION 0.2.0 (Starting Selection)
+12	| Added randomness to selection
+11	| Implemented selection
+	|=====================================================
 10	| VERSION 0.1.2 (Defining Degnomes)
 9	| Made the back bone of PolygenSim
 8	| Renamed Qepos Degnome (digital genome)
