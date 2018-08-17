@@ -2,8 +2,10 @@
 #include "degnome.h"
 #include <stdio.h>
 #include <string.h>
+#include <gsl/gsl_rng.h>
 
 void usage(void);
+double get_fitness(double hat_size);
 
 const char *usageMsg =
     "Usage: polygensim [-c] CL [-p] PS [-g] G \n"
@@ -19,6 +21,11 @@ int num_gens;
 void usage(void) {
 	fputs(usageMsg, stderr);
 	exit(EXIT_FAILURE);
+}
+
+
+double get_fitness(double hat_size){
+	return hat_size;
 }
 
 int main(int argc, char **argv){
@@ -80,8 +87,49 @@ int main(int argc, char **argv){
 	}
 
 	for(int i = 0; i < num_gens; i++){
+
+		double fit = get_fitness(parents[0].hat_size);
+
+		double total_hat_size = fit;
+		double cum_hat_size[pop_size];
+		cum_hat_size[0] = fit;
+
+		for(int j = 1; j < pop_size; j++){
+			fit = get_fitness(parents[j].hat_size);
+
+			total_hat_size += fit;
+			cum_hat_size[j] = (cum_hat_size[j-1] + fit);
+		}
+
 		for(int j = 0; j < pop_size; j++){
-			Degnome_mate(&children[j], &parents[pop_size-(j+1)], &parents[j]);		//Will be selective
+			const gsl_rng_type * T;
+			gsl_rng * r;
+
+			int m, d;
+
+			gsl_rng_env_setup();
+			T = gsl_rng_default;
+			r = gsl_rng_alloc (T);
+
+			double win_m = gsl_rng_uniform(r);
+			win_m *= total_hat_size;
+			double win_d = gsl_rng_uniform(r);
+			win_d *= total_hat_size;
+
+			printf("win_m:%lf, wind:%lf, max: %lf\n", win_m,win_d,total_hat_size);
+
+			for (m = 0; cum_hat_size[m] < win_m; m++){
+				continue;
+			}
+
+			for (d = 0; cum_hat_size[d] < win_d; d++){
+				continue;
+			}
+
+			printf("m:%u, d:%u\n", m,d);
+
+			Degnome_mate(children + j, parents + m, parents + d);		//Will be selective
+			gsl_rng_free (r);
 		}
 		temp = children;
 		children = parents;
