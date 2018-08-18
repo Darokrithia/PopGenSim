@@ -10,11 +10,9 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <time.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <limits.h>
 
-pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
 
 int main(int argc, char **argv){
@@ -46,6 +44,9 @@ int main(int argc, char **argv){
     unsigned long pid = (unsigned long) getpid();  // process id
     rngseed = currtime ^ pid;                      // random seed
     gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+
+	gsl_rng_set(rng, rngseed);
+    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
 
 	for(int i = 0; i < chrom_size; i++){
 		bom_mom->dna_array[i] = 2*i;
