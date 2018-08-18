@@ -37,12 +37,7 @@ void int_merge_sort(int* array, int min, int max){
 			temp[i++] = array[k++];
 		}
 		for(i = min; i <= max; i++){
-			printf("max: %u, min: %u\n", max, min);
 			array[i] = temp[i];
-			printf("array[%u]: %u\n", i, array[i]);
 		}
-	}
-	else{
-		printf("NO SORT\n");
 	}
 }
