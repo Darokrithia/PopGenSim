@@ -16,4 +16,4 @@ change A.
 Will be filled in once program is finished
 
 _______________
-*VERSION 1.0.0*
+*VERSION 1.1.0*
