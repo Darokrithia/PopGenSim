@@ -4,7 +4,9 @@ jobqueue.o
 misc.o
 polygensim
 polygensim.o
-xdegnome.o
 xdegnome
+xdegnome.o
+xmisc
+xmisc.o
 xjobqueue
 xjobqueue.o

@@ -30,7 +30,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 		printf("CROSS LOCATION%u: %u\n", i, crossover_locations[i]);
 	}
 
-	int_merge_sort(crossover_locations, 0, num_crossover);
+	int_merge_sort(crossover_locations, 0, num_crossover-1);
 	
 	for (int i = 0; i < num_crossover; i++){
 		printf("CROSS LOCATION%u: %u\n", i, crossover_locations[i]);

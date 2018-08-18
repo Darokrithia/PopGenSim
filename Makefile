@@ -8,7 +8,7 @@ opt :=  -O0 -fno-inline-functions      # For debugging
 
 targets := polygensim
 
-tests := xdegnome xjobqueue
+tests := xdegnome xmisc xjobqueue
 
 CC := gcc
 
@@ -38,7 +38,7 @@ all : $(targets)
 
 test : $(tests)
 
-# test polygensim.c
+# run polygensim.c
 POLYGENSIM := polygensim.o degnome.o misc.o jobqueue.o
 polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
@@ -47,6 +47,11 @@ polygensim : $(POLYGENSIM)
 XDEGNOME := xdegnome.o degnome.o misc.o
 xdegnome : $(XDEGNOME)
 	$(CC) $(CFLAGS) -o $@ $(XDEGNOME) $(lib)
+
+#test misc.c
+XMISC := xmisc.o misc.o
+xmisc : $(XMISC)
+	$(CC) $(CFLAGS) -o $@ $(XMISC) $(lib)
 
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o

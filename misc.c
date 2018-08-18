@@ -1,3 +1,9 @@
+/**
+ * @file xdegnome.c
+ * @author Daniel R. Tabin
+ * @brief Misc functions
+ */
+
 #include "misc.h"
 #include <stdlib.h>
 #include <stdio.h>
