@@ -1,4 +1,10 @@
 	|=====================================================
+18	| VERSION 1.0.0 (Envoking Evolution)
+17	| Added test misc file
+16	| Added misc file and merge sort method
+15	| Added randomness to crossover
+14	| Added randomness to mutation
+	|=====================================================
 13	| VERSION 0.2.0 (Starting Selection)
 12	| Added randomness to selection
 11	| Implemented selection

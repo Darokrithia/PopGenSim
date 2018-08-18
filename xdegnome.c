@@ -32,7 +32,7 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
 
-	chrom_size = 10;
+	chrom_size = 15;
 
 	if(verbose){
 		printf("Chromosome is length %u\n", chrom_size);
@@ -48,8 +48,8 @@ int main(int argc, char **argv){
     gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
 
 	for(int i = 0; i < chrom_size; i++){
-		bom_mom->dna_array[i] = 2;
-		bad_dad->dna_array[i] = 1;
+		bom_mom->dna_array[i] = 2*i;
+		bad_dad->dna_array[i] = 1*i;
 
 		bom_mom->hat_size += bom_mom->dna_array[i];
 		bad_dad->hat_size += bad_dad->dna_array[i];
