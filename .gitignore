@@ -1,6 +1,7 @@
 degnome.o
 depend
 jobqueue.o
+misc.o
 polygensim
 polygensim.o
 xdegnome.o

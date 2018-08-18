@@ -39,12 +39,12 @@ all : $(targets)
 test : $(tests)
 
 # test polygensim.c
-POLYGENSIM := polygensim.o degnome.o jobqueue.o
+POLYGENSIM := polygensim.o degnome.o misc.o jobqueue.o
 polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
 
 # test degnome.c
-XDEGNOME := xdegnome.o degnome.o
+XDEGNOME := xdegnome.o degnome.o misc.o
 xdegnome : $(XDEGNOME)
 	$(CC) $(CFLAGS) -o $@ $(XDEGNOME) $(lib)
 

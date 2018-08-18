@@ -1,0 +1,1 @@
+void int_merge_sort(int* array, int min, int max);
