@@ -50,7 +50,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 		memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 	}
 
-	child-> hat_size = 0;
+	child->hat_size = 0;
 
 	//mutate
 	double mutation;
