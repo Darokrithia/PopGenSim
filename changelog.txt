@@ -1,3 +1,6 @@
+23	| VERSION 1.1.1 (Memory Managed)
+	|=====================================================
+23	| Now properly freeing memory
 	|=====================================================
 22	| VERSION 1.1.0 (Fast fixes)
 21	| Fixed bug where last crossover would never happen
