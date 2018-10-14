@@ -83,6 +83,7 @@ int main(int argc, char **argv){
 	for (int i = 0; i < pop_size; i++){
 		parents[i].dna_array = malloc(chrom_size*sizeof(double));
 		children[i].dna_array = malloc(chrom_size*sizeof(double));
+		parents[i].hat_size = 0;
 
 		for(int j = 0; j < chrom_size; j++){
 			parents[i].dna_array[j] = (i+j);	//children isn't initiilized
