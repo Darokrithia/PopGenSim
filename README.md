@@ -15,5 +15,8 @@ change A.
 # Documentation
 Will be filled in once program is finished
 
+#Branch
+
+Will implement jobqueue (which was made by Alan Rogers)
 _______________
 *VERSION 1.1.0*
