@@ -83,6 +83,7 @@ int main(int argc, char **argv){
 	for (int i = 0; i < pop_size; i++){
 		parents[i].dna_array = malloc(chrom_size*sizeof(double));
 		children[i].dna_array = malloc(chrom_size*sizeof(double));
+		parents[i].hat_size = 0;
 
 		for(int j = 0; j < chrom_size; j++){
 			parents[i].dna_array[j] = (i+j);	//children isn't initiilized
@@ -155,6 +156,17 @@ int main(int argc, char **argv){
 		}
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
+
+	//free everything
+
+	for (int i = 0; i < pop_size; i++){
+		free(parents[i].dna_array);
+		free(children[i].dna_array);
+		parents[i].hat_size = 0;
+	}
+
+	free(parents);
+	free(children);
 
 	gsl_rng_free (rng);
 }
