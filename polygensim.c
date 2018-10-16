@@ -8,23 +8,28 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <limits.h>
+#include <math.h>
 
 void usage(void);
 double get_fitness(double hat_size);
 
 const char *usageMsg =
-    "Usage: polygensim [-c] CL [-p] PS [-g] G \n"
+    "Usage: polygensim [-c CL] [-p PS] [-g GE]  [-t] TH\n"
     "\n"
-    "\"CL\" is chromosome length.  \"PS\" is the population size, and \"G\" is the\n"
-    "number of generations that the simulation will run  They can be in\n"
-    "any order, and not all are needed.  Default CL is 50, default PS is\n"
-    "100, and the default G is 1000.\n";
+    "\"CL\" is chromosome length.  \"PS\" is the population size, \"GE\"\n"
+    "is the number of generations that the simulation will run,\n"
+    "and \"TH\" is the number of threads.  They can be in any\n"
+    "order, and not all are needed.  Default CL is 50, default PS\n"
+    "is 100, and the default G is 1000.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
 
 int pop_size;
 int num_gens;
+
+int num_threads;
+int multi_threaded;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -42,7 +47,11 @@ int main(int argc, char **argv){
 	pop_size = 100;
 	num_gens = 1000;
 
-	if(argc > 7 || (argc%2) == 0){
+	num_threads = 1;
+	multi_threaded = 0;
+
+
+	if(argc > 9 || (argc%2) == 0){
 		printf("\n");
 		usage();
 	}
@@ -56,6 +65,10 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-g") == 0){
 				sscanf(argv[i+1], "%u", &num_gens);
+			}
+			else if (strcmp(argv[i], "-t") == 0){
+				sscanf(argv[i+1], "%u", &num_threads);
+				multi_threaded = 1;
 			}
 			else{
 				usage();
