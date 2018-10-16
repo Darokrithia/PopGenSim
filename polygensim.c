@@ -19,7 +19,7 @@ struct JobData {
 };
 
 void usage(void);
-int jobfunc(void *p);
+int jobfunc(void* p, void* tdat);
 
 double get_fitness(double hat_size);
 
@@ -39,16 +39,17 @@ int pop_size;
 int num_gens;
 
 int num_threads;
-int multi_threaded;
+
+JobQueue* jq;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
 	exit(EXIT_FAILURE);
 }
 
-int jobfunc(void* p) {
+int jobfunc(void* p, void* tdat) {
     JobData* data = (JobData*) p;								//get data out
-    Degnome_mate(data->child, data->p1, data->p2, data->rng);	//mate
+    Degnome_mate(data->child, data->p1, data->p2, data->rng);		//mate
 
     return 0;		//exited without error
 }
@@ -64,8 +65,6 @@ int main(int argc, char **argv){
 	num_gens = 1000;
 
 	num_threads = 1;
-	multi_threaded = 0;
-
 
 	if(argc > 9 || (argc%2) == 0){
 		printf("\n");
@@ -84,7 +83,6 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-t") == 0){
 				sscanf(argv[i+1], "%u", &num_threads);
-				multi_threaded = 1;
 			}
 			else{
 				usage();
@@ -129,6 +127,8 @@ int main(int argc, char **argv){
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
 
+	jq = JobQueue_new(num_threads, NULL, NULL, NULL);
+
 	for(int i = 0; i < num_gens; i++){
 
 		double fit = get_fitness(parents[0].hat_size);
@@ -143,6 +143,8 @@ int main(int argc, char **argv){
 			total_hat_size += fit;
 			cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 		}
+
+		JobData dat[pop_size];
 
 		for(int j = 0; j < pop_size; j++){
 
@@ -170,12 +172,19 @@ int main(int argc, char **argv){
 
 			// printf("m:%u, d:%u\n", m,d);
 
-			Degnome_mate(children + j, parents + m, parents + d, rng);		//Is selective
+			dat[j].child = (children + j);
+			dat[j].p1 = (parents + m);
+			dat[j].p2 = (parents + d);
+			dat[j].rng = rng;
+
+			JobQueue_addJob(jq, jobfunc, (void*) (dat+j));		//Is selective
 		}
+		JobQueue_waitOnJobs(jq);
 		temp = children;
 		children = parents;
 		parents = temp;
 	}
+	JobQueue_noMoreJobs(jq);
 
 	printf("Generation %u:\n", num_gens);
 	for(int i = 0; i < pop_size; i++){
@@ -187,6 +196,8 @@ int main(int argc, char **argv){
 	}
 
 	//free everything
+
+	JobQueue_free(jq);
 
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
