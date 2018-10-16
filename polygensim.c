@@ -10,7 +10,17 @@
 #include <limits.h>
 #include <math.h>
 
+typedef struct JobData JobData;
+struct JobData {
+	Degnome* child;
+	Degnome* p1;
+	Degnome* p2;
+	gsl_rng* rng;
+};
+
 void usage(void);
+int jobfunc(void *p);
+
 double get_fitness(double hat_size);
 
 const char *usageMsg =
@@ -36,6 +46,12 @@ void usage(void) {
 	exit(EXIT_FAILURE);
 }
 
+int jobfunc(void* p) {
+    JobData* data = (JobData*) p;								//get data out
+    Degnome_mate(data->child, data->p1, data->p2, data->rng);	//mate
+
+    return 0;		//exited without error
+}
 
 double get_fitness(double hat_size){
 	return hat_size;
@@ -154,7 +170,7 @@ int main(int argc, char **argv){
 
 			// printf("m:%u, d:%u\n", m,d);
 
-			Degnome_mate(children + j, parents + m, parents + d, rng);		//Will be selective
+			Degnome_mate(children + j, parents + m, parents + d, rng);		//Is selective
 		}
 		temp = children;
 		children = parents;
