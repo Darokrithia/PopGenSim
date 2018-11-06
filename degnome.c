@@ -24,15 +24,18 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 	int num_crossover = gsl_ran_poisson(rng, 2.0);
 	int crossover_locations[num_crossover];
 	int distance = 0;
+	int diff;
 
 	for (int i = 0; i < num_crossover; i++){
 		crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_size);
 	}
-
-	int_merge_sort(crossover_locations, 0, num_crossover-1);
+	if(num_crossover > 0){
+		int_merge_sort(crossover_locations, 0, num_crossover-1);
+	}
 
 	for (int i = 0; i < num_crossover; i++){
-		int diff = crossover_locations[i] - distance;
+		diff = crossover_locations[i] - distance;
+
 		if (i % 2 == 0){
 			memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 		}
@@ -42,7 +45,13 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 		distance = crossover_locations[i];
 	}
 
-	int diff = chrom_size - crossover_locations[num_crossover-1];
+	if(num_crossover > 0){
+		diff = chrom_size - crossover_locations[num_crossover-1];
+	}
+	else{
+		diff = chrom_size;
+	}
+
 	if (num_crossover % 2 == 0){
 		memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 	}
