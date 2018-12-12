@@ -14,7 +14,8 @@ struct Degnome {
 };
 
 Degnome* Degnome_new(void);
-void Degnome_mate(Degnome* location, Degnome* p1, Degnome* p2, gsl_rng* rng);
+void Degnome_mate(Degnome* location, Degnome* p1, Degnome* p2, gsl_rng* rng,
+	int mutation_rate, int mutation_effect, int crossover_rate);
 void Degnome_free(Degnome* q);
 
 int chrom_size;

@@ -1,5 +1,7 @@
 degnome.o
 depend
+genancesim
+genancesim.o
 jobqueue.o
 misc.o
 polygensim
