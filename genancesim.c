@@ -21,7 +21,7 @@ const char *usageMsg =
     "be selection, and if \"-v\" is present there will be output\n"
     "at every single generation.\n"
     "They can be in any order, and not all are needed. Default CL\n"
-    "is 50, default PS is 100, the default G is 1000, and defualt\n"
+    "is 10, default PS is 10, the default G is 1000, and defualt\n"
     "CR is 2.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
@@ -46,8 +46,8 @@ double get_fitness(double hat_size){
 
 int main(int argc, char **argv){
 
-	chrom_size = 50;
-	pop_size = 100;
+	chrom_size = 10;
+	pop_size = 10;
 	num_gens = 1000;
 	crossover_rate = 2;
 	selective = 0;
@@ -116,15 +116,15 @@ int main(int argc, char **argv){
 		}
 	}
 
-	printf("Generation 0:\n");
+	printf("\nGeneration 0:\n\n");
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
 		for(int j = 0; j < chrom_size; j++){
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
-		printf("\nTOTAL HAT SIZE: %lg", parents[i].hat_size);
-		printf("\nPERCENT ANCENSTRY: (FILL THIS IN%lg\n\n", parents[i].hat_size);
+		printf("\n");
 	}
+	printf("\n\n");
 
 	for(int i = 0; i < num_gens; i++){
 		double fit;
