@@ -2,6 +2,11 @@
 Simulates polygenic evolution of quanitative traits in
 Digital Genomes aka Degnomes
 
+# GenAnceSim
+Sister program of Polygensim.  Very similar with slight
+changes that stop mutation and give more informaiton on the
+genetic contributions of each ancestor
+
 # Change Log
 As well as git commits, I will be keeping track of progress
 of the program in the change log.  It will not contain every
@@ -16,4 +21,4 @@ change A.
 Will be filled in once program is finished
 
 _______________
-*VERSION 1.1.2*
+*VERSION 1.2.0*
