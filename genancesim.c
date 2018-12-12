@@ -224,7 +224,7 @@ int main(int argc, char **argv){
 				d = dads[index_d];
 
 				// printf("m:\t%u\nd:\t%u\n", m, d);
-				
+
 				//reduce the pool of available degnomes
 				//in order to make sure everybody get's two chances to mate
 				//one as a dad and one as a mom
@@ -245,6 +245,25 @@ int main(int argc, char **argv){
 		temp = children;
 		children = parents;
 		parents = temp;
+		if(verbose && (i+1) < num_gens){
+			printf("\nGeneration %u:\n", i);
+			for(int k = 0; k < pop_size; k++){
+				printf("Degnome %u\n", k);
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[k].dna_array[j]);
+				}
+				if(selective){
+					printf("\nTOTAL HAT SIZE: %lg\n\n", parents[k].hat_size);
+				}
+				else{
+					printf("\n\n");
+				}
+			}
+			printf("\n");
+		}
+	}
+	if(verbose){
+		printf("\n");
 	}
 
 	printf("Generation %u:\n", num_gens);
@@ -253,7 +272,12 @@ int main(int argc, char **argv){
 		for(int j = 0; j < chrom_size; j++){
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
-		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
+		if(selective){
+			printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
+		}
+		else{
+			printf("\n\n");
+		};
 	}
 
 	//free everything
