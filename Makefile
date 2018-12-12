@@ -6,7 +6,7 @@ opt :=  -O0 -fno-inline-functions      # For debugging
 
 # Flags to determine the warning messages issued by the compiler
 
-targets := polygensim
+targets := polygensim genancesim
 
 tests := xdegnome xmisc xjobqueue
 
@@ -42,6 +42,11 @@ test : $(tests)
 POLYGENSIM := polygensim.o degnome.o misc.o jobqueue.o
 polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
+
+# run genancesim.c
+GENANCESIM := genancesim.o degnome.o misc.o jobqueue.o
+genancesim : $(GENANCESIM)
+	$(CC) $(CFLAGS) -o $@ $(GENANCESIM) $(lib)
 
 # test degnome.c
 XDEGNOME := xdegnome.o degnome.o misc.o

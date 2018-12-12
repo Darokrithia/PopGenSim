@@ -13,15 +13,16 @@ void usage(void);
 double get_fitness(double hat_size);
 
 const char *usageMsg =
-    "Usage: polygensim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR]\n"
+    "Usage: genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s] [-v]\n"
     "\n"
-    "\"CL\" is chromosome length.  \"PS\" is the population size, and\n"
-    "\"G\" is thenumber of generations that the simulation will\n"
-    "run.  \"MR\" is mutation rate, \"ME\" is how much a mutation\n"
-    "will effect a gene on average, and \"CR\" is crossover rate.\n"
-    "They can be in any order, and not all are needed.\n"
-    "Default CL is 50, default PS is 100, and the default G is\n"
-    "1000.  Default MR is 1, default ME is 2 and defualt CR is 2\n";
+    "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
+    "is thenumber of generations that the simulation will run,\n"
+    "and \"CR\" is crossover rate.  If \"-s\" is present, there will\n"
+    "be selection, and if \"-v\" is present there will be output\n"
+    "at every single generation.\n"
+    "They can be in any order, and not all are needed. Default CL\n"
+    "is 50, default PS is 100, the default G is 1000, and defualt\n"
+    "CR is 2.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -29,9 +30,9 @@ unsigned long rngseed=0;
 //	there is no need for the line 'int chrom_size' as it is declared as a global variable in degnome.h
 int pop_size;
 int num_gens;
-int mutation_rate;
-int mutation_effect;
 int crossover_rate;
+int selective;
+int verbose;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -48,33 +49,37 @@ int main(int argc, char **argv){
 	chrom_size = 50;
 	pop_size = 100;
 	num_gens = 1000;
-	mutation_rate = 1;
-	mutation_effect = 2;
 	crossover_rate = 2;
+	selective = 0;
+	verbose = 0;
 
-	if(argc > 13 || (argc%2) == 0){
+	if(argc > 11){
 		printf("\n");
 		usage();
 	}
-	for(int i = 1; i < argc; i += 2){
+	for(int i = 1; i < argc; i++){
 		if(argv[i][0] == '-'){
-			if (strcmp(argv[i], "-c") == 0){
+			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)){
 				sscanf(argv[i+1], "%u", &chrom_size);
+				i++;
 			}
-			else if (strcmp(argv[i], "-p") == 0){
+			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)){
 				sscanf(argv[i+1], "%u", &pop_size);
+				i++;
 			}
-			else if (strcmp(argv[i], "-g") == 0){
+			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)){
 				sscanf(argv[i+1], "%u", &num_gens);
+				i++;
 			}
-			else if (strcmp(argv[i], "-m") == 0){
-				sscanf(argv[i+1], "%u", &mutation_rate);
-			}
-			else if (strcmp(argv[i], "-e") == 0){
-				sscanf(argv[i+1], "%u", &mutation_effect);
-			}
-			else if (strcmp(argv[i], "-o") == 0){
+			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)){
 				sscanf(argv[i+1], "%u", &crossover_rate);
+				i++;
+			}
+			else if (strcmp(argv[i], "-s") == 0){
+				selective = 1;
+			}
+			else if (strcmp(argv[i], "-v") == 0){
+				verbose = 1;
 			}
 			else{
 				printf("\n");
@@ -82,7 +87,6 @@ int main(int argc, char **argv){
 			}
 		}
 		else{
-			printf("\n");
 			usage();
 		}
 	}
@@ -107,8 +111,8 @@ int main(int argc, char **argv){
 		parents[i].hat_size = 0;
 
 		for(int j = 0; j < chrom_size; j++){
-			parents[i].dna_array[j] = (i+j);	//children isn't initiilized
-			parents[i].hat_size += (i+j);
+			parents[i].dna_array[j] = (i);	//children isn't initialized
+			parents[i].hat_size += (i);		//all genes are a degnome are identical so they are easy to source
 		}
 	}
 
@@ -118,19 +122,30 @@ int main(int argc, char **argv){
 		for(int j = 0; j < chrom_size; j++){
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
-		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
+		printf("\nTOTAL HAT SIZE: %lg", parents[i].hat_size);
+		printf("\nPERCENT ANCENSTRY: (FILL THIS IN%lg\n\n", parents[i].hat_size);
 	}
 
 	for(int i = 0; i < num_gens; i++){
-
-		double fit = get_fitness(parents[0].hat_size);
+		double fit;
+		if(selective){
+			fit = get_fitness(parents[0].hat_size);
+		}
+		else{
+			fit = 100;			//in runs withoutslection, everybody is equally fit
+		}
 
 		double total_hat_size = fit;
 		double cum_hat_size[pop_size];
 		cum_hat_size[0] = fit;
 
 		for(int j = 1; j < pop_size; j++){
-			fit = get_fitness(parents[j].hat_size);
+			if(selective){
+				fit = get_fitness(parents[j].hat_size);
+			}
+			else{
+				fit = 100;
+			}
 
 			total_hat_size += fit;
 			cum_hat_size[j] = (cum_hat_size[j-1] + fit);
@@ -162,7 +177,7 @@ int main(int argc, char **argv){
 
 			// printf("m:%u, d:%u\n", m,d);
 
-			Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
+			Degnome_mate(children + j, parents + m, parents + d, rng, 0, 0, crossover_rate);
 		}
 		temp = children;
 		children = parents;
