@@ -11,10 +11,11 @@
 
 void usage(void);
 double get_fitness(double hat_size);
+void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char *usageMsg =
     "Usage:\n"
-    "genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v]\n"
+    "genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
@@ -22,7 +23,9 @@ const char *usageMsg =
     "be selection, while if \"-u\" is present all degnomes will\n"
     "contribute to two offspring.  Note: \"-s\" and \"-u\" cannot be\n"
     "simultaneously active. If \"-v\" is present there will be\n"
-    "output at every single generation.\n"
+    "output at every single generation, and if \"-r\" is present\n"
+    "only percentages will be printed (you wont get to see the"
+    "genomes of each degnome)."
     "They can be in any order, and not all are needed. Default CL\n"
     "is 10, default PS is 10, the default G is 1000, and defualt\n"
     "CR is 2.\n";
@@ -37,6 +40,7 @@ int crossover_rate;
 int selective;
 int uniform;
 int verbose;
+int reduced;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -48,6 +52,31 @@ double get_fitness(double hat_size){
 	return hat_size;
 }
 
+void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity){
+	*diversity = 0;
+	for(int i = 0; i < pop_size; i++){			//calculate percent decent for each degnome
+		for(int j = 0; j < pop_size; j++){
+			percent_decent[i][j] = 0;
+			for(int k = 0; k < chrom_size; k++){
+				if(generation[i].dna_array[k] == j){
+					percent_decent[i][j]++;
+				}
+			}
+			percent_decent[i][j] /= chrom_size;
+			*diversity += percent_decent[i][j];
+		}
+	}
+	*diversity /= pop_size;
+
+	for(int j = 0; j < pop_size; j++){			//sum and average
+		percent_decent[pop_size][j] = 0;
+		for(int k = 0; k < pop_size; k++){
+			percent_decent[pop_size][j] += percent_decent[k][j];
+		}
+		percent_decent[pop_size][j] /= pop_size;
+	}
+}
+
 int main(int argc, char **argv){
 
 	chrom_size = 10;
@@ -57,8 +86,9 @@ int main(int argc, char **argv){
 	selective = 0;
 	uniform = 0;
 	verbose = 0;
+	reduced = 0;
 
-	if(argc > 11){
+	if(argc > 12){
 		printf("\n");
 		usage();
 	}
@@ -95,6 +125,9 @@ int main(int argc, char **argv){
 			else if (strcmp(argv[i], "-v") == 0){
 				verbose = 1;
 			}
+			else if (strcmp(argv[i], "-r") == 0){
+				reduced = 1;
+			}
 			else{
 				printf("\n");
 				usage();
@@ -125,18 +158,44 @@ int main(int argc, char **argv){
 		parents[i].hat_size = 0;
 
 		for(int j = 0; j < chrom_size; j++){
-			parents[i].dna_array[j] = (i);	//children isn't initialized
+			parents[i].dna_array[j] = (i);	//children aren't initialized
 			parents[i].hat_size += (i);		//all genes are a degnome are identical so they are easy to source
+		}
+	}
+
+	double* diversity;
+	double** percent_decent;
+
+	diversity = malloc(sizeof(double));
+	*diversity = 1;
+	percent_decent = malloc((pop_size+1)*sizeof(double*));
+	for(int i = 0; i < pop_size+1; i++){
+		percent_decent[i] = malloc(pop_size*sizeof(double));
+		if(i == pop_size){
+			continue;
+		}
+		for(int j = 0; j < pop_size; j++){
+			if(i == j){
+				percent_decent[i][j] = 1;
+			}
+			else{
+				percent_decent[i][j] = 0;
+			}
 		}
 	}
 
 	printf("\nGeneration 0:\n\n");
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
-		for(int j = 0; j < chrom_size; j++){
-			printf("%lf\t", parents[i].dna_array[j]);
+		if(!reduced){
+			for(int j = 0; j < chrom_size; j++){
+				printf("%lf\t", parents[i].dna_array[j]);
+			}
+			printf("\n");
 		}
-		printf("\n");
+		else{
+			printf("%lf\n", parents[i].dna_array[0]);
+		}
 	}
 	printf("\n\n");
 
@@ -248,37 +307,72 @@ int main(int argc, char **argv){
 		if(verbose && (i+1) < num_gens){
 			printf("\nGeneration %u:\n", i);
 			for(int k = 0; k < pop_size; k++){
+				if(!reduced){
 				printf("Degnome %u\n", k);
-				for(int j = 0; j < chrom_size; j++){
-					printf("%lf\t", parents[k].dna_array[j]);
+					for(int j = 0; j < chrom_size; j++){
+						printf("%lf\t", parents[k].dna_array[j]);
+					}
+					if(selective){
+						printf("\nTOTAL HAT SIZE: %lg\n\n", parents[k].hat_size);
+					}
+					else{
+						printf("\n\n");
+					}
+					printf("\n");
 				}
-				if(selective){
-					printf("\nTOTAL HAT SIZE: %lg\n\n", parents[k].hat_size);
-				}
-				else{
-					printf("\n\n");
+				for(int j = 0; j < pop_size; j++){
+					if(percent_decent[k][j] > 0){
+						printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+					}
 				}
 			}
 			printf("\n");
 		}
+		printf("Average population decent percentages:\n");
+		for(int j = 0; j < pop_size; j++){
+			if(percent_decent[pop_size][j] > 0){
+				printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
+			}
+		}
+		printf("\n\n");
 	}
 	if(verbose){
 		printf("\n");
 	}
 
+	calculate_diversity(parents, percent_decent, diversity);
+	printf("\n\n DIVERSITY%lf\n\n\n", *diversity);
+
 	printf("Generation %u:\n", num_gens);
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
-		for(int j = 0; j < chrom_size; j++){
-			printf("%lf\t", parents[i].dna_array[j]);
+		if(!reduced){
+			for(int j = 0; j < chrom_size; j++){
+				printf("%lf\t", parents[i].dna_array[j]);
+			}
+			printf("\n");
 		}
+		for(int j = 0; j < pop_size; j++){
+			if(percent_decent[i][j] > 0){
+				printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+			}
+		}
+		printf("\n");
+
 		if(selective){
 			printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 		}
 		else{
 			printf("\n\n");
-		};
+		}
 	}
+	printf("Average population decent percentages:\n");
+	for(int j = 0; j < pop_size; j++){
+		if(percent_decent[pop_size][j] > 0){
+			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
+		}
+	}
+	printf("\n\n\n");
 
 	//free everything
 
@@ -286,10 +380,15 @@ int main(int argc, char **argv){
 		free(parents[i].dna_array);
 		free(children[i].dna_array);
 		parents[i].hat_size = 0;
+
+		free(percent_decent[i]);
 	}
 
 	free(parents);
 	free(children);
+
+	free(percent_decent);
+	free(diversity);
 
 	gsl_rng_free (rng);
 }
