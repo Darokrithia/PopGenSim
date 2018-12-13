@@ -80,19 +80,14 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 			if(i == j){
 				continue;
 			}
-			int same = 0;
 			for(int k = 0; k < chrom_size; k++){
 				if(generation[i].dna_array[k] != generation[j].dna_array[k]){
-					same = 1;
-					break;
+					(*diversity)++;
 				}
-			}
-			if(same){
-				(*diversity)++;
 			}
 		}
 	}
-	*diversity /= ((pop_size-1) * pop_size);
+	*diversity /= ((pop_size-1) * pop_size * chrom_size);
 }
 
 int main(int argc, char **argv){
