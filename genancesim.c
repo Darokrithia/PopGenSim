@@ -15,7 +15,7 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 const char *usageMsg =
     "Usage:\n"
-    "genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r]\n"
+    "genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
@@ -25,7 +25,8 @@ const char *usageMsg =
     "simultaneously active. If \"-v\" is present there will be\n"
     "output at every single generation, and if \"-r\" is present\n"
     "only percentages will be printed (you wont get to see the"
-    "genomes of each degnome)."
+    "genomes of each degnome).  If \"-b\" is present, the program\n"
+    "will break once all degnomes are identical."
     "They can be in any order, and not all are needed. Default CL\n"
     "is 10, default PS is 10, the default G is 1000, and defualt\n"
     "CR is 2.\n";
@@ -41,6 +42,7 @@ int selective;
 int uniform;
 int verbose;
 int reduced;
+int break_at_zero_diversity;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -75,12 +77,12 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 	for(int i = 0; i < pop_size; i++){			//calculate percent diversity for the entire generation
 		for(int j = 0; j < pop_size; j++){
+			if(i == j){
+				continue;
+			}
 			int same = 0;
-			for(int k = 0; k < pop_size; k++){
-				if(i == k){
-					continue;
-				}
-				if(generation[i].dna_array[j] != generation[k].dna_array[j]){
+			for(int k = 0; k < chrom_size; k++){
+				if(generation[i].dna_array[k] != generation[j].dna_array[k]){
 					same = 1;
 					break;
 				}
@@ -90,7 +92,7 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 			}
 		}
 	}
-	*diversity /= (pop_size * pop_size);
+	*diversity /= ((pop_size-1) * pop_size);
 }
 
 int main(int argc, char **argv){
@@ -103,8 +105,9 @@ int main(int argc, char **argv){
 	uniform = 0;
 	verbose = 0;
 	reduced = 0;
+	break_at_zero_diversity = 0;
 
-	if(argc > 12){
+	if(argc > 13){
 		printf("\n");
 		usage();
 	}
@@ -143,6 +146,9 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-r") == 0){
 				reduced = 1;
+			}
+			else if (strcmp(argv[i], "-b") == 0){
+				break_at_zero_diversity = 1;
 			}
 			else{
 				printf("\n");
@@ -216,11 +222,16 @@ int main(int argc, char **argv){
 	printf("\n\n");
 
 	int final_gen;
+	int broke_early = 0;
 
 	for(int i = 0; i < num_gens; i++){
-		final_gen = i;
-		if((*diversity) <= 0){
-			break;
+		if(break_at_zero_diversity){
+			calculate_diversity(parents, percent_decent, diversity);
+			if((*diversity) <= 0){
+				final_gen = i;
+				broke_early = 1;
+				break;
+			}
 		}
 		if(!uniform){
 			double fit;
@@ -364,8 +375,12 @@ int main(int argc, char **argv){
 
 	calculate_diversity(parents, percent_decent, diversity);
 	// printf("\n\n DIVERSITY%lf\n\n\n", *diversity);
-
-	printf("Generation %u:\n", final_gen);
+	if(broke_early){
+		printf("Generation %u:\n", final_gen);
+	}
+	else{
+		printf("Generation %u:\n", num_gens);
+	}
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
 		if(!reduced){
