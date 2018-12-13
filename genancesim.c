@@ -63,11 +63,8 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 				}
 			}
 			percent_decent[i][j] /= chrom_size;
-			*diversity += percent_decent[i][j];
 		}
 	}
-	*diversity /= pop_size;
-
 	for(int j = 0; j < pop_size; j++){			//sum and average
 		percent_decent[pop_size][j] = 0;
 		for(int k = 0; k < pop_size; k++){
@@ -75,6 +72,25 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 		}
 		percent_decent[pop_size][j] /= pop_size;
 	}
+
+	for(int i = 0; i < pop_size; i++){			//calculate percent diversity for the entire generation
+		for(int j = 0; j < pop_size; j++){
+			int same = 0;
+			for(int k = 0; k < pop_size; k++){
+				if(i == k){
+					continue;
+				}
+				if(generation[i].dna_array[j] != generation[k].dna_array[j]){
+					same = 1;
+					break;
+				}
+			}
+			if(same){
+				(*diversity)++;
+			}
+		}
+	}
+	*diversity /= (pop_size * pop_size);
 }
 
 int main(int argc, char **argv){
@@ -199,7 +215,13 @@ int main(int argc, char **argv){
 	}
 	printf("\n\n");
 
+	int final_gen;
+
 	for(int i = 0; i < num_gens; i++){
+		final_gen = i;
+		if((*diversity) <= 0){
+			break;
+		}
 		if(!uniform){
 			double fit;
 			if(selective){
@@ -332,6 +354,7 @@ int main(int argc, char **argv){
 					printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 				}
 			}
+			printf("\nPercent diversity: %lf\n", (100* (*diversity)));
 		printf("\n\n");
 		}
 	}
@@ -342,7 +365,7 @@ int main(int argc, char **argv){
 	calculate_diversity(parents, percent_decent, diversity);
 	// printf("\n\n DIVERSITY%lf\n\n\n", *diversity);
 
-	printf("Generation %u:\n", num_gens);
+	printf("Generation %u:\n", final_gen);
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u\n", i);
 		if(!reduced){
@@ -371,6 +394,7 @@ int main(int argc, char **argv){
 			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 		}
 	}
+	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
 	printf("\n\n\n");
 
 	//free everything
