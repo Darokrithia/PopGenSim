@@ -1,4 +1,10 @@
 	|=====================================================
+32	| VERSION 1.2.1 (Discovering Diversity)
+31	| Added diversity.  This let's you see how different
+	| each degnome is at every generation.  The program
+	| also can break upon reaching zero diversity.
+30	| Last update broke xdegnome.  This fixes it.
+	|=====================================================
 29	| VERSION 1.2.0 (Generated GenAnceSim)
 28	| Added GenAnceSim to the package.  This is the sister
 	| program to PolygenSim and works nearly the same.
