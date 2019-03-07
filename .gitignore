@@ -1,12 +1,7 @@
-degnome.o
+*.o
+genancesim
 depend
-jobqueue.o
-misc.o
 polygensim
-polygensim.o
 xdegnome
-xdegnome.o
 xmisc
-xmisc.o
 xjobqueue
-xjobqueue.o

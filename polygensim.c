@@ -15,7 +15,6 @@ struct JobData {
 	Degnome* child;
 	Degnome* p1;
 	Degnome* p2;
-	gsl_rng* rng;
 };
 
 void usage(void);
@@ -33,14 +32,35 @@ const char *usageMsg =
     "is 100, and the default G is 1000.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
-unsigned long rngseed=0;
+unsigned long rngseed = 0;
 
 int pop_size;
 int num_gens;
 
-int num_threads;
+int num_threads = 0;
 
 JobQueue* jq;
+
+void *ThreadState_new(void *notused);
+void ThreadState_free(void *rng);
+
+void *ThreadState_new(void *notused) {
+    // Lock seed, initialize random number generator, increment seed,
+    // and unlock.
+    gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
+
+    pthread_mutex_lock(&seedLock);
+    gsl_rng_set(rng, rngseed);
+    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+    pthread_mutex_unlock(&seedLock);
+
+    return rng;
+}
+
+void ThreadState_free(void *rng) {
+    gsl_rng_free((gsl_rng *) rng);
+}
+
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -48,8 +68,9 @@ void usage(void) {
 }
 
 int jobfunc(void* p, void* tdat) {
+	gsl_rng* rng = (gsl_rng*) tdat;
     JobData* data = (JobData*) p;								//get data out
-    Degnome_mate(data->child, data->p1, data->p2, data->rng);		//mate
+    Degnome_mate(data->child, data->p1, data->p2, rng);			//mate
 
     return 0;		//exited without error
 }
@@ -93,10 +114,23 @@ int main(int argc, char **argv){
 		}
 	}
 
+	if(num_threads <= 0){
+		if(num_threads < 0){
+			#ifdef DEBUG_MODE
+				fprintf(stderr, "Error invalid number of threads: %u\n", num_threads);
+			#endif
+		}
+		num_threads = (3*getNumCores()/4);
+	}
+	#ifdef DEBUG_MODE
+		fprintf(stderr, "Final number of threads: %u\n", num_threads);
+	#endif
+
     time_t currtime = time(NULL);                  // time
     unsigned long pid = (unsigned long) getpid();  // process id
     rngseed = currtime ^ pid;                      // random seed
     gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+    gsl_rng_set(rng, rngseed);
 
 	Degnome* parents;
 	Degnome* children;
@@ -127,7 +161,7 @@ int main(int argc, char **argv){
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
 
-	jq = JobQueue_new(num_threads, NULL, NULL, NULL);
+	jq = JobQueue_new(num_threads, NULL, ThreadState_new, ThreadState_free);
 
 	for(int i = 0; i < num_gens; i++){
 
@@ -147,11 +181,6 @@ int main(int argc, char **argv){
 		JobData dat[pop_size];
 
 		for(int j = 0; j < pop_size; j++){
-
-		    pthread_mutex_lock(&seedLock);
-			gsl_rng_set(rng, rngseed);
-		    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-    		pthread_mutex_unlock(&seedLock);
 
 			int m, d;
 
@@ -175,7 +204,6 @@ int main(int argc, char **argv){
 			dat[j].child = (children + j);
 			dat[j].p1 = (parents + m);
 			dat[j].p2 = (parents + d);
-			dat[j].rng = rng;
 
 			JobQueue_addJob(jq, jobfunc, (void*) (dat+j));		//Is selective
 		}
