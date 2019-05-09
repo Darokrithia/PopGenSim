@@ -42,7 +42,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(double)));
 		}
 		else{
-			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)))
+			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(double)));
 		}
 		distance = crossover_locations[i];
