@@ -15,7 +15,7 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 const char *usageMsg =
     "Usage:\n"
-    "genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+    "devosim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
@@ -37,6 +37,8 @@ unsigned long rngseed=0;
 //	there is no need for the line 'int chrom_size' as it is declared as a global variable in degnome.h
 int pop_size;
 int num_gens;
+int mutation_rate;
+int mutation_effect;
 int crossover_rate;
 int selective;
 int uniform;
@@ -92,9 +94,11 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 int main(int argc, char **argv){
 
-	chrom_size = 10;
-	pop_size = 10;
-	num_gens = 1000;
+	chrom_size = 20;
+	pop_size = 30;
+	num_gens = 60;
+	mutation_rate = 1;
+	mutation_effect = 2;
 	crossover_rate = 2;
 	selective = 0;
 	uniform = 0;
@@ -102,7 +106,7 @@ int main(int argc, char **argv){
 	reduced = 0;
 	break_at_zero_diversity = 0;
 
-	if(argc > 13){
+	if(argc > 17){
 		printf("\n");
 		usage();
 	}
@@ -118,6 +122,14 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)){
 				sscanf(argv[i+1], "%u", &num_gens);
+				i++;
+			}
+			else if (strcmp(argv[i], "-m") == 0){
+				sscanf(argv[i+1], "%u", &mutation_rate);
+				i++;
+			}
+			else if (strcmp(argv[i], "-e") == 0){
+				sscanf(argv[i+1], "%u", &mutation_effect);
 				i++;
 			}
 			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)){
@@ -295,7 +307,7 @@ int main(int argc, char **argv){
 
 				// printf("m:%u, d:%u\n", m,d);
 
-				Degnome_mate(children + j, parents + m, parents + d, rng, 0, 0, crossover_rate);
+				Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
 			}
 		}
 		else{
@@ -342,7 +354,7 @@ int main(int argc, char **argv){
 				mom_max--;
 				dad_max--;
 
-				Degnome_mate(children + j, parents + m, parents + d, rng, 0, 0, crossover_rate);
+				Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
 			}
 		}
 		temp = children;
