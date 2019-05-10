@@ -1,6 +1,6 @@
 /**
-@file degnome.c
-@page degnome
+@file ance_degnome.c
+@page ance_degnome
 @author Daniel R. Tabin
 @brief Digital Genomes aka Degnomes
 
@@ -10,6 +10,8 @@ quantitative traits by using Degnomes as defined above.
 #include "ance_degnome.h"
 #include "misc.h"
 #include <string.h>
+#include <stdio.h>
+
 
 Degnome* Degnome_new(){
 	Degnome* q = malloc(sizeof(Degnome));
@@ -19,35 +21,33 @@ Degnome* Degnome_new(){
 	return q;
 }
 
-void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
+void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
+	int mutation_rate, int mutation_effect, int crossover_rate){
 	
 	//Cross over
-	int num_crossover = gsl_ran_poisson(rng, 2.0);
+	int num_crossover = gsl_ran_poisson(rng, crossover_rate);
 	int crossover_locations[num_crossover];
 	int distance = 0;
 	int diff;
-
 	for (int i = 0; i < num_crossover; i++){
 		crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_size);
 	}
 	if(num_crossover > 0){
 		int_merge_sort(crossover_locations, 0, num_crossover-1);
 	}
-
 	for (int i = 0; i < num_crossover; i++){
 		diff = crossover_locations[i] - distance;
 
 		if (i % 2 == 0){
 			memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
-			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(double)));
+			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 		}
 		else{
 			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
-			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(double)));
+			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 		}
 		distance = crossover_locations[i];
 	}
-
 	if(num_crossover > 0){
 		diff = chrom_size - crossover_locations[num_crossover-1];
 	}
@@ -57,23 +57,23 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng){
 
 	if (num_crossover % 2 == 0){
 		memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
-		memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(double)));
+		memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 	}
 	else{
 		memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
-		memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(double)));
+		memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 	}
 
 	child->hat_size = 0;
 
 	//mutate
 	double mutation;
-	int num_mutations = gsl_ran_poisson(rng, 1.0);
+	int num_mutations = gsl_ran_poisson(rng, mutation_rate);
 	int mutation_location;
 
 	for (int i = 0; i < num_mutations; i++){
 		mutation_location = gsl_rng_uniform_int(rng, chrom_size);
-		mutation = gsl_ran_gaussian_ziggurat(rng, 2.0);
+		mutation = gsl_ran_gaussian_ziggurat(rng, mutation_effect);
 		child->dna_array[mutation_location] += mutation;
 	}
 

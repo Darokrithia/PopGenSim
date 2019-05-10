@@ -44,7 +44,7 @@ polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
 
 # run genancesim.c
-GENANCESIM := genancesim.o ance_degnome.o misc.o jobqueue.o
+GENANCESIM := genancesim.o degnome.o misc.o jobqueue.o
 genancesim : $(GENANCESIM)
 	$(CC) $(CFLAGS) -o $@ $(GENANCESIM) $(lib)
 
