@@ -1,4 +1,3 @@
-This is Git.
 # PolygenSim
 Simulates polygenic evolution of quanitative traits in
 Digital Genomes aka Degnomes
