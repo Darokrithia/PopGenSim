@@ -1,5 +1,5 @@
 	|=====================================================
-36	| VERSION 1.3.0 (Discovering Diversity)
+36	| VERSION 1.3.0 (Separation Solution)
 35	| Added "devosim" a new simulation which makes use of
 	| the new ance_degnome
 34	| Added new "ance_degnome" which holds its "DNA" and
