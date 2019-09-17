@@ -7,6 +7,12 @@ Sister program of Polygensim.  Very similar with slight
 changes that stop mutation and give more informaiton on the
 genetic contributions of each ancestor
 
+# Devosim
+Subject to being renamed.  A more general program that can
+do the job of GenAnceSim and PolygenSim at the same time via
+a modified dengome that stores fitness and ancestry
+in different arrays.
+
 # Change Log
 As well as git commits, I will be keeping track of progress
 of the program in the change log.  It will not contain every
@@ -21,4 +27,4 @@ change A.
 Will be filled in once program is finished
 
 _______________
-*VERSION 1.2.1*
+*VERSION 1.3.0*
