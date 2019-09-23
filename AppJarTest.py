@@ -1,19 +1,48 @@
 from appJar import gui
-
+import subprocess
 
 def runGenancesim(button):
-    print("Run the program, etc, with the following params:")
-    print("Chromosome Length: ", genancesimGUI.getEntry("Chromosome Length"))
-    print("Population Size: ", genancesimGUI.getEntry("Population Size"))
-    print("Generations: ", genancesimGUI.getEntry("Generations"))
-    print("Chromosome Length: ", genancesimGUI.getEntry("Crossover Rate"))
+    chromosomeLengthInt = int(genancesimGUI.getEntry("Chromosome Length"))
+    populationSizeInt = int(genancesimGUI.getEntry("Population Size"))
+    generationsInt = int(genancesimGUI.getEntry("Generations"))
+    crossoverRateInt = int(genancesimGUI.getEntry("Crossover Rate"))
+
+
+    selectionModeString = ""
     print("Selection Mode:", genancesimGUI.getRadioButton("selectionMode"))
-    print("Verbose Mode On:", genancesimGUI.getCheckBox("Verbose Mode"))
-    print("Percentages Only Mode On:", genancesimGUI.getCheckBox("Percentages Only"))
-    print("Stop if all dgnomes are identical?:", genancesimGUI.getCheckBox("Stop if all dgnomes are identical"))
-    print("Additional processing may be needed for these.")
+    ## What happens if neither -s or -u are specified?
+
+    verboseModeString = ""
+    if genancesimGUI.getCheckBox("Verbose Mode"):
+        verboseModeString = "-v"
+
+    percentagesOnlyModeString = ""
+    if genancesimGUI.getCheckBox("Percentages Only"):
+        percentagesOnlyModeString = "-r"
+
+
+    stopOnIdenticalDgnomesString = ""
+    if genancesimGUI.getCheckBox("Stop if all dgnomes are identical"):
+        stopOnIdenticalDgnomesString = "-b"
+
     print("It may also be a decent idea to have a function called whenever any of the integer-only labelEntries are edited.")
     print("We may be able to force the user to only input integers that way (instead of truncating floats)")
+
+    try:
+        print(f"-c {chromosomeLengthInt}")
+        subprocess.call(["./genancesim",
+                         "-c", f"{chromosomeLengthInt}", #f-strings require Python 3.6, I think?
+                         "-p", f"{populationSizeInt}",
+                         "-g", f"{generationsInt}",
+                         "-o", f"{crossoverRateInt}" # ,
+                         # selectionModeString,
+                         # verboseModeString,
+                         # percentagesOnlyModeString,
+                         # stopOnIdenticalDgnomesString
+                        ])
+    except FileNotFoundError:
+        print("./genancesim was not found in this directory. Make sure you compiled it!")
+
     return
 
 ## For this general test GUI, I'll just configure it to look like it
