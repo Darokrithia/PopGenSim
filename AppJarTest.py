@@ -8,38 +8,31 @@ def runGenancesim(button):
     crossoverRateInt = int(genancesimGUI.getEntry("Crossover Rate"))
 
 
+    settingsStringArray = ["./genancesim",
+                         "-c", f"{chromosomeLengthInt}", #f-strings require Python 3.6, I think?
+                         "-p", f"{populationSizeInt}",
+                         "-g", f"{generationsInt}",
+                         "-o", f"{crossoverRateInt}"]
+
     selectionModeString = ""
     print("Selection Mode:", genancesimGUI.getRadioButton("selectionMode"))
     ## What happens if neither -s or -u are specified?
 
-    verboseModeString = ""
     if genancesimGUI.getCheckBox("Verbose Mode"):
-        verboseModeString = "-v"
+        settingsStringArray.append("-v")
 
-    percentagesOnlyModeString = ""
     if genancesimGUI.getCheckBox("Percentages Only"):
-        percentagesOnlyModeString = "-r"
+        settingsStringArray.append("-r")
 
-
-    stopOnIdenticalDgnomesString = ""
     if genancesimGUI.getCheckBox("Stop if all dgnomes are identical"):
-        stopOnIdenticalDgnomesString = "-b"
+        settingsStringArray.append("-b")
 
     print("It may also be a decent idea to have a function called whenever any of the integer-only labelEntries are edited.")
     print("We may be able to force the user to only input integers that way (instead of truncating floats)")
 
     try:
         print(f"-c {chromosomeLengthInt}")
-        subprocess.call(["./genancesim",
-                         "-c", f"{chromosomeLengthInt}", #f-strings require Python 3.6, I think?
-                         "-p", f"{populationSizeInt}",
-                         "-g", f"{generationsInt}",
-                         "-o", f"{crossoverRateInt}" # ,
-                         # selectionModeString,
-                         # verboseModeString,
-                         # percentagesOnlyModeString,
-                         # stopOnIdenticalDgnomesString
-                        ])
+        subprocess.call(settingsStringArray)
     except FileNotFoundError:
         print("./genancesim was not found in this directory. Make sure you compiled it!")
 
