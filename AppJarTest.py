@@ -34,7 +34,7 @@ def runGenancesim(button):
         print(f"-c {chromosomeLengthInt}")
         subprocess.call(settingsStringArray)
     except FileNotFoundError:
-        print("./genancesim was not found in this directory. Make sure you compiled it!")
+        genancesimGUI.warningBox("Error launching ./genancesim", "./genancesim was not found in this directory. Make sure you compiled it and that it's in the same directory as this program!")
 
     return
 
