@@ -61,7 +61,6 @@ devosimGUI.setBg("black")
 # Mac OS X seemed to force the text to be white if it was in Dark Mode, though, which didn't play well with a white
 # background...
 
-
 # Now, set up all the widgets.
 
 # Since AppJar is based on TKInter, it uses the TKInter Grid.
@@ -84,6 +83,14 @@ devosimGUI.addCheckBox("Verbose Mode", 3, 0)  # -v
 devosimGUI.addCheckBox("Percentages Only", 3, 1)  # -r
 # -- Not like I'm sure this needs to be in a final GUI version...
 devosimGUI.addCheckBox("Stop if all dgnomes are identical", 3, 2)  # -b
+
+# Some systems (My Linux computer) have the text near buttons change color when "activated" (moused over).
+# Naturally, this color defaults to black. Let's make it the same color as the text is normally...
+
+devosimGUI.setRadioButtonActiveFg("selectionMode", "white") # Good for all 3 buttons!
+devosimGUI.setCheckBoxActiveFg("Verbose Mode", "white")
+devosimGUI.setCheckBoxActiveFg("Percentages Only", "white")
+devosimGUI.setCheckBoxActiveFg("Stop if all dgnomes are identical", "white")
 
 # Now let's add some default values; the same ones the program has itself.
 
