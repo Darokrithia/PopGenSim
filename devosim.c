@@ -15,22 +15,23 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 const char *usageMsg =
     "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
-    "and \"CR\" is crossover rate.  If \"-s\" is present, there will\n"
-    "be selection, while if \"-u\" is present all degnomes will\n"
-    "contribute to two offspring.  Note: \"-s\" and \"-u\" cannot be\n"
-    "simultaneously active. If \"-v\" is present there will be\n"
-    "output at every single generation, and if \"-r\" is present\n"
-    "only percentages will be printed (you wont get to see the"
-    "genomes of each degnome).  If \"-b\" is present, the program\n"
-    "will break once all degnomes are identical."
-    "They can be in any order, and not all are needed. Default CL\n"
-    "is 10, default PS is 10, the default G is 1000, and defualt\n"
-    "CR is 2.\n";
-
+    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
+    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
+    "is present, there will be selection, while if \"-u\" is present\n"
+    "all degnomes will contribute to two offspring.\n"
+    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
+    "If \"-v\" is present there will be output at every single\n"
+    "generation, and if \"-r\" is present only percentages will be\n"
+    "printed (you wont get to see the genomes of each degnome).  If\n"
+    "\"-b\" is present, the program will break once all degnomes are\n"
+    "identical. They can be in any order, and not all are needed.\n"
+    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
+    "defualt CR is 2.\n";
+    
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
 
