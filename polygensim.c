@@ -119,6 +119,7 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-o") == 0){
 				sscanf(argv[i+1], "%u", &crossover_rate);
+			}
 			else if (strcmp(argv[i], "-t") == 0){
 				sscanf(argv[i+1], "%u", &num_threads);
 			}
@@ -182,6 +183,8 @@ int main(int argc, char **argv){
 
 	jq = JobQueue_new(num_threads, NULL, ThreadState_new, ThreadState_free);
 
+	JobData* dat = malloc(sizeof(JobData) * pop_size);
+
 	for(int i = 0; i < num_gens; i++){
 
 		double fit = get_fitness(parents[0].hat_size);
@@ -196,8 +199,6 @@ int main(int argc, char **argv){
 			total_hat_size += fit;
 			cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 		}
-
-		JobData dat[pop_size];
 
 		for(int j = 0; j < pop_size; j++){
 
@@ -243,6 +244,7 @@ int main(int argc, char **argv){
 	//free everything
 
 	JobQueue_free(jq);
+	free(dat);
 
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
