@@ -97,8 +97,6 @@ int main(int argc, char **argv){
 
 	if(argc > 15 || (argc%2) == 0){
 	num_threads = 1;
-
-	if(argc > 9 || (argc%2) == 0){
 		printf("\n");
 		usage();
 	}
