@@ -1,5 +1,4 @@
 *.o
-
 depend
 devosim
 genancesim
