@@ -1,6 +1,7 @@
 *.o
-genancesim
 depend
+devosim
+genancesim
 polygensim
 xdegnome
 xmisc
