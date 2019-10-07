@@ -7,21 +7,23 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import seaborn as sns
 
-plotNumber = 1  # Possibly not necessary long-term; a simple counter to differentiate the titles of the plot windows.
+
+class PlotCounter:
+    plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
 
 
 # This function is called when we press the Go! button.
 
 def createNewChartWindow():
     # Create a new chart window.
-    devosimGUI.startSubWindow("Plot " + f"{plotNumber}")
+    devosimGUI.startSubWindow("Plot " + f"{PlotCounter.plotNumber}")
 
     # Typical dark mode setup...
     devosimGUI.setFg("white")
     devosimGUI.setBg("black")
 
     # Add the figure we just made.
-    fig = devosimGUI.addPlotFig("Figure " + f"{plotNumber}")
+    fig = devosimGUI.addPlotFig("Figure " + f"{PlotCounter.plotNumber}")
 
     # End the subwindow definition.
     devosimGUI.stopSubWindow()
@@ -68,8 +70,8 @@ def createNewChartWindow():
     plt.tight_layout(h_pad=2)
 
     # Finally, show the window, and increment the plotNumber.
-    devosimGUI.showSubWindow("Plot " + f"{plotNumber}")
-    ++plotNumber
+    devosimGUI.showSubWindow("Plot " + f"{PlotCounter.plotNumber}")
+    PlotCounter.plotNumber = PlotCounter.plotNumber + 1
 
     # The takeaway is that we can do basically whatever we want here, as long as we use the figure returned to us
     # by appJar.
