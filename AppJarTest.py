@@ -1,7 +1,82 @@
 from appJar import gui
+from appJar.appjar import ItemLookupError
 import subprocess
 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+import seaborn as sns
+
+plotNumber = 1  # Possibly not necessary long-term; a simple counter to differentiate the titles of the plot windows.
+
+
 # This function is called when we press the Go! button.
+
+def createNewChartWindow():
+    # Create a new chart window.
+    devosimGUI.startSubWindow("Plot " + f"{plotNumber}")
+
+    # Typical dark mode setup...
+    devosimGUI.setFg("white")
+    devosimGUI.setBg("black")
+
+    # Add the figure we just made.
+    fig = devosimGUI.addPlotFig("Figure " + f"{plotNumber}")
+
+    # End the subwindow definition.
+    devosimGUI.stopSubWindow()
+
+    # The snippet of code below is a modified version of what's on seaborn.pydata.ord/examples/color_palettes.html
+
+    # For now, this will just statically create a new chart window.
+    sns.set(context="talk", style="white", palette="muted")
+    random = np.random.RandomState(10)
+
+    # Here's the sequential data example:
+    x = np.array(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"])
+
+    # Add the first subplot.
+    # This number means "3 by 1 grid, 1st subplot".
+    axis1 = fig.add_subplot(311)
+
+    y1 = np.arange(1, 11)
+    sns.barplot(x=x, y=y1, palette="rocket", ax=axis1)
+    axis1.axhline(0, color="k", clip_on=False)
+    axis1.set_ylabel("Sequential")
+
+    # Here's the diverging data example:
+
+    axis2 = fig.add_subplot(312)
+
+    y2 = y1 - 5.5
+    sns.barplot(x=x, y=y2, palette="vlag", ax=axis2)
+    axis2.axhline(0, color="k", clip_on=False)
+    axis2.set_ylabel("Diverging")
+
+    # Here's the randomly reordered (Qualitative) example:
+
+    axis3 = fig.add_subplot(313)
+
+    y3 = random.choice(y1, len(y1), replace=False)
+    sns.barplot(x=x, y=y3, palette="deep", ax=axis3)
+    axis3.axhline(0, color="k", clip_on=False)
+    axis3.set_ylabel("Qualitative")
+
+    # Finalizing the plot:
+    sns.despine(bottom=True)
+    plt.setp(fig.axes, yticks=[])
+    plt.tight_layout(h_pad=2)
+
+    # Finally, show the window, and increment the plotNumber.
+    devosimGUI.showSubWindow("Plot " + f"{plotNumber}")
+    ++plotNumber
+
+    # The takeaway is that we can do basically whatever we want here, as long as we use the figure returned to us
+    # by appJar.
+
+    return
+
+
 def runDevosim(button):
     # These entry fields return floats, but we need these parameters to be ints.
     chromosomeLengthInt = int(devosimGUI.getEntry("Chromosome Length"))
@@ -11,7 +86,9 @@ def runDevosim(button):
     mutationRateInt = int(devosimGUI.getEntry("Mutation Rate"))
     mutationEffectInt = int(devosimGUI.getEntry("Mutation Effect"))
 
-    settingsStringArray = ["./devosim",
+    executableNameString = "./devosim"  # Platform-dependent
+
+    settingsStringArray = [executableNameString,
                            "-c", f"{chromosomeLengthInt}",  # f-strings require Python 3.6, I think?
                            "-p", f"{populationSizeInt}",
                            "-g", f"{generationsInt}",
@@ -20,9 +97,12 @@ def runDevosim(button):
                            "-e", f"{mutationEffectInt}"
                            ]
 
-    selectionModeString = ""
-    print("Selection Mode:", devosimGUI.getRadioButton("selectionMode"))
-    ## What happens if neither -s or -u are specified?
+    selectionModeString = devosimGUI.getRadioButton("selectionMode")
+    # Append no flag for Random Selection Mode
+    if selectionModeString == "Selective Pressure":
+        settingsStringArray.append("-s")
+    elif selectionModeString == "Uniform Selection":
+        settingsStringArray.append("-u")
 
     if devosimGUI.getCheckBox("Verbose Mode"):
         settingsStringArray.append("-v")
@@ -33,22 +113,41 @@ def runDevosim(button):
     if devosimGUI.getCheckBox("Stop if all dgnomes are identical"):
         settingsStringArray.append("-b")
 
-    print(
-        "It may also be a decent idea to have a function called whenever any of the integer-only labelEntries are edited.")
-    print("We may be able to force the user to only input integers that way (instead of truncating floats)")
+    try:
+        # subprocess.call(settingsStringArray)
+        outputString = subprocess.check_output(settingsStringArray)
+
+    except FileNotFoundError:
+        devosimGUI.errorBox("Error launching ./devosim",
+                            "./devosim was not found in this directory. Make sure you compiled it and that it's in the same directory as this program!")
+        return
+    except subprocess.CalledProcessError:
+        devosimGUI.errorBox("Error running ./devosim",
+                            "./devosim returned/exited with an error.")
+        return
+
+    print(outputString)
 
     try:
-        print(f"-c {chromosomeLengthInt}")
-        subprocess.call(settingsStringArray)
-    except FileNotFoundError:
-        devosimGUI.warningBox("Error launching ./devosim",
-                                 "./devosim was not found in this directory. Make sure you compiled it and that it's in the same directory as this program!")
+        devosimGUI.showSubWindow("Console Output")
+    except ItemLookupError:
+        # In the case of an ItemLookupError, then we couldn't find the output window.
+        # Let's make it.
+        devosimGUI.startSubWindow("Console Output")
+        devosimGUI.setFg("white")
+        devosimGUI.setBg("black")
+        devosimGUI.addScrolledTextArea("output", colspan=1, rowspan=2)
+        devosimGUI.stopSubWindow()
+        devosimGUI.showSubWindow("Console Output")
+
+    devosimGUI.clearTextArea("output")
+    devosimGUI.setTextArea("output", outputString)
 
     return
 
 
-## For this general test GUI, I'll just configure it to look like it
-## could support all of ./devosim's command line arguments.
+# For this general test GUI, I'll just configure it to look like it
+# could support all of ./devosim's command line arguments.
 
 # This is also my first Python program ever! Hello, world!
 
@@ -72,10 +171,10 @@ devosimGUI.addNumericLabelEntry("Chromosome Length", 0, 0)  # -c
 devosimGUI.addNumericLabelEntry("Population Size", 0, 1)  # -p
 devosimGUI.addNumericLabelEntry("Generations", 1, 0)  # -g
 devosimGUI.addNumericLabelEntry("Crossover Rate", 1, 1)  # -o
-devosimGUI.addNumericLabelEntry("Mutation Rate", 0, 2) # -m
-devosimGUI.addNumericLabelEntry("Mutation Effect", 1, 2) # -e
+devosimGUI.addNumericLabelEntry("Mutation Rate", 0, 2)  # -m
+devosimGUI.addNumericLabelEntry("Mutation Effect", 1, 2)  # -e
 
-devosimGUI.addRadioButton("selectionMode", "Random Selection", 2, 0) # no tag
+devosimGUI.addRadioButton("selectionMode", "Random Selection", 2, 0)  # no tag
 devosimGUI.addRadioButton("selectionMode", "Selective Pressure", 2, 1)  # -s
 devosimGUI.addRadioButton("selectionMode", "Uniform Selection", 2, 2)  # -u
 
@@ -87,7 +186,7 @@ devosimGUI.addCheckBox("Stop if all dgnomes are identical", 3, 2)  # -b
 # Some systems (My Linux computer) have the text near buttons change color when "activated" (moused over).
 # Naturally, this color defaults to black. Let's make it the same color as the text is normally...
 
-devosimGUI.setRadioButtonActiveFg("selectionMode", "white") # Good for all 3 buttons!
+devosimGUI.setRadioButtonActiveFg("selectionMode", "white")  # Good for all 3 buttons!
 devosimGUI.setCheckBoxActiveFg("Verbose Mode", "white")
 devosimGUI.setCheckBoxActiveFg("Percentages Only", "white")
 devosimGUI.setCheckBoxActiveFg("Stop if all dgnomes are identical", "white")
@@ -112,6 +211,9 @@ devosimGUI.setEntryDefault("Mutation Effect", "Mutation Effect")
 
 # Now, here comes the Run button.
 devosimGUI.addButton("Go!", runDevosim, 4, 0, 3, 1)
+
+# To demonstrate the use of Seaborn+Matplotlib+Appjar, this button will create a new window with a figure in it.
+devosimGUI.addButton("Show Sample Chart", createNewChartWindow, 5, 0, 3, 1)
 
 # And this "runs" the thing.
 devosimGUI.go()
