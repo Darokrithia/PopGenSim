@@ -15,23 +15,22 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 const char *usageMsg =
     "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+    "devosim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
-    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
-    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
-    "is present, there will be selection, while if \"-u\" is present\n"
-    "all degnomes will contribute to two offspring.\n"
-    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
-    "If \"-v\" is present there will be output at every single\n"
-    "generation, and if \"-r\" is present only percentages will be\n"
-    "printed (you wont get to see the genomes of each degnome).  If\n"
-    "\"-b\" is present, the program will break once all degnomes are\n"
-    "identical. They can be in any order, and not all are needed.\n"
-    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
-    "defualt CR is 2.\n";
-    
+    "and \"CR\" is crossover rate.  If \"-s\" is present, there will\n"
+    "be selection, while if \"-u\" is present all degnomes will\n"
+    "contribute to two offspring.  Note: \"-s\" and \"-u\" cannot be\n"
+    "simultaneously active. If \"-v\" is present there will be\n"
+    "output at every single generation, and if \"-r\" is present\n"
+    "only percentages will be printed (you wont get to see the"
+    "genomes of each degnome).  If \"-b\" is present, the program\n"
+    "will break once all degnomes are identical."
+    "They can be in any order, and not all are needed. Default CL\n"
+    "is 10, default PS is 10, the default G is 1000, and defualt\n"
+    "CR is 2.\n";
+
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
 
@@ -219,28 +218,30 @@ int main(int argc, char **argv){
 		}
 	}
 
-	printf("\nGeneration 0:\n\n");
-	for(int i = 0; i < pop_size; i++){
-		printf("Degnome %u allele values:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%lf\t", parents[i].dna_array[j]);
+	if(!reduced){
+		printf("\nGeneration 0:\n\n");
+		for(int i = 0; i < pop_size; i++){
+			printf("Degnome %u allele values:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[i].dna_array[j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		else{
-			printf("%lf\n", parents[i].dna_array[0]);
-		}
+			else{
+				printf("%lf\n", parents[i].dna_array[0]);
+			}
 
-		printf("Degnome %u ancestries:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%u\t", parents[i].GOI_array[j]);
+			printf("Degnome %u ancestries:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%u\t", parents[i].GOI_array[j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		else{
-			printf("%u\n", parents[i].GOI_array[0]);
+			else{
+				printf("%u\n", parents[i].GOI_array[0]);
+			}
 		}
 	}
 	printf("\n\n");
@@ -364,10 +365,10 @@ int main(int argc, char **argv){
 		if(verbose){
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
-			for(int k = 0; k < pop_size; k++){
-				printf("\n\nDegnome %u allele values:\n", k);
+			if(!reduced){
+				for(int k = 0; k < pop_size; k++){
+					printf("\n\nDegnome %u allele values:\n", k);
 
-				if(!reduced){
 					for(int j = 0; j < chrom_size; j++){
 						printf("%lf\t", parents[k].dna_array[j]);
 					}
@@ -377,23 +378,21 @@ int main(int argc, char **argv){
 					else{
 						printf("\n");
 					}
-				}
 
-				printf("\n\nDegnome %u ancestries:\n", k);
-				if(!reduced){
+					printf("\n\nDegnome %u ancestries:\n", k);
 					for(int j = 0; j < chrom_size; j++){
 						printf("%u\t", parents[k].GOI_array[j]);
 					}
 					printf("\n");
-				}
 
-				for(int j = 0; j < pop_size; j++){
-					if(percent_decent[k][j] > 0){
-						printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+					for(int j = 0; j < pop_size; j++){
+						if(percent_decent[k][j] > 0){
+							printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+						}
 					}
 				}
 			}
-			printf("\nAverage population decent percentages:\n");
+			printf("\nAverage population descent percentages:\n");
 			for(int j = 0; j < pop_size; j++){
 				if(percent_decent[pop_size][j] > 0){
 					printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
@@ -415,34 +414,36 @@ int main(int argc, char **argv){
 	else{
 		printf("Generation %u:\n", num_gens);
 	}
-	for(int i = 0; i < pop_size; i++){
-		printf("\n\nDegnome %u allele values:\n", i);		
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%lf\t", parents[i].dna_array[j]);
+	if(!reduced){
+		for(int i = 0; i < pop_size; i++){
+			printf("\n\nDegnome %u allele values:\n", i);		
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[i].dna_array[j]);
+				}
 			}
-		}
 
-		printf("\n\nDegnome %u ancestries:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%u\t", parents[i].GOI_array[j]);
+			printf("\n\nDegnome %u ancestries:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%u\t", parents[i].GOI_array[j]);
+				}
+				printf("\n");
+			}
+
+			for(int j = 0; j < pop_size; j++){
+				if(percent_decent[i][j] > 0){
+					printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+				}
 			}
 			printf("\n");
-		}
 
-		for(int j = 0; j < pop_size; j++){
-			if(percent_decent[i][j] > 0){
-				printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+			if(selective){
+				printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 			}
-		}
-		printf("\n");
-
-		if(selective){
-			printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
-		}
-		else{
-			printf("\n\n");
+			else{
+				printf("\n\n");
+			}
 		}
 	}
 	printf("Average population decent percentages:\n");
