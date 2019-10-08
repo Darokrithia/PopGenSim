@@ -364,6 +364,7 @@ int main(int argc, char **argv){
 		children = parents;
 		parents = temp;
 		if(verbose && i==num_gens-1){
+			printf("HHHEERRE %d",i);
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
 			for(int k = 0; k < pop_size; k++){
@@ -417,7 +418,9 @@ int main(int argc, char **argv){
 	else{
 		printf("Generation %u:\n", num_gens);
 	}
+
 	for(int i = 0; i < pop_size; i++){
+		
 		printf("\n\nDegnome %u allele values:\n", i);		
 		if(!reduced){
 			for(int j = 0; j < chrom_size; j++){
@@ -446,6 +449,8 @@ int main(int argc, char **argv){
 		else{
 			printf("\n\n");
 		}
+		
+		
 	}
 	printf("Average population decent percentages:\n");
 	for(int j = 0; j < pop_size; j++){
