@@ -363,6 +363,9 @@ int main(int argc, char **argv){
 		temp = children;
 		children = parents;
 		parents = temp;
+
+		//this part does the gen 0 parts as well -- dont need just yet
+
 		/*
 		if(verbose){
 			calculate_diversity(parents, percent_decent, diversity);
@@ -421,21 +424,30 @@ int main(int argc, char **argv){
 	}
 
 	for(int i = 0; i < pop_size; i++){
-		
+
+		//just working with % of Degnomes per generation -- dont need allele values yet
+
+		/*
 		printf("\n\nDegnome %u allele values:\n", i);		
 		if(!reduced){
 			for(int j = 0; j < chrom_size; j++){
 				printf("%lf\t", parents[i].dna_array[j]);
 			}
 		}
+		*/
 
 		printf("\n\nDegnome %u ancestries:\n", i);
+
+		//prints out the actual values ex: 18 not percent for how many are from 18 -- dont add just yet
+
+		/*
 		if(!reduced){
 			for(int j = 0; j < chrom_size; j++){
 				printf("%u\t", parents[i].GOI_array[j]);
 			}
 			printf("\n");
 		}
+		*/
 
 		for(int j = 0; j < pop_size; j++){
 			if(percent_decent[i][j] > 0){
@@ -459,8 +471,8 @@ int main(int argc, char **argv){
 			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 		}
 	}
-	//printf("\nPercent diversity: %lf\n", (100* (*diversity)));
-	//printf("\n\n\n"); //just to see if commits change anyhting 
+	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
+	//printf("\n\n\n"); //just to see if commits change anyhting nope doesnt remove this  
 
 	//free everything
 
