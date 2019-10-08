@@ -223,7 +223,7 @@ int main(int argc, char **argv){
 /*
 	printf("\nGeneration 0:\n\n");
 	for(int i = 0; i < pop_size; i++){
-		printf("Degnome %u allele values:\n", i);
+		//printf("Degnome %u allele values:\n", i);
 		if(!reduced){
 			for(int j = 0; j < chrom_size; j++){
 				printf("%lf\t", parents[i].dna_array[j]);
@@ -363,7 +363,7 @@ int main(int argc, char **argv){
 		temp = children;
 		children = parents;
 		parents = temp;
-		if(verbose){
+		if(verbose && i==num_gens-1){
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
 			for(int k = 0; k < pop_size; k++){
