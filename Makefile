@@ -80,4 +80,3 @@ include depend
 .SUFFIXES:
 .SUFFIXES: .c .o
 .PHONY: clean
-
