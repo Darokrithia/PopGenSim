@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <limits.h>
 
+//hopefully cindy copy else i messed up branch lmao rip
+
 void usage(void);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
@@ -177,7 +179,7 @@ int main(int argc, char **argv){
 	Degnome* children;
 	Degnome* temp;
 
-	printf("%u, %u, %u\n", chrom_size, pop_size, num_gens);
+	printf("%u, %u, %u\n", chrom_size, pop_size, num_gens); //20 30 60 = "preset"
 
 	parents = malloc(pop_size*sizeof(Degnome));
 	children = malloc(pop_size*sizeof(Degnome));
@@ -218,7 +220,7 @@ int main(int argc, char **argv){
 			}
 		}
 	}
-
+/*
 	printf("\nGeneration 0:\n\n");
 	for(int i = 0; i < pop_size; i++){
 		printf("Degnome %u allele values:\n", i);
@@ -244,7 +246,7 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\n\n");
-
+*/
 	int final_gen;
 	int broke_early = 0;
 
