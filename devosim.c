@@ -471,7 +471,7 @@ int main(int argc, char **argv){
 			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 		}
 	}
-	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
+	printf("\n\nPercent diversity: %lf\n", (100* (*diversity)));
 	//printf("\n\n\n"); //just to see if commits change anyhting nope doesnt remove this  
 
 	//free everything
