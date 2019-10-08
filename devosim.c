@@ -363,8 +363,8 @@ int main(int argc, char **argv){
 		temp = children;
 		children = parents;
 		parents = temp;
-		if(verbose && i==num_gens-1){
-			printf("HHHEERRE %d",i);
+		/*
+		if(verbose){
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
 			for(int k = 0; k < pop_size; k++){
@@ -405,6 +405,7 @@ int main(int argc, char **argv){
 			printf("\nPercent diversity: %lf\n", (100* (*diversity)));
 		printf("\n\n");
 		}
+		*/
 	}
 	if(verbose){
 		printf("\n");
@@ -459,7 +460,7 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
-	printf("\n\n\n");
+	//printf("\n\n\n"); //just to see if commits change anyhting 
 
 	//free everything
 
