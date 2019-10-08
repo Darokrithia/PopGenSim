@@ -4,26 +4,45 @@ import subprocess
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import seaborn as sns
 
 
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
 
+def previousChart(button):
 
-# This function is called when we press the Go! button.
+    return
+
+def nextChart(button):
+
+    return
 
 def createNewChartWindow():
     # Create a new chart window.
-    devosimGUI.startSubWindow("Plot " + f"{PlotCounter.plotNumber}")
+    devosimGUI.startSubWindow(f"Plot {PlotCounter.plotNumber}")
 
     # Typical dark mode setup...
     devosimGUI.setFg("white")
     devosimGUI.setBg("black")
 
     # Add the figure we just made.
-    fig = devosimGUI.addPlotFig("Figure " + f"{PlotCounter.plotNumber}")
+    fig = devosimGUI.addPlotFig(f"Figure {PlotCounter.plotNumber}", colspan=3)
+
+    # When making the icon buttons, first set the image folder to the "res" folder in this directory.
+    devosimGUI.setImageLocation("./res")
+
+    # Now, create the previous and next buttons, and between them, a drop-down menu.
+    devosimGUI.addButton(f"prev{PlotCounter.plotNumber}", previousChart, 1, 0)
+    devosimGUI.setButtonImage(f"prev{PlotCounter.plotNumber}", "arrow-prev.gif")
+
+    # The idea with the menu box is to allow the user to choose, for example, a generation. We'll see where this goes.
+    devosimGUI.addOptionBox(f"optionBox{PlotCounter.plotNumber}", ["- This is a grayed-out line -",
+                                                                   "This Menu", "Is a test", "but doesn't",
+                                                                   "actually do anything right now"], 1, 1)
+
+    devosimGUI.addButton(f"next{PlotCounter.plotNumber}", nextChart, 1, 2)
+    devosimGUI.setButtonImage(f"next{PlotCounter.plotNumber}", "arrow-next.gif")
 
     # End the subwindow definition.
     devosimGUI.stopSubWindow()
@@ -78,6 +97,7 @@ def createNewChartWindow():
 
     return
 
+# This function is called when we press the Go! button.
 
 def runDevosim(button):
     # These entry fields return floats, but we need these parameters to be ints.
