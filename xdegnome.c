@@ -64,7 +64,7 @@ int main(int argc, char **argv){
 		printf("Mom hat_size: %lf\t Dad hat_size: %f\n", bom_mom->hat_size, bad_dad->hat_size);
 	}
 
-	Degnome_mate(tst_bby, bom_mom, bad_dad, rng);
+	Degnome_mate(tst_bby, bom_mom, bad_dad, rng, 0, 0,2);
 
 
 	if(verbose){

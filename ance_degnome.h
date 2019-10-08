@@ -10,6 +10,7 @@ typedef struct Degnome Degnome;
 struct Degnome {
 	double* dna_array;
 	double hat_size;
+	int* GOI_array;		// goi = Gene Origin ID
 
 };
 
