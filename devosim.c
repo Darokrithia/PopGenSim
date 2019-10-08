@@ -463,8 +463,11 @@ int main(int argc, char **argv){
 			printf("\n\n");
 		}
 		
-		
 	}
+
+	//add this in later -- rn, python graphics code focuses on degnome allele percentages/freq
+
+	/*
 	printf("Average population decent percentages:\n");
 	for(int j = 0; j < pop_size; j++){
 		if(percent_decent[pop_size][j] > 0){
@@ -472,8 +475,9 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\n");
-	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
+	printf("\nPercent diversity: \n%lf\n", (100* (*diversity)));
 	//printf("\n\n\n"); //just to see if commits change anyhting nope doesnt remove this  
+	*/
 
 	//free everything
 
