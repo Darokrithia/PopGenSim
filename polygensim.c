@@ -8,8 +8,18 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <limits.h>
+#include <math.h>
+
+typedef struct JobData JobData;
+struct JobData {
+	Degnome* child;
+	Degnome* p1;
+	Degnome* p2;
+};
 
 void usage(void);
+int jobfunc(void* p, void* tdat);
+
 double get_fitness(double hat_size);
 
 const char *usageMsg =
@@ -24,7 +34,7 @@ const char *usageMsg =
     "1000.  Default MR is 1, default ME is 2 and defualt CR is 2\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
-unsigned long rngseed=0;
+unsigned long rngseed = 0;
 
 //	there is no need for the line 'int chrom_size' as it is declared as a global variable in degnome.h
 int pop_size;
@@ -33,11 +43,41 @@ int mutation_rate;
 int mutation_effect;
 int crossover_rate;
 
+int num_threads = 0;
+JobQueue* jq;
+
+void *ThreadState_new(void *notused);
+void ThreadState_free(void *rng);
+
+void *ThreadState_new(void *notused) {
+    // Lock seed, initialize random number generator, increment seed,
+    // and unlock.
+    gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
+
+    pthread_mutex_lock(&seedLock);
+    gsl_rng_set(rng, rngseed);
+    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+    pthread_mutex_unlock(&seedLock);
+
+    return rng;
+}
+
+void ThreadState_free(void *rng) {
+    gsl_rng_free((gsl_rng *) rng);
+}
+
 void usage(void) {
 	fputs(usageMsg, stderr);
 	exit(EXIT_FAILURE);
 }
 
+int jobfunc(void* p, void* tdat) {
+	gsl_rng* rng = (gsl_rng*) tdat;
+    JobData* data = (JobData*) p;																				//get data out
+    Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
+
+    return 0;		//exited without error
+}
 
 double get_fitness(double hat_size){
 	return hat_size;
@@ -87,10 +127,23 @@ int main(int argc, char **argv){
 		}
 	}
 
+	if(num_threads <= 0){
+		if(num_threads < 0){
+			#ifdef DEBUG_MODE
+				fprintf(stderr, "Error invalid number of threads: %u\n", num_threads);
+			#endif
+		}
+		num_threads = (3*getNumCores()/4);
+	}
+	#ifdef DEBUG_MODE
+		fprintf(stderr, "Final number of threads: %u\n", num_threads);
+	#endif
+
     time_t currtime = time(NULL);                  // time
     unsigned long pid = (unsigned long) getpid();  // process id
     rngseed = currtime ^ pid;                      // random seed
     gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+    gsl_rng_set(rng, rngseed);
 
 	Degnome* parents;
 	Degnome* children;
@@ -121,6 +174,10 @@ int main(int argc, char **argv){
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 	}
 
+	jq = JobQueue_new(num_threads, NULL, ThreadState_new, ThreadState_free);
+
+	JobData* dat = malloc(pop_size*sizeof(JobData));
+
 	for(int i = 0; i < num_gens; i++){
 
 		double fit = get_fitness(parents[0].hat_size);
@@ -137,11 +194,6 @@ int main(int argc, char **argv){
 		}
 
 		for(int j = 0; j < pop_size; j++){
-
-		    pthread_mutex_lock(&seedLock);
-			gsl_rng_set(rng, rngseed);
-		    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-    		pthread_mutex_unlock(&seedLock);
 
 			int m, d;
 
@@ -164,10 +216,12 @@ int main(int argc, char **argv){
 
 			Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
 		}
+		JobQueue_waitOnJobs(jq);
 		temp = children;
 		children = parents;
 		parents = temp;
 	}
+	JobQueue_noMoreJobs(jq);
 
 	printf("Generation %u:\n", num_gens);
 	for(int i = 0; i < pop_size; i++){
@@ -179,6 +233,9 @@ int main(int argc, char **argv){
 	}
 
 	//free everything
+
+	JobQueue_free(jq);
+	free(dat);
 
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
