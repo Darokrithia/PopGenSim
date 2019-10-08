@@ -218,28 +218,30 @@ int main(int argc, char **argv){
 		}
 	}
 
-	printf("\nGeneration 0:\n\n");
-	for(int i = 0; i < pop_size; i++){
-		printf("Degnome %u allele values:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%lf\t", parents[i].dna_array[j]);
+	if(!reduced){
+		printf("\nGeneration 0:\n\n");
+		for(int i = 0; i < pop_size; i++){
+			printf("Degnome %u allele values:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[i].dna_array[j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		else{
-			printf("%lf\n", parents[i].dna_array[0]);
-		}
+			else{
+				printf("%lf\n", parents[i].dna_array[0]);
+			}
 
-		printf("Degnome %u ancestries:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%u\t", parents[i].GOI_array[j]);
+			printf("Degnome %u ancestries:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%u\t", parents[i].GOI_array[j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		else{
-			printf("%u\n", parents[i].GOI_array[0]);
+			else{
+				printf("%u\n", parents[i].GOI_array[0]);
+			}
 		}
 	}
 	printf("\n\n");
@@ -363,10 +365,10 @@ int main(int argc, char **argv){
 		if(verbose){
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
-			for(int k = 0; k < pop_size; k++){
-				printf("\n\nDegnome %u allele values:\n", k);
+			if(!reduced){
+				for(int k = 0; k < pop_size; k++){
+					printf("\n\nDegnome %u allele values:\n", k);
 
-				if(!reduced){
 					for(int j = 0; j < chrom_size; j++){
 						printf("%lf\t", parents[k].dna_array[j]);
 					}
@@ -376,23 +378,21 @@ int main(int argc, char **argv){
 					else{
 						printf("\n");
 					}
-				}
 
-				printf("\n\nDegnome %u ancestries:\n", k);
-				if(!reduced){
+					printf("\n\nDegnome %u ancestries:\n", k);
 					for(int j = 0; j < chrom_size; j++){
 						printf("%u\t", parents[k].GOI_array[j]);
 					}
 					printf("\n");
-				}
 
-				for(int j = 0; j < pop_size; j++){
-					if(percent_decent[k][j] > 0){
-						printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+					for(int j = 0; j < pop_size; j++){
+						if(percent_decent[k][j] > 0){
+							printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+						}
 					}
 				}
 			}
-			printf("\nAverage population decent percentages:\n");
+			printf("\nAverage population descent percentages:\n");
 			for(int j = 0; j < pop_size; j++){
 				if(percent_decent[pop_size][j] > 0){
 					printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
@@ -414,34 +414,36 @@ int main(int argc, char **argv){
 	else{
 		printf("Generation %u:\n", num_gens);
 	}
-	for(int i = 0; i < pop_size; i++){
-		printf("\n\nDegnome %u allele values:\n", i);		
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%lf\t", parents[i].dna_array[j]);
+	if(!reduced){
+		for(int i = 0; i < pop_size; i++){
+			printf("\n\nDegnome %u allele values:\n", i);		
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[i].dna_array[j]);
+				}
 			}
-		}
 
-		printf("\n\nDegnome %u ancestries:\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%u\t", parents[i].GOI_array[j]);
+			printf("\n\nDegnome %u ancestries:\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%u\t", parents[i].GOI_array[j]);
+				}
+				printf("\n");
+			}
+
+			for(int j = 0; j < pop_size; j++){
+				if(percent_decent[i][j] > 0){
+					printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+				}
 			}
 			printf("\n");
-		}
 
-		for(int j = 0; j < pop_size; j++){
-			if(percent_decent[i][j] > 0){
-				printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+			if(selective){
+				printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 			}
-		}
-		printf("\n");
-
-		if(selective){
-			printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
-		}
-		else{
-			printf("\n\n");
+			else{
+				printf("\n\n");
+			}
 		}
 	}
 	printf("Average population decent percentages:\n");
