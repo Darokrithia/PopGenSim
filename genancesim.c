@@ -9,7 +9,15 @@
 #include <unistd.h>
 #include <limits.h>
 
+typedef struct JobData JobData;
+struct JobData {
+	Degnome* child;
+	Degnome* p1;
+	Degnome* p2;
+};
+
 void usage(void);
+int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
@@ -43,6 +51,37 @@ int uniform;
 int verbose;
 int reduced;
 int break_at_zero_diversity;
+
+int num_threads = 0;
+JobQueue* jq;
+
+void *ThreadState_new(void *notused);
+void ThreadState_free(void *rng);
+
+void *ThreadState_new(void *notused) {
+	// Lock seed, initialize random number generator, increment seed,
+	// and unlock.
+	gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
+
+	pthread_mutex_lock(&seedLock);
+	gsl_rng_set(rng, rngseed);
+	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+	pthread_mutex_unlock(&seedLock);
+
+	return rng;
+}
+
+void ThreadState_free(void *rng) {
+	gsl_rng_free((gsl_rng *) rng);
+}
+
+int jobfunc(void* p, void* tdat) {
+	gsl_rng* rng = (gsl_rng*) tdat;
+	JobData* data = (JobData*) p;																				//get data out
+	Degnome_mate(data->child, data->p1, data->p2, rng, 0, 0, crossover_rate);			//mate
+
+	return 0;		//exited without error
+}
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -219,6 +258,10 @@ int main(int argc, char **argv){
 	int final_gen;
 	int broke_early = 0;
 
+	jq = JobQueue_new(num_threads, NULL, ThreadState_new, ThreadState_free);
+
+	JobData* dat = malloc(pop_size*sizeof(JobData));
+
 	for(int i = 0; i < num_gens; i++){
 		if(break_at_zero_diversity){
 			calculate_diversity(parents, percent_decent, diversity);
@@ -279,7 +322,9 @@ int main(int argc, char **argv){
 
 				// printf("m:%u, d:%u\n", m,d);
 
-				Degnome_mate(children + j, parents + m, parents + d, rng, 0, 0, crossover_rate);
+				dat[j].child = (children + j);
+				dat[j].p1 = (parents + m);
+				dat[j].p2 = (parents + d);
 			}
 		}
 		else{
@@ -326,7 +371,9 @@ int main(int argc, char **argv){
 				mom_max--;
 				dad_max--;
 
-				Degnome_mate(children + j, parents + m, parents + d, rng, 0, 0, crossover_rate);
+				dat[j].child = (children + j);
+				dat[j].p1 = (parents + m);
+				dat[j].p2 = (parents + d);
 			}
 		}
 		temp = children;
@@ -409,6 +456,11 @@ int main(int argc, char **argv){
 
 	//free everything
 
+	JobQueue_free(jq);
+	free(dat);
+
+	printf("1\n");
+
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
 		free(children[i].dna_array);
@@ -423,6 +475,8 @@ int main(int argc, char **argv){
 
 	free(percent_decent);
 	free(diversity);
+
+	printf("2\n");
 
 	gsl_rng_free (rng);
 }
