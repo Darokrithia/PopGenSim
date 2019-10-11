@@ -220,7 +220,7 @@ int main(int argc, char **argv){
 			}
 		}
 	}
-	
+/*
 // from here
 	printf("\nGeneration 0:\n\n");
 	for(int i = 0; i < pop_size; i++){
@@ -247,8 +247,8 @@ int main(int argc, char **argv){
 		}
 	}
 	printf("\n\n");
-//to here  -- test to see what code looks like
-
+//to here  -- test to see what code looks like nah not much for this
+*/
 	int final_gen;
 	int broke_early = 0;
 
