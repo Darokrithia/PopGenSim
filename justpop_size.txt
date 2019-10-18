@@ -1,0 +1,242 @@
+40
+Generation 60:
+
+
+Degnome 0 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 23	5.000000% Degnome 28	15.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 1 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 2 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	15.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 3 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 4 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	25.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 5 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 37	
+
+
+
+
+Degnome 6 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 7 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 37	
+
+
+
+
+Degnome 8 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 9 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	25.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 10 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 19	10.000000% Degnome 24	5.000000% Degnome 28	15.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 11 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 12 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 13 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 37	
+
+
+
+
+Degnome 14 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 15 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	10.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 16 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	10.000000% Degnome 11	15.000000% Degnome 13	5.000000% Degnome 17	25.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 17 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 24	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 18 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 19 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	30.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 20 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	25.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 21 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 22 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 28	20.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 23 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	10.000000% Degnome 11	15.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	20.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 24 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 25 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	5.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	15.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 26 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 27 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	5.000000% Degnome 6	10.000000% Degnome 11	20.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 24	15.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 28 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 23	15.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 29 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 28	30.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 30 ancestries:
+10.000000% Degnome 1	5.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	30.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 31 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	10.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	20.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 32 ancestries:
+5.000000% Degnome 1	5.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 24	5.000000% Degnome 28	30.000000% Degnome 31	5.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 33 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 24	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 34 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 28	25.000000% Degnome 31	10.000000% Degnome 37	
+
+
+
+
+Degnome 35 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	5.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 9	5.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 19	5.000000% Degnome 23	20.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 36 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 24	5.000000% Degnome 28	15.000000% Degnome 31	10.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 37 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 5	10.000000% Degnome 6	5.000000% Degnome 11	10.000000% Degnome 13	5.000000% Degnome 28	30.000000% Degnome 31	5.000000% Degnome 32	10.000000% Degnome 37	
+
+
+
+
+Degnome 38 ancestries:
+10.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
+
+
+Degnome 39 ancestries:
+5.000000% Degnome 1	10.000000% Degnome 3	10.000000% Degnome 6	5.000000% Degnome 9	10.000000% Degnome 11	5.000000% Degnome 13	5.000000% Degnome 17	5.000000% Degnome 19	5.000000% Degnome 28	20.000000% Degnome 31	10.000000% Degnome 32	5.000000% Degnome 33	5.000000% Degnome 37	
+
+
