@@ -61,6 +61,7 @@ void *ThreadState_new(void *notused);
 void ThreadState_free(void *rng);
 
 void *ThreadState_new(void *notused) {
+	printf("1\n");
 	// Lock seed, initialize random number generator, increment seed,
 	// and unlock.
 	gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
@@ -69,6 +70,7 @@ void *ThreadState_new(void *notused) {
 	gsl_rng_set(rng, rngseed);
 	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
 	pthread_mutex_unlock(&seedLock);
+	printf("2\n");
 
 	return rng;
 }
@@ -78,9 +80,13 @@ void ThreadState_free(void *rng) {
 }
 
 int jobfunc(void* p, void* tdat) {
+	printf("1\n");
 	gsl_rng* rng = (gsl_rng*) tdat;
-	JobData* data = (JobData*) p;																				//get data out
+	printf("2\n");
+	JobData* data = (JobData*) p;	
+	printf("3\n");																			//get data out
 	Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
+	printf("4\n");
 
 	return 0;		//exited without error
 }
@@ -411,6 +417,9 @@ int main(int argc, char **argv){
        			JobQueue_addJob(jq, jobfunc, dat + j);
 			}
 		}
+
+		JobQueue_waitOnJobs(jq);
+		
 		temp = children;
 		children = parents;
 		parents = temp;
@@ -454,6 +463,8 @@ int main(int argc, char **argv){
 		printf("\n\n");
 		}
 	}
+	JobQueue_noMoreJobs(jq);
+
 	if(verbose){
 		printf("\n");
 	}

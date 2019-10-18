@@ -411,6 +411,8 @@ int main(int argc, char **argv){
 		printf("\n\n");
 		}
 	}
+	JobQueue_noMoreJobs(jq);
+	
 	if(verbose){
 		printf("\n");
 	}
