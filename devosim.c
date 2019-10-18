@@ -179,7 +179,8 @@ int main(int argc, char **argv){
 	Degnome* children;
 	Degnome* temp;
 
-	printf("%u, %u, %u\n", chrom_size, pop_size, num_gens); //20 30 60 = "preset"
+	//printf("%u, %u, %u\n", chrom_size, pop_size, num_gens); //20 30 60 = "preset"
+	printf("%u\n" pop_size); //this just prints out the pop size whihc data is based on
 
 	parents = malloc(pop_size*sizeof(Degnome));
 	children = malloc(pop_size*sizeof(Degnome));
