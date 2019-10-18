@@ -20,4 +20,5 @@ void        JobQueue_addJob(JobQueue * jq,
 void        JobQueue_noMoreJobs(JobQueue * jq);
 void        JobQueue_waitOnJobs(JobQueue * jq);
 void        JobQueue_free(JobQueue * jq);
+int			getNumCores(void);
 #endif

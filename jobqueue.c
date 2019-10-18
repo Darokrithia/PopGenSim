@@ -21,6 +21,14 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <time.h>
+#ifdef _WIN32
+    #include <windows.h>
+#elif defined(MACOS)
+    #include <sys/param.h>
+    #include <sys/sysctl.h>
+#else
+    #include <unistd.h>
+#endif
 
 #undef DPRINTF_ON
 #include "dprintf.h"
@@ -465,4 +473,40 @@ void JobQueue_free(JobQueue * jq) {
 
     Job_free(jq->todo);
     free(jq);
+}
+
+/**
+ * An almost platform-independent function that returns the number of
+ * CPU cores on the current machine.
+ * Source: http://stackoverflow.com/questions/150355/
+ * programmatically-find-the-number-of-cores-on-a-machine. If I
+ * understand the webpage correctly, this code was written by Dirk-Jan
+ * Kroon.
+ */
+int getNumCores(void) {
+#ifdef WIN32
+    SYSTEM_INFO sysinfo;
+
+    GetSystemInfo(&sysinfo);
+    return sysinfo.dwNumberOfProcessors;
+#elif defined(MACOS)
+    int         nm[2];
+    size_t      len = 4;
+    uint32_t    count;
+
+    nm[0] = CTL_HW;
+    nm[1] = HW_AVAILCPU;
+    sysctl(nm, 2, &count, &len, NULL, 0);
+
+    if(count < 1) {
+        nm[1] = HW_NCPU;
+        sysctl(nm, 2, &count, &len, NULL, 0);
+        if(count < 1) {
+            count = 1;
+        }
+    }
+    return count;
+#else
+    return sysconf(_SC_NPROCESSORS_ONLN);
+#endif
 }
