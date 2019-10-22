@@ -10,13 +10,37 @@ import seaborn as sns
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
 
+class Generation:
+    def __init__(self, number, ):
+        self.number = number # This generation's number (i.e 0, 1, 1000).
+        self.dgnomeValues = [] # The element at index N is the Nth Dgnome's allele value array.
+        self.dgnomeAncestries = [] # The element at index N is the Nth Dgnome's ancestry percentage array.
+        # For now, I'm ignoring this part because it doesn't quite make complete sense to me...
+
+# Returns a map of ("Generation N" : [
+def processDevosimOutputLines(outputLines):
+    outputLines.pop(0) # remove the first line because we'll already know what those values should be.
+    generationArray = []
+    for line in outputLines:
+        if line == '':
+            continue  # Skip over blank lines.
+
+
+
+
+
+    return
+
+
 def previousChart(button):
 
     return
 
+
 def nextChart(button):
 
     return
+
 
 def createNewChartWindow():
     # Create a new chart window.
@@ -148,7 +172,12 @@ def runDevosim(button):
                             "./devosim returned/exited with an error.")
         return
 
-    print(outputString)
+    outputLines = outputString.splitlines()
+    for line in outputLines:
+        print(line)
+
+
+
 
     try:
         devosimGUI.showSubWindow("Console Output")
