@@ -48,9 +48,9 @@ int main(int argc, char **argv){
 		printf("\n\n");
 	}
 
-	int_merge_sort(a_1, 0, max_1-1);
-	int_merge_sort(a_2, 0, max_2-1);
-	int_merge_sort(a_3, 0, max_3-1);
+	int_qsort(a_1, 0, max_1-1);
+	int_qsort(a_2, 0, max_2-1);
+	int_qsort(a_3, 0, max_3-1);
 
 	if(verbose){
 		for(int i = 0; i < max_1; i++){
