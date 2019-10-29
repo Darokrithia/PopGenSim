@@ -325,8 +325,13 @@ int main(int argc, char **argv){
 				dat[j].child = (children + j);
 				dat[j].p1 = (parents + m);
 				dat[j].p2 = (parents + d);
+
+				JobQueue_addJob(jq, jobfunc, dat + j);
 			}
+
+			JobQueue_waitOnJobs(jq);
 		}
+		
 		else{
 			// printf("uniform!!!\n");
 
@@ -374,7 +379,11 @@ int main(int argc, char **argv){
 				dat[j].child = (children + j);
 				dat[j].p1 = (parents + m);
 				dat[j].p2 = (parents + d);
+
+				JobQueue_addJob(jq, jobfunc, dat + j);
 			}
+			JobQueue_waitOnJobs(jq);
+
 		}
 		temp = children;
 		children = parents;
@@ -461,8 +470,6 @@ int main(int argc, char **argv){
 	JobQueue_free(jq);
 	free(dat);
 
-	printf("1\n");
-
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
 		free(children[i].dna_array);
@@ -477,8 +484,6 @@ int main(int argc, char **argv){
 
 	free(percent_decent);
 	free(diversity);
-
-	printf("2\n");
 
 	gsl_rng_free (rng);
 }

@@ -365,6 +365,8 @@ int main(int argc, char **argv){
 
        			JobQueue_addJob(jq, jobfunc, dat + j);
 			}
+			
+			JobQueue_waitOnJobs(jq);
 		}
 		else{
 			// printf("uniform!!!\n");
