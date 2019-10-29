@@ -216,12 +216,16 @@ int main(int argc, char **argv){
 			dat[j].child = (children + j);
 			dat[j].p1 = (parents + m);
 			dat[j].p2 = (parents + d);
+
+        	JobQueue_addJob(jq, jobfunc, dat + j);
 		}
+
 		JobQueue_waitOnJobs(jq);
 		temp = children;
 		children = parents;
 		parents = temp;
 	}
+
 	JobQueue_noMoreJobs(jq);
 
 	printf("Generation %u:\n", num_gens);
