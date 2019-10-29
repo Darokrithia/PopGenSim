@@ -6,30 +6,79 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import re
 
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
 
 class Generation:
-    def __init__(self, number, ):
+    def __init__(self, number):
         self.number = number # This generation's number (i.e 0, 1, 1000).
-        self.dgnomeValues = [] # The element at index N is the Nth Dgnome's allele value array.
-        self.dgnomeAncestries = [] # The element at index N is the Nth Dgnome's ancestry percentage array.
-        # For now, I'm ignoring this part because it doesn't quite make complete sense to me...
+        self.dgnomeValues = dict() # The element[N] is the Nth Dgnome's allele value array.
+        self.dgnomeAncestries = dict() # The element[N] is the Nth Dgnome's ancestry percentage array.
+        self.dgnomeAncestryPercentages = dict()
+        self.percentDiversity = None # Not always defined, but it's a floating point when it is.
 
-# Returns a map of ("Generation N" : [
+# Returns an array of all the generations, in order.
 def processDevosimOutputLines(outputLines):
     outputLines.pop(0) # remove the first line because we'll already know what those values should be.
     generationArray = []
-    for line in outputLines:
+    currentGeneration = None # Start with a None generation.
+
+    floatRegex = re.compile(r'\d+\.\d+')  # Compile the regex for finding floating point units in a line of output.
+    intRegex = re.compile(r'\d+')  # Compile the regex for finding integers in a line of output.
+
+    for index, line in enumerate(outputLines):
         if line == '':
             continue  # Skip over blank lines.
+        # A generation starts with a line of the form "Generation X:". This case parses that line.
+        # We expect this to be the first case matched; this will probably break if I'm wrong.
+        if re.search("^Generation \d+:$", line):
+            if currentGeneration is not None:
+                generationArray.append(currentGeneration) # Append the current generation to the array.
+            reTemp = re.findall(r'\d+', line)
+            currentGenerationInt = list(map(int, reTemp))[0]
+            currentGeneration = Generation(currentGenerationInt) # "Start" a new generation.
 
+        # Match this pattern:
+        # Degnome X allele values:
+        # and then operate on the following line of
+        # (some amount of: floatingPointNumber\t)
+        if re.search("Degnome \d+ allele values:$", line):
+            reTemp = re.findall(r'\d+', line)
+            currentDgInt = list(map(int, reTemp))[0]
+            dgValueLine = outputLines[index + 1] # The values for this dgnome's alleles.
+            currentGeneration.dgnomeValues[currentDgInt] = [float(i) for i in floatRegex.findall(dgValueLine)]
 
+        # Match this pattern:
+        # Degnome X ancestries:
+        # and then operate on the following line of
+        # (some amount of: int\t)
+        if re.search("Degnome \d+ ancestries:$", line):
+            reTemp = re.findall(r'\d+', line)
+            currentDgInt = list(map(int, reTemp))[0]
+            dgValueLine = outputLines[index + 1] # The values for this dgnome's alleles.
+            currentGeneration.dgnomeAncestries[currentDgInt] = [int(i) for i in intRegex.findall(dgValueLine)]
+            # Inside this pattern, match this pattern with the line after dgValueLine:
+            # (floatingPoint% Degnome \d+\t)+
+            if re.search("\d+\.\d+% Degnome \d+", outputLines[index + 2]):
+                reTemp = re.findall(r'\d+\t', outputLines[index + 2])
+                intArray = list(map(int, reTemp))
+                floatArray = [float(i) for i in floatRegex.findall(outputLines[index + 2])]
+                zippedArray = list(zip(intArray, floatArray))
+                currentGeneration.dgnomeAncestryPercentages[currentDgInt] = zippedArray
+                # print(outputLines[index + 2])
+                # print(zippedArray)
 
+        # Match this pattern:
+        # Percent diversity: floatingPoint
+        if re.search("Percent diversity: \d+\.\d+$", line):
+            reTemp = floatRegex.findall(line)
+            currentGeneration.percentDiversity = list(map(float, reTemp))[0]
 
+    generationArray.append(currentGeneration)  # Append the last generation to the array.
 
-    return
+    return generationArray
 
 
 def previousChart(button):
@@ -161,7 +210,7 @@ def runDevosim(button):
 
     try:
         # subprocess.call(settingsStringArray)
-        outputString = subprocess.check_output(settingsStringArray)
+        outputString = subprocess.check_output(settingsStringArray, encoding="utf-8")
 
     except FileNotFoundError:
         devosimGUI.errorBox("Error launching ./devosim",
@@ -173,11 +222,9 @@ def runDevosim(button):
         return
 
     outputLines = outputString.splitlines()
-    for line in outputLines:
-        print(line)
 
-
-
+    # Creates a strange number of generations when verbose mode is on, but otherwise, it's getting there...
+    generationArray = processDevosimOutputLines(outputLines)
 
     try:
         devosimGUI.showSubWindow("Console Output")
