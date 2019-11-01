@@ -23,7 +23,7 @@ Degnome* Degnome_new(){
 
 void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 	int mutation_rate, int mutation_effect, int crossover_rate){
-	
+	printf("mating\n");
 	//Cross over
 	int num_crossover = gsl_ran_poisson(rng, crossover_rate);
 	int crossover_locations[num_crossover];

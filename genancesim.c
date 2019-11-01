@@ -328,8 +328,6 @@ int main(int argc, char **argv){
 
 				JobQueue_addJob(jq, jobfunc, dat + j);
 			}
-
-			JobQueue_waitOnJobs(jq);
 		}
 		
 		else{
@@ -382,9 +380,10 @@ int main(int argc, char **argv){
 
 				JobQueue_addJob(jq, jobfunc, dat + j);
 			}
-			JobQueue_waitOnJobs(jq);
-
 		}
+
+		JobQueue_waitOnJobs(jq);
+		
 		temp = children;
 		children = parents;
 		parents = temp;

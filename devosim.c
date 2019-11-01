@@ -61,7 +61,6 @@ void *ThreadState_new(void *notused);
 void ThreadState_free(void *rng);
 
 void *ThreadState_new(void *notused) {
-	printf("1\n");
 	// Lock seed, initialize random number generator, increment seed,
 	// and unlock.
 	gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
@@ -70,7 +69,6 @@ void *ThreadState_new(void *notused) {
 	gsl_rng_set(rng, rngseed);
 	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
 	pthread_mutex_unlock(&seedLock);
-	printf("2\n");
 
 	return rng;
 }
@@ -80,13 +78,9 @@ void ThreadState_free(void *rng) {
 }
 
 int jobfunc(void* p, void* tdat) {
-	printf("1\n");
 	gsl_rng* rng = (gsl_rng*) tdat;
-	printf("2\n");
-	JobData* data = (JobData*) p;	
-	printf("3\n");																			//get data out
+	JobData* data = (JobData*) p;																				//get data out
 	Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
-	printf("4\n");
 
 	return 0;		//exited without error
 }
@@ -299,6 +293,7 @@ int main(int argc, char **argv){
 	JobData* dat = malloc(pop_size*sizeof(JobData));
 
 	for(int i = 0; i < num_gens; i++){
+		printf("1\n");
 		if(break_at_zero_diversity){
 			calculate_diversity(parents, percent_decent, diversity);
 			if((*diversity) <= 0){
@@ -331,7 +326,7 @@ int main(int argc, char **argv){
 				total_hat_size += fit;
 				cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 			}
-
+			printf("2\n");
 			for(int j = 0; j < pop_size; j++){
 
 			    pthread_mutex_lock(&seedLock);
@@ -365,8 +360,6 @@ int main(int argc, char **argv){
 
        			JobQueue_addJob(jq, jobfunc, dat + j);
 			}
-			
-			JobQueue_waitOnJobs(jq);
 		}
 		else{
 			// printf("uniform!!!\n");
@@ -419,8 +412,9 @@ int main(int argc, char **argv){
        			JobQueue_addJob(jq, jobfunc, dat + j);
 			}
 		}
-
+		printf("3\n");
 		JobQueue_waitOnJobs(jq);
+		printf("4\n");
 		
 		temp = children;
 		children = parents;
