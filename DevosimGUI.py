@@ -8,8 +8,10 @@ import seaborn as sns
 
 import re
 
+
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
+
 
 class Generation:
     def __init__(self, number):
@@ -18,6 +20,17 @@ class Generation:
         self.dgnomeAncestries = dict() # The element[N] is the Nth Dgnome's ancestry percentage array.
         self.dgnomeAncestryPercentages = dict()
         self.percentDiversity = None # Not always defined, but it's a floating point when it is.
+
+    def __repr__(self):
+        return "Generation (stores parsed data for a simulated generation)"
+
+    def __str__(self):
+        return f"Generation {self.number}:\n" \
+               f"self.dgnomeValues: {self.dgnomeValues}\n" \
+               f"self.dgnomeAncestries: {self.dgnomeAncestries}\n" \
+               f"self.dgnomeAncestryPercentages: {self.dgnomeAncestryPercentages}\n" \
+               f"self.percentDiversity: {self.percentDiversity}\n"
+
 
 # Returns an array of all the generations, in order.
 def processDevosimOutputLines(outputLines):
@@ -77,6 +90,9 @@ def processDevosimOutputLines(outputLines):
             currentGeneration.percentDiversity = list(map(float, reTemp))[0]
 
     generationArray.append(currentGeneration)  # Append the last generation to the array.
+
+    for generation in generationArray:
+        print(generation.__str__())
 
     return generationArray
 
