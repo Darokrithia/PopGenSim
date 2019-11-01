@@ -12,12 +12,24 @@ misc.c
 
 
 - CHECKED 
+dprintf.h
+
 polygensim.c
+genancesim.c
+
+ance_degnome.h
+
+degnome.h
 xdegnome.c
+
+jobqueue.c
+jobqueue.h
 xjobqueue.c
 
 
 - CHANGED
+ance_degnome.c<-
+degnome.c <-
 misc.h <-
 xmisc.c <-
 
