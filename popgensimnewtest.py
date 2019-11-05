@@ -77,8 +77,11 @@ for line in lines:
                 if degnomename == newsubstringdegnum:
                     #print(degnomename) #okay getting correct same output
                     x.append(int(num))
-                           
-        bargraph = plt.bar(x,y, align = 'center',alpha=.5) 
+                    
+        
+        
+            
+        bargraph = plt.bar(x,y, align = 'center',alpha=.5, edgecolor='blue') 
         plt.xlabel('Degnomes')
         plt.ylabel('Percentages')   
         title = 'Degnome '+str(count)+ ' Ancestries'
@@ -97,8 +100,9 @@ for line in lines:
         
         
         #anim = save("polygensimtester.gif", writer = "ffmpeg", fps = None, dpi = None, codec = None, bitrate = None, extra_args=None, metadata=None, extra_anim = None, savefig_kwargs = None)
-      
-anim = ArtistAnimation(fig, images, interval=500, repeat = False)  #higher interval = slower graph changes
+        
+
+anim = ArtistAnimation(fig, images, interval=700, repeat = False, blit = 'true')  #higher interval = slower graph changes
 plt.show()     
        
 
