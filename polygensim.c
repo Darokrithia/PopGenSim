@@ -8,7 +8,6 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <limits.h>
-#include <math.h>
 
 typedef struct JobData JobData;
 struct JobData {
