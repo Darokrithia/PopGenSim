@@ -32,6 +32,14 @@ class Generation:
                f"self.percentDiversity: {self.percentDiversity}\n"
 
 
+class ChartWindow:
+    allWindows = dict() # A dictionary of (windowName : ChartWindow) pairs.
+    def __init__(self, name, number, generation, figure):
+        self.name = name # The name/identifier per AppJar.
+        self.generation = generation # The generation object this window charts.
+        self.number = number # the PlotNumber when this was initialized.
+        self.fig = figure # A reference to this window's figure.
+
 # Returns an array of all the generations, in order.
 def processDevosimOutputLines(outputLines):
     outputLines.pop(0) # remove the first line because we'll already know what those values should be.
@@ -106,87 +114,76 @@ def nextChart(button):
 
     return
 
+def updateFigure(window):
+    sns.set(context="talk", style="white", palette="muted")
 
-def createNewChartWindow():
+    # Food for thought: store a reference to a Window and its corresponding generation in a class?
+    # For now, we'll just graph dgnome Ancestries.
+
+    x = []
+    y = []
+
+    for k, v in window.generation.dgnomeAncestries.items():
+        x.append(k)
+        y.append(v)
+
+    print(x)
+    print(y)
+
+    # For now, let's just chart the first Dgnome's ancestry values.
+    axis1 = window.fig.add_subplot(111)
+    sns.barplot(x=x, y=y[0], palette="rocket", ax=axis1)
+    axis1.axhline(0, color="k", clip_on=False)
+    axis1.set_ylabel(f"Generation {window.generation.number} Dgnome Ancestries")
+
+    # Finalizing the plot:
+    sns.despine(bottom=True)
+    plt.setp(window.fig.axes)
+    plt.tight_layout(h_pad=2)
+
+    return
+
+def createNewChartWindowForGeneration(generation):
+    # generation : A Generation object
+
     # Create a new chart window.
-    devosimGUI.startSubWindow(f"Plot {PlotCounter.plotNumber}")
+    window = ChartWindow(f"Plot {PlotCounter.plotNumber}: Generation {generation.number}", PlotCounter.plotNumber, generation, None)
+
+    devosimGUI.startSubWindow(window.name)
 
     # Typical dark mode setup...
     devosimGUI.setFg("white")
     devosimGUI.setBg("black")
 
-    # Add the figure we just made.
-    fig = devosimGUI.addPlotFig(f"Figure {PlotCounter.plotNumber}", colspan=3)
-
-    # When making the icon buttons, first set the image folder to the "res" folder in this directory.
-    devosimGUI.setImageLocation("./res")
+    # Add a figure.
+    fig = devosimGUI.addPlotFig(f"Figure {window.number}", colspan=3)
+    window.fig = fig
 
     # Now, create the previous and next buttons, and between them, a drop-down menu.
-    devosimGUI.addButton(f"prev{PlotCounter.plotNumber}", previousChart, 1, 0)
-    devosimGUI.setButtonImage(f"prev{PlotCounter.plotNumber}", "arrow-prev.gif")
+    devosimGUI.addButton(f"prev{window.number}", previousChart, 1, 0)
+    devosimGUI.setButtonImage(f"prev{window.number}", "arrow-prev.gif")
 
     # The idea with the menu box is to allow the user to choose, for example, a generation. We'll see where this goes.
-    devosimGUI.addOptionBox(f"optionBox{PlotCounter.plotNumber}", ["- This is a grayed-out line -",
+    devosimGUI.addOptionBox(f"optionBox{window.number}", ["- Dummied Out -",
                                                                    "This Menu", "Is a test", "but doesn't",
                                                                    "actually do anything right now"], 1, 1)
 
-    devosimGUI.addButton(f"next{PlotCounter.plotNumber}", nextChart, 1, 2)
-    devosimGUI.setButtonImage(f"next{PlotCounter.plotNumber}", "arrow-next.gif")
+    devosimGUI.addButton(f"next{window.number}", nextChart, 1, 2)
+    devosimGUI.setButtonImage(f"next{window.number}", "arrow-next.gif")
 
     # End the subwindow definition.
     devosimGUI.stopSubWindow()
 
-    # The snippet of code below is a modified version of what's on seaborn.pydata.ord/examples/color_palettes.html
-
-    # For now, this will just statically create a new chart window.
-    sns.set(context="talk", style="white", palette="muted")
-    random = np.random.RandomState(10)
-
-    # Here's the sequential data example:
-    x = np.array(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"])
-
-    # Add the first subplot.
-    # This number means "3 by 1 grid, 1st subplot".
-    axis1 = fig.add_subplot(311)
-
-    y1 = np.arange(1, 11)
-    sns.barplot(x=x, y=y1, palette="rocket", ax=axis1)
-    axis1.axhline(0, color="k", clip_on=False)
-    axis1.set_ylabel("Sequential")
-
-    # Here's the diverging data example:
-
-    axis2 = fig.add_subplot(312)
-
-    y2 = y1 - 5.5
-    sns.barplot(x=x, y=y2, palette="vlag", ax=axis2)
-    axis2.axhline(0, color="k", clip_on=False)
-    axis2.set_ylabel("Diverging")
-
-    # Here's the randomly reordered (Qualitative) example:
-
-    axis3 = fig.add_subplot(313)
-
-    y3 = random.choice(y1, len(y1), replace=False)
-    sns.barplot(x=x, y=y3, palette="deep", ax=axis3)
-    axis3.axhline(0, color="k", clip_on=False)
-    axis3.set_ylabel("Qualitative")
-
-    # Finalizing the plot:
-    sns.despine(bottom=True)
-    plt.setp(fig.axes, yticks=[])
-    plt.tight_layout(h_pad=2)
+    updateFigure(window)
 
     # Finally, show the window, and increment the plotNumber.
-    devosimGUI.showSubWindow("Plot " + f"{PlotCounter.plotNumber}")
+    devosimGUI.showSubWindow(f"Plot {window.number}: Generation {generation.number}")
     PlotCounter.plotNumber = PlotCounter.plotNumber + 1
-
-    # The takeaway is that we can do basically whatever we want here, as long as we use the figure returned to us
-    # by appJar.
 
     return
 
 # This function is called when we press the Go! button.
+
 
 def runDevosim(button):
     # These entry fields return floats, but we need these parameters to be ints.
@@ -242,20 +239,7 @@ def runDevosim(button):
     # Creates a strange number of generations when verbose mode is on, but otherwise, it's getting there...
     generationArray = processDevosimOutputLines(outputLines)
 
-    try:
-        devosimGUI.showSubWindow("Console Output")
-    except ItemLookupError:
-        # In the case of an ItemLookupError, then we couldn't find the output window.
-        # Let's make it.
-        devosimGUI.startSubWindow("Console Output")
-        devosimGUI.setFg("white")
-        devosimGUI.setBg("black")
-        devosimGUI.addScrolledTextArea("output", colspan=1, rowspan=2)
-        devosimGUI.stopSubWindow()
-        devosimGUI.showSubWindow("Console Output")
-
-    devosimGUI.clearTextArea("output")
-    devosimGUI.setTextArea("output", outputString)
+    createNewChartWindowForGeneration(generationArray.pop())
 
     return
 
@@ -323,11 +307,11 @@ devosimGUI.setEntryDefault("Crossover Rate", "Crossover Rate")
 devosimGUI.setEntryDefault("Mutation Rate", "Mutation Rate")
 devosimGUI.setEntryDefault("Mutation Effect", "Mutation Effect")
 
+# For when we make the icon buttons: set the image folder to the "res" folder in this directory.
+devosimGUI.setImageLocation("./res")
+
 # Now, here comes the Run button.
 devosimGUI.addButton("Go!", runDevosim, 4, 0, 3, 1)
-
-# To demonstrate the use of Seaborn+Matplotlib+Appjar, this button will create a new window with a figure in it.
-devosimGUI.addButton("Show Sample Chart", createNewChartWindow, 5, 0, 3, 1)
 
 # And this "runs" the thing.
 devosimGUI.go()
