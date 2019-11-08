@@ -20,13 +20,32 @@ int main(int argc, char **argv){
 
 	if(argc == 2) {
         if(strncmp(argv[1], "-v", 2) != 0) {
-            fprintf(stderr, "usage: xdegnome [-v]\n");
+            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
             exit(EXIT_FAILURE);
         }
         verbose = 1;
     }
+	else if (argc == 3){
+		if(strncmp(argv[1], "-s", 2) != 0) {
+            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
+            exit(EXIT_FAILURE);
+        }
+		rngseed = (unsigned long) argv[2];
+	}
+	else if (argc == 4){
+		if(strncmp(argv[1], "-v", 2) != 0) {
+            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
+            exit(EXIT_FAILURE);
+        }
+		else if(strncmp(argv[2], "-s", 2) != 0) {		
+            fprintf(stderr, "usage: xdegnome [-v] [-s]  [0000000000]\n");
+            exit(EXIT_FAILURE);
+        }
+        verbose = 1;
+		rngseed = (unsigned long) argv[3];
+	}
     else if(argc != 1){
-        fprintf(stderr, "usage: xdegnome [-v]\n");
+        fprintf(stderr, "usage: xdegnome [-v] [-s] [seed]\n");
         exit(EXIT_FAILURE);
     }
 
@@ -39,15 +58,21 @@ int main(int argc, char **argv){
 	Degnome* bom_mom = Degnome_new(); // good parent
 	Degnome* bad_dad = Degnome_new();	// bad parent
 	Degnome* tst_bby = Degnome_new(); // their child
-
+	
+	
+	// ============ change this to seed rn
 	time_t currtime = time(NULL);                  // time
-    unsigned long pid = (unsigned long) getpid();  // process id
-    rngseed = currtime ^ pid;                      // random seed
-    gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
-
+	unsigned long pid = (unsigned long) getpid();  // process id
+	rngseed = currtime ^ pid;					   // random seed	
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+	
 	gsl_rng_set(rng, rngseed);
-    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-
+	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+	// ============ change this to seed rn
+	printf("Seed #: %lu\n", rngseed);
+	
+	
+	
 	for(int i = 0; i < chrom_size; i++){
 		bom_mom->dna_array[i] = 2*i;
 		bad_dad->dna_array[i] = 1*i;
