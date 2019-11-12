@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.animation import ArtistAnimation
 
+
 # have it be able to make in diff data --> put ./devosim -c [num] --- have the use input this similar to how they would be doing it on term
 # import different test cases for all these and put into text file 
 
