@@ -216,7 +216,7 @@ int main(int argc, char **argv){
 			dat[j].p1 = (parents + m);
 			dat[j].p2 = (parents + d);
 
-        	JobQueue_addJob(jq, jobfunc, dat + j);
+			JobQueue_addJob(jq, jobfunc, dat + j);
 		}
 
 		JobQueue_waitOnJobs(jq);
