@@ -30,7 +30,9 @@ int main(int argc, char **argv){
             fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
             exit(EXIT_FAILURE);
         }
-		rngseed = (unsigned long) argv[2];
+		printf("Seed #: %s\n", argv[2]);
+		rngseed = (unsigned long) atoi(argv[2]);
+		printf("Seed #: %lu\n", rngseed);//sscanf(argv[i+1], "%u", &chrom_size);
 	}
 	else if (argc == 4){
 		if(strncmp(argv[1], "-v", 2) != 0) {
@@ -43,6 +45,7 @@ int main(int argc, char **argv){
         }
         verbose = 1;
 		rngseed = (unsigned long) argv[3];
+		
 	}
     else if(argc != 1){
         fprintf(stderr, "usage: xdegnome [-v] [-s] [seed]\n");
@@ -59,7 +62,7 @@ int main(int argc, char **argv){
 	Degnome* bad_dad = Degnome_new();	// bad parent
 	Degnome* tst_bby = Degnome_new(); // their child
 	
-	
+	printf("Seed #: %lu\n", rngseed);
 	// ============ change this to seed rn
 	time_t currtime = time(NULL);                  // time
 	unsigned long pid = (unsigned long) getpid();  // process id
