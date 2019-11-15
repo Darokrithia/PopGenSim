@@ -1,4 +1,9 @@
 	|=====================================================
+40	| VERSION 1.4.0 (Pretty Python)
+39	| Changed sorting to improve compatability
+38	| Fixed Jobqueue for all programs
+37	| Added basic python to graph devosim	
+	|=====================================================
 36	| VERSION 1.3.0 (Separation Solution)
 35	| Added "devosim" a new simulation which makes use of
 	| the new ance_degnome
