@@ -8,6 +8,8 @@ import seaborn as sns
 
 import re
 
+# This might be better off as a static class member...
+dgGraphOptions = ["Dgnome Values", "Dgnome Ancestries", "-- Dgnome Ancestry Percentages --"]
 
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
@@ -33,7 +35,7 @@ class Generation:
 
 
 class ChartWindow:
-    allWindows = dict() # A dictionary of (windowName : ChartWindow) pairs.
+    allWindows = dict() # A dictionary of (self.number : ChartWindow) pairs.
     def __init__(self, name, number, generation, figure):
         self.name = name # The name/identifier per AppJar.
         self.generation = generation # The generation object this window charts.
@@ -99,9 +101,6 @@ def processDevosimOutputLines(outputLines):
 
     generationArray.append(currentGeneration)  # Append the last generation to the array.
 
-    for generation in generationArray:
-        print(generation.__str__())
-
     return generationArray
 
 
@@ -114,16 +113,25 @@ def nextChart(button):
 
     return
 
-def updateFigure(window):
+def updateFigure(window, optionBox):
     sns.set(context="talk", style="white", palette="muted")
 
-    # Food for thought: store a reference to a Window and its corresponding generation in a class?
-    # For now, we'll just graph dgnome Ancestries.
+    # Clear the figure of anything it may be currently showing.
+    window.fig.clear()
+
+    optionBoxChoice = devosimGUI.getOptionBox(optionBox)
+    switch = { # A replacement for a switch block:
+        dgGraphOptions[0] : window.generation.dgnomeValues.items(),
+        dgGraphOptions[1] : window.generation.dgnomeAncestries.items(),
+        dgGraphOptions[2] : window.generation.dgnomeAncestryPercentages.items(), # Not yet enabled
+    }
+
+    graphTheseItems = switch.get(optionBoxChoice)
 
     x = []
     y = []
 
-    for k, v in window.generation.dgnomeAncestries.items():
+    for k, v in graphTheseItems:
         x.append(k)
         y.append(v)
 
@@ -134,13 +142,23 @@ def updateFigure(window):
     axis1 = window.fig.add_subplot(111)
     sns.barplot(x=x, y=y[0], palette="rocket", ax=axis1)
     axis1.axhline(0, color="k", clip_on=False)
-    axis1.set_ylabel(f"Generation {window.generation.number} Dgnome Ancestries")
+    axis1.set_ylabel(f"Generation {window.generation.number} {devosimGUI.getOptionBox(optionBox)}")
 
     # Finalizing the plot:
     sns.despine(bottom=True)
     plt.setp(window.fig.axes)
     plt.tight_layout(h_pad=2)
 
+    # Finally, tell AppJar that the plot was updated:
+    devosimGUI.refreshPlot(f"Figure {window.number}")
+
+    return
+
+def optionBoxChanged(optionBox):
+    print(f"{optionBox} chose {devosimGUI.getOptionBox(optionBox)}")
+    reTemp = re.findall(r'\d+', optionBox)
+    optionBoxInt = list(map(int, reTemp))[0]
+    updateFigure(ChartWindow.allWindows[optionBoxInt], optionBox) # Assuming this exists for simplicity, for now.
     return
 
 def createNewChartWindowForGeneration(generation):
@@ -157,16 +175,17 @@ def createNewChartWindowForGeneration(generation):
 
     # Add a figure.
     fig = devosimGUI.addPlotFig(f"Figure {window.number}", colspan=3)
-    window.fig = fig
+    window.fig = fig # The window's figure can now be updated.
 
     # Now, create the previous and next buttons, and between them, a drop-down menu.
     devosimGUI.addButton(f"prev{window.number}", previousChart, 1, 0)
     devosimGUI.setButtonImage(f"prev{window.number}", "arrow-prev.gif")
 
     # The idea with the menu box is to allow the user to choose, for example, a generation. We'll see where this goes.
-    devosimGUI.addOptionBox(f"optionBox{window.number}", ["- Dummied Out -",
-                                                                   "This Menu", "Is a test", "but doesn't",
-                                                                   "actually do anything right now"], 1, 1)
+    devosimGUI.addOptionBox(f"optionBox{window.number}",
+                            dgGraphOptions,
+                            1, 1, callFunction=True)
+    devosimGUI.setOptionBoxChangeFunction(f"optionBox{window.number}", optionBoxChanged)
 
     devosimGUI.addButton(f"next{window.number}", nextChart, 1, 2)
     devosimGUI.setButtonImage(f"next{window.number}", "arrow-next.gif")
@@ -174,7 +193,11 @@ def createNewChartWindowForGeneration(generation):
     # End the subwindow definition.
     devosimGUI.stopSubWindow()
 
-    updateFigure(window)
+    # Draw the figure.
+    updateFigure(window, f"optionBox{window.number}")
+
+    #Add myself to the dictionary of all windows.
+    ChartWindow.allWindows[window.number] = window
 
     # Finally, show the window, and increment the plotNumber.
     devosimGUI.showSubWindow(f"Plot {window.number}: Generation {generation.number}")
