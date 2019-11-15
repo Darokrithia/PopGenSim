@@ -9,35 +9,28 @@
 #include <unistd.h>
 #include <limits.h>
 
-typedef struct JobData JobData;
-struct JobData {
-	Degnome* child;
-	Degnome* p1;
-	Degnome* p2;
-};
-
 void usage(void);
-int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char *usageMsg =
     "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
-    "and \"CR\" is crossover rate.  If \"-s\" is present, there will\n"
-    "be selection, while if \"-u\" is present all degnomes will\n"
-    "contribute to two offspring.  Note: \"-s\" and \"-u\" cannot be\n"
-    "simultaneously active. If \"-v\" is present there will be\n"
-    "output at every single generation, and if \"-r\" is present\n"
-    "only percentages will be printed (you wont get to see the"
-    "genomes of each degnome).  If \"-b\" is present, the program\n"
-    "will break once all degnomes are identical."
-    "They can be in any order, and not all are needed. Default CL\n"
-    "is 10, default PS is 10, the default G is 1000, and defualt\n"
-    "CR is 2.\n";
+    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
+    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
+    "is present, there will be selection, while if \"-u\" is present\n"
+    "all degnomes will contribute to two offspring.\n"
+    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
+    "If \"-v\" is present there will be output at every single\n"
+    "generation, and if \"-r\" is present only percentages will be\n"
+    "printed (you wont get to see the genomes of each degnome).  If\n"
+    "\"-b\" is present, the program will break once all degnomes are\n"
+    "identical. They can be in any order, and not all are needed.\n"
+    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
+    "defualt CR is 2.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -53,37 +46,6 @@ int uniform;
 int verbose;
 int reduced;
 int break_at_zero_diversity;
-
-int num_threads = 0;
-JobQueue* jq;
-
-void *ThreadState_new(void *notused);
-void ThreadState_free(void *rng);
-
-void *ThreadState_new(void *notused) {
-	// Lock seed, initialize random number generator, increment seed,
-	// and unlock.
-	gsl_rng *rng = gsl_rng_alloc(gsl_rng_taus);
-
-	pthread_mutex_lock(&seedLock);
-	gsl_rng_set(rng, rngseed);
-	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-	pthread_mutex_unlock(&seedLock);
-
-	return rng;
-}
-
-void ThreadState_free(void *rng) {
-	gsl_rng_free((gsl_rng *) rng);
-}
-
-int jobfunc(void* p, void* tdat) {
-	gsl_rng* rng = (gsl_rng*) tdat;
-	JobData* data = (JobData*) p;																				//get data out
-	Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
-
-	return 0;		//exited without error
-}
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -288,12 +250,7 @@ int main(int argc, char **argv){
 	int final_gen;
 	int broke_early = 0;
 
-	jq = JobQueue_new(num_threads, NULL, ThreadState_new, ThreadState_free);
-
-	JobData* dat = malloc(pop_size*sizeof(JobData));
-
 	for(int i = 0; i < num_gens; i++){
-		printf("1\n");
 		if(break_at_zero_diversity){
 			calculate_diversity(parents, percent_decent, diversity);
 			if((*diversity) <= 0){
@@ -326,7 +283,7 @@ int main(int argc, char **argv){
 				total_hat_size += fit;
 				cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 			}
-			printf("2\n");
+
 			for(int j = 0; j < pop_size; j++){
 
 			    pthread_mutex_lock(&seedLock);
@@ -353,12 +310,7 @@ int main(int argc, char **argv){
 
 				// printf("m:%u, d:%u\n", m,d);
 
-
-				dat[j].child = (children + j);
-				dat[j].p1 = (parents + m);
-				dat[j].p2 = (parents + d);
-
-       			JobQueue_addJob(jq, jobfunc, dat + j);
+				Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
 			}
 		}
 		else{
@@ -405,17 +357,9 @@ int main(int argc, char **argv){
 				mom_max--;
 				dad_max--;
 
-				dat[j].child = (children + j);
-				dat[j].p1 = (parents + m);
-				dat[j].p2 = (parents + d);
-				
-       			JobQueue_addJob(jq, jobfunc, dat + j);
+				Degnome_mate(children + j, parents + m, parents + d, rng, mutation_rate, mutation_effect, crossover_rate);
 			}
 		}
-		printf("3\n");
-		JobQueue_waitOnJobs(jq);
-		printf("4\n");
-		
 		temp = children;
 		children = parents;
 		parents = temp;
@@ -459,8 +403,6 @@ int main(int argc, char **argv){
 		printf("\n\n");
 		}
 	}
-	JobQueue_noMoreJobs(jq);
-
 	if(verbose){
 		printf("\n");
 	}
@@ -515,9 +457,6 @@ int main(int argc, char **argv){
 	printf("\n\n\n");
 
 	//free everything
-
-	JobQueue_free(jq);
-	free(dat);
 
 	for (int i = 0; i < pop_size; i++){
 		free(parents[i].dna_array);
