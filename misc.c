@@ -18,7 +18,3 @@ void int_qsort(int * array, size_t num){
 	qsort(array, num, sizeof(int), int_qsort_comparator);
 }
 
-//TODO -- refactor all instances of int_merge_sort to int_qsort.
-void int_merge_sort(int* array, int min, int max){
-	int_qsort(array, max+1);
-}
