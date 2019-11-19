@@ -1,3 +1,5 @@
+42	| Made Unit tests seedable
+41	| Made generation zero only print once
 	|=====================================================
 40	| VERSION 1.4.0 (Pretty Python)
 39	| Changed sorting to improve compatability
