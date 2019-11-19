@@ -270,7 +270,7 @@ int main(int argc, char **argv){
 		}
 	}
 
-	if(!reduced){
+	if(!reduced && !verbose){
 		printf("\nGeneration 0:\n\n");
 		for(int i = 0; i < pop_size; i++){
 			printf("Degnome %u allele values:\n", i);

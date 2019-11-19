@@ -252,21 +252,22 @@ int main(int argc, char **argv){
 			}
 		}
 	}
-
-	printf("\nGeneration 0:\n\n");
-	for(int i = 0; i < pop_size; i++){
-		printf("Degnome %u\n", i);
-		if(!reduced){
-			for(int j = 0; j < chrom_size; j++){
-				printf("%lf\t", parents[i].dna_array[j]);
+	if(!verbose) {
+		printf("\nGeneration 0:\n\n");
+		for(int i = 0; i < pop_size; i++){
+			printf("Degnome %u\n", i);
+			if(!reduced){
+				for(int j = 0; j < chrom_size; j++){
+					printf("%lf\t", parents[i].dna_array[j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
+			else{
+				printf("%lf\n", parents[i].dna_array[0]);
+			}
 		}
-		else{
-			printf("%lf\n", parents[i].dna_array[0]);
-		}
+		printf("\n\n");
 	}
-	printf("\n\n");
 
 	int final_gen;
 	int broke_early = 0;
