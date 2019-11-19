@@ -171,10 +171,7 @@ def updateFigure(window):
     return
 
 def optionBoxChanged(optionBox):
-    print(f"{optionBox} chose {devosimGUI.getOptionBox(optionBox)}")
-    reTemp = re.findall(r'\d+', optionBox)
-    optionBoxInt = list(map(int, reTemp))[0]
-    window = ChartWindow.allWindows[optionBoxInt] # Find the window which owns this optionBox.
+    window = findWindowFromWidget(optionBox)
     window.updateOptionBoxChoice(optionBox) # Update the internal option box choice.
     window.displayIndex = 0 # Reset the displayIndex.
     updateFigure(window) # Assuming this exists for simplicity, for now.
