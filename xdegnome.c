@@ -17,6 +17,7 @@ unsigned long rngseed=0;
 
 int main(int argc, char **argv){
 	int verbose = 0;
+	int seeded =0;
 
 	if(argc == 2) {
         if(strncmp(argv[1], "-v", 2) != 0) {
@@ -30,9 +31,7 @@ int main(int argc, char **argv){
             fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
             exit(EXIT_FAILURE);
         }
-		printf("Seed #: %s\n", argv[2]);
 		rngseed = (unsigned long) atoi(argv[2]);
-		printf("Seed #: %lu\n", rngseed);//sscanf(argv[i+1], "%u", &chrom_size);
 	}
 	else if (argc == 4){
 		if(strncmp(argv[1], "-v", 2) != 0) {
@@ -44,7 +43,8 @@ int main(int argc, char **argv){
             exit(EXIT_FAILURE);
         }
         verbose = 1;
-		rngseed = (unsigned long) argv[3];
+		seeded = 1;
+		rngseed = (unsigned long) atoi(argv[3]);
 		
 	}
     else if(argc != 1){
@@ -62,17 +62,18 @@ int main(int argc, char **argv){
 	Degnome* bad_dad = Degnome_new();	// bad parent
 	Degnome* tst_bby = Degnome_new(); // their child
 	
-	printf("Seed #: %lu\n", rngseed);
 	// ============ change this to seed rn
-	time_t currtime = time(NULL);                  // time
-	unsigned long pid = (unsigned long) getpid();  // process id
-	rngseed = currtime ^ pid;					   // random seed	
+	if(seeded == 0){
+		time_t currtime = time(NULL);                  // time
+		unsigned long pid = (unsigned long) getpid();  // process id
+		rngseed = currtime ^ pid;					   // random seed	
+	}
 	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
 	
 	gsl_rng_set(rng, rngseed);
 	rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+	
 	// ============ change this to seed rn
-	printf("Seed #: %lu\n", rngseed);
 	
 	
 	
