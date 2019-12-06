@@ -17,11 +17,11 @@ class PlotCounter:
 
 class Generation:
     def __init__(self, number):
-        self.number = number # This generation's number (i.e 0, 1, 1000).
-        self.dgnomeValues = dict() # The element[N] is the Nth Dgnome's allele value array.
-        self.dgnomeAncestries = dict() # The element[N] is the Nth Dgnome's ancestry percentage array.
+        self.number = number  # This generation's number (i.e 0, 1, 1000).
+        self.dgnomeValues = dict()  # The element[N] is the Nth dgnome's allele value array.
+        self.dgnomeAncestries = dict()  # The element[N] is the Nth dgnome's ancestry percentage array.
         self.dgnomeAncestryPercentages = dict()
-        self.percentDiversity = None # Not always defined, but it's a floating point when it is.
+        self.percentDiversity = None  # Not always defined, but it's a floating point when it is.
 
     def __repr__(self):
         return "Generation (stores parsed data for a simulated generation)"
@@ -35,12 +35,18 @@ class Generation:
 
 
 class ChartWindow:
-    allWindows = dict() # A dictionary of (self.number : ChartWindow) pairs.
+    allWindows = dict()  # A dictionary of (self.number : ChartWindow) pairs.
+
     def __init__(self, name, number, generation, figure):
-        self.name = name # The name/identifier per AppJar.
-        self.generation = generation # The generation object this window charts.
-        self.number = number # the PlotNumber when this was initialized.
-        self.fig = figure # A reference to this window's figure.
+        self.name = name  # The name/identifier per AppJar.
+        self.number = number  # the PlotNumber when this was initialized.
+        self.generation = generation  # The generation object this window charts.
+        self.fig = figure  # A reference to this window's figure.
+        self.optionBoxChoice = None
+        self.displayIndex = 0  # This keep track of which sub-element we're graphing (i.e the Nth dgnome ancestry)
+
+    def updateOptionBoxChoice(self, optionBox):
+        self.optionBoxChoice = devosimGUI.getOptionBox(optionBox)
 
 # Returns an array of all the generations, in order.
 def processDevosimOutputLines(outputLines):
@@ -103,30 +109,38 @@ def processDevosimOutputLines(outputLines):
 
     return generationArray
 
+def findWindowFromWidget(widgetName):
+    reTemp = re.findall(r'\d+', widgetName)
+    wInt = list(map(int, reTemp))[0]
+    return ChartWindow.allWindows[wInt]
 
 def previousChart(button):
-
+    window = findWindowFromWidget(button)
+    window.displayIndex = window.displayIndex - 1  # Decrement displayIndex. Overflow will be handled in updateFigure.
+    updateFigure(window)  # Assuming this exists for simplicity, for now.
     return
 
 
 def nextChart(button):
-
+    window = findWindowFromWidget(button)
+    window.displayIndex = window.displayIndex + 1  # Increment displayIndex. Overflow will be handled in updateFigure.
+    updateFigure(window)  # Assuming this exists for simplicity, for now.
     return
 
-def updateFigure(window, optionBox):
+
+def updateFigure(window):
     sns.set(context="talk", style="white", palette="muted")
 
     # Clear the figure of anything it may be currently showing.
     window.fig.clear()
 
-    optionBoxChoice = devosimGUI.getOptionBox(optionBox)
-    switch = { # A replacement for a switch block:
-        dgGraphOptions[0] : window.generation.dgnomeValues.items(),
-        dgGraphOptions[1] : window.generation.dgnomeAncestries.items(),
-        dgGraphOptions[2] : window.generation.dgnomeAncestryPercentages.items(), # Not yet enabled
-    }
 
-    graphTheseItems = switch.get(optionBoxChoice)
+    switch = { # A replacement for a switch block:
+        dgGraphOptions[0]: window.generation.dgnomeValues.items(),
+        dgGraphOptions[1]: window.generation.dgnomeAncestries.items(),
+        dgGraphOptions[2]: window.generation.dgnomeAncestryPercentages.items(),  # Not yet enabled
+    }
+    graphTheseItems = switch.get(window.optionBoxChoice)
 
     x = []
     y = []
@@ -135,14 +149,16 @@ def updateFigure(window, optionBox):
         x.append(k)
         y.append(v)
 
-    print(x)
-    print(y)
+    # We'll display the [window.displayIndex]-th element, but it should be modulo the size of the array we're using.
+    window.displayIndex = window.displayIndex % len(y) # Correct the displayIndex, in case it's too big or negative.
 
-    # For now, let's just chart the first Dgnome's ancestry values.
+    # This will possibly be different when graphing the tuples from Dgnome Ancestry Percentages, but for now:
+    dgnumber = window.displayIndex
+
     axis1 = window.fig.add_subplot(111)
-    sns.barplot(x=x, y=y[0], palette="rocket", ax=axis1)
+    sns.barplot(x=x, y=y[window.displayIndex], palette="rocket", ax=axis1)
     axis1.axhline(0, color="k", clip_on=False)
-    axis1.set_ylabel(f"Generation {window.generation.number} {devosimGUI.getOptionBox(optionBox)}")
+    axis1.set_ylabel(f"Generation {window.generation.number}, Dgnome {dgnumber}\n{window.optionBoxChoice}")
 
     # Finalizing the plot:
     sns.despine(bottom=True)
@@ -155,10 +171,10 @@ def updateFigure(window, optionBox):
     return
 
 def optionBoxChanged(optionBox):
-    print(f"{optionBox} chose {devosimGUI.getOptionBox(optionBox)}")
-    reTemp = re.findall(r'\d+', optionBox)
-    optionBoxInt = list(map(int, reTemp))[0]
-    updateFigure(ChartWindow.allWindows[optionBoxInt], optionBox) # Assuming this exists for simplicity, for now.
+    window = findWindowFromWidget(optionBox)
+    window.updateOptionBoxChoice(optionBox) # Update the internal option box choice.
+    window.displayIndex = 0 # Reset the displayIndex.
+    updateFigure(window) # Assuming this exists for simplicity, for now.
     return
 
 def createNewChartWindowForGeneration(generation):
@@ -194,7 +210,8 @@ def createNewChartWindowForGeneration(generation):
     devosimGUI.stopSubWindow()
 
     # Draw the figure.
-    updateFigure(window, f"optionBox{window.number}")
+    window.updateOptionBoxChoice(f"optionBox{window.number}")
+    updateFigure(window)
 
     #Add myself to the dictionary of all windows.
     ChartWindow.allWindows[window.number] = window
@@ -250,7 +267,8 @@ def runDevosim(button):
 
     except FileNotFoundError:
         devosimGUI.errorBox("Error launching ./devosim",
-                            "./devosim was not found in this directory. Make sure you compiled it and that it's in the same directory as this program!")
+                            "./devosim was not found in this directory. "
+                            "Make sure you compiled it and that it's in the same directory as this program!")
         return
     except subprocess.CalledProcessError:
         devosimGUI.errorBox("Error running ./devosim",
