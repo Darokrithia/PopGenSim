@@ -8,20 +8,19 @@ import seaborn as sns
 
 import re
 
-# This might be better off as a static class member...
-dgGraphOptions = ["Dgnome Values", "Dgnome Ancestries", "-- Dgnome Ancestry Percentages --"]
-
 class PlotCounter:
     plotNumber = 1  # A simple counter to differentiate the titles of plot windows.
 
 
 class Generation:
-    def __init__(self, number):
+    def __init__(self, number, chromosomeLength, population):
         self.number = number  # This generation's number (i.e 0, 1, 1000).
         self.dgnomeValues = dict()  # The element[N] is the Nth dgnome's allele value array.
         self.dgnomeAncestries = dict()  # The element[N] is the Nth dgnome's ancestry percentage array.
         self.dgnomeAncestryPercentages = dict()
         self.percentDiversity = None  # Not always defined, but it's a floating point when it is.
+        self.chromosomeLength = chromosomeLength
+        self.population = population
 
     def __repr__(self):
         return "Generation (stores parsed data for a simulated generation)"
@@ -36,6 +35,7 @@ class Generation:
 
 class ChartWindow:
     allWindows = dict()  # A dictionary of (self.number : ChartWindow) pairs.
+    dgGraphOptions = ["Dgnome Values", "Dgnome Ancestries", "Dgnome Ancestry Percentages"]
 
     def __init__(self, name, number, generation, figure):
         self.name = name  # The name/identifier per AppJar.
@@ -44,18 +44,26 @@ class ChartWindow:
         self.fig = figure  # A reference to this window's figure.
         self.optionBoxChoice = None
         self.displayIndex = 0  # This keep track of which sub-element we're graphing (i.e the Nth dgnome ancestry)
+        self.previousOptionBoxChoice = None # If this is equal to optionBoxChoice, we shouldn't recalculate chart data.
 
     def updateOptionBoxChoice(self, optionBox):
         self.optionBoxChoice = devosimGUI.getOptionBox(optionBox)
 
 # Returns an array of all the generations, in order.
 def processDevosimOutputLines(outputLines):
-    outputLines.pop(0) # remove the first line because we'll already know what those values should be.
+
     generationArray = []
     currentGeneration = None # Start with a None generation.
 
-    floatRegex = re.compile(r'\d+\.\d+')  # Compile the regex for finding floating point units in a line of output.
-    intRegex = re.compile(r'\d+')  # Compile the regex for finding integers in a line of output.
+    floatRegex = re.compile(r'-?\d+\.\d+')  # Compile the regex for finding floating point units in a line of output.
+    intRegex = re.compile(r'-?\d+')  # Compile the regex for finding integers in a line of output.
+
+    firstLine = outputLines.pop(0)
+    numbersInFirstLine = [int(i) for i in intRegex.findall(firstLine)] # Get all the numbers in the first line.
+    print(numbersInFirstLine)
+    # The first number will be the chromosome length and the second will be the population.
+    chromosomeLength = numbersInFirstLine[0]
+    population = numbersInFirstLine[1]
 
     for index, line in enumerate(outputLines):
         if line == '':
@@ -67,7 +75,7 @@ def processDevosimOutputLines(outputLines):
                 generationArray.append(currentGeneration) # Append the current generation to the array.
             reTemp = re.findall(r'\d+', line)
             currentGenerationInt = list(map(int, reTemp))[0]
-            currentGeneration = Generation(currentGenerationInt) # "Start" a new generation.
+            currentGeneration = Generation(currentGenerationInt, chromosomeLength, population) # "Start" a new generation.
 
         # Match this pattern:
         # Degnome X allele values:
@@ -90,7 +98,7 @@ def processDevosimOutputLines(outputLines):
             currentGeneration.dgnomeAncestries[currentDgInt] = [int(i) for i in intRegex.findall(dgValueLine)]
             # Inside this pattern, match this pattern with the line after dgValueLine:
             # (floatingPoint% Degnome \d+\t)+
-            if re.search("\d+\.\d+% Degnome \d+", outputLines[index + 2]):
+            if re.search("-?\d+\.\d+% Degnome \d+", outputLines[index + 2]):
                 reTemp = re.findall(r'\d+\t', outputLines[index + 2])
                 intArray = list(map(int, reTemp))
                 floatArray = [float(i) for i in floatRegex.findall(outputLines[index + 2])]
@@ -127,37 +135,75 @@ def nextChart(button):
     updateFigure(window)  # Assuming this exists for simplicity, for now.
     return
 
+def processDataForFigure(inputData, dgnumber, population, chromosomeLength, desiredGraph):
+    # Not all of the parameters are used yet... but they may be necessary in the future.
+    x = []  # x should be a 1-d array of numbers.
+    y = []  # y should be a 2-d array of numbers, whose length along the first dimension is equal to x's length
+    xlabel = "X Axis Description"
+    print(inputData)
+    if desiredGraph == ChartWindow.dgGraphOptions[0]:
+        # x should just be a list from 0 to (chromosomeLength-1).
+        # each entry in y should be the corresponding array of that dgnome's allele values.
+        x = list(range(chromosomeLength))
+        for k, v in inputData:
+            y.append(v)
+        xlabel = "Allele Number" # X corresponds to the allele number from which the value was extracted.
+    elif desiredGraph == ChartWindow.dgGraphOptions[1]:
+        # x should be a list from 0 to (population-1), though this will have the same effect.
+        # each entry in y should be the corresponding ancestry array.
+        x = list(range(chromosomeLength))
+        for k, v in inputData:
+            y.append(v)
+        xlabel = "Allele Number" # X corresponds to the allele number from which the value was extracted.
+    elif desiredGraph == ChartWindow.dgGraphOptions[2]:
+        # The input data is a dictionary of number keys and (int, float) tuple values.
+        # We want an x array of the int values and a y array of the float values.
+        for i in range(len(inputData)):
+            y.append([0] * len(inputData))
+        for dgnomeNumber, v in inputData:
+            x.append(dgnomeNumber)
+            for fromDgnomeNumber, percentage in v:
+                y[dgnomeNumber][fromDgnomeNumber] = percentage
+        xlabel = "Dgnome of Origin"
+        # If we contain alleles originating from dgnome X, the value of Y at X is the percent of that allele's ocurrence
+        # For example, if 4/10 of our alleles are from dgnome 5 (and thus have a value of 5), x=5 has a y=40.0.
+
+    return x, y, xlabel
 
 def updateFigure(window):
-    sns.set(context="talk", style="white", palette="muted")
+    sns.set(context="talk", style="white", palette="muted") # Future feature idea: make these user-set
 
     # Clear the figure of anything it may be currently showing.
     window.fig.clear()
 
+    # We'll display the [window.displayIndex]-th element, but it should be modulo the size of the array we're using.
+    window.displayIndex = window.displayIndex % window.generation.population
+    # Correct the displayIndex, in case it's too big or negative.
+
+    # This will possibly be different under some circumstances, but for now:
+    dgnumber = window.displayIndex
 
     switch = { # A replacement for a switch block:
-        dgGraphOptions[0]: window.generation.dgnomeValues.items(),
-        dgGraphOptions[1]: window.generation.dgnomeAncestries.items(),
-        dgGraphOptions[2]: window.generation.dgnomeAncestryPercentages.items(),  # Not yet enabled
+        ChartWindow.dgGraphOptions[0]: window.generation.dgnomeValues.items(),
+        ChartWindow.dgGraphOptions[1]: window.generation.dgnomeAncestries.items(),
+        ChartWindow.dgGraphOptions[2]: window.generation.dgnomeAncestryPercentages.items(),  # Not yet enabled
     }
-    graphTheseItems = switch.get(window.optionBoxChoice)
-
-    x = []
-    y = []
-
-    for k, v in graphTheseItems:
-        x.append(k)
-        y.append(v)
-
-    # We'll display the [window.displayIndex]-th element, but it should be modulo the size of the array we're using.
-    window.displayIndex = window.displayIndex % len(y) # Correct the displayIndex, in case it's too big or negative.
-
-    # This will possibly be different when graphing the tuples from Dgnome Ancestry Percentages, but for now:
-    dgnumber = window.displayIndex
+    # Choose the input data based on the window's option box choice.
+    inputData = switch.get(window.optionBoxChoice)
+    #print(inputData)
+    # Process the data in another procedure.
+    x, y, xlabel = processDataForFigure(inputData,
+                                dgnumber,
+                                window.generation.population,
+                                window.generation.chromosomeLength,
+                                window.optionBoxChoice)
+    #print(x)
+    #print(y)
 
     axis1 = window.fig.add_subplot(111)
     sns.barplot(x=x, y=y[window.displayIndex], palette="rocket", ax=axis1)
     axis1.axhline(0, color="k", clip_on=False)
+    axis1.set_xlabel(xlabel)
     axis1.set_ylabel(f"Generation {window.generation.number}, Dgnome {dgnumber}\n{window.optionBoxChoice}")
 
     # Finalizing the plot:
@@ -199,7 +245,7 @@ def createNewChartWindowForGeneration(generation):
 
     # The idea with the menu box is to allow the user to choose, for example, a generation. We'll see where this goes.
     devosimGUI.addOptionBox(f"optionBox{window.number}",
-                            dgGraphOptions,
+                            ChartWindow.dgGraphOptions,
                             1, 1, callFunction=True)
     devosimGUI.setOptionBoxChangeFunction(f"optionBox{window.number}", optionBoxChanged)
 
@@ -264,7 +310,7 @@ def runDevosim(button):
     try:
         # subprocess.call(settingsStringArray)
         outputString = subprocess.check_output(settingsStringArray, encoding="utf-8")
-
+        print(outputString)
     except FileNotFoundError:
         devosimGUI.errorBox("Error launching ./devosim",
                             "./devosim was not found in this directory. "
