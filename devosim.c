@@ -9,21 +9,13 @@
 #include <unistd.h>
 #include <limits.h>
 
-typedef struct JobData JobData;
-struct JobData {
-	Degnome* child;
-	Degnome* p1;
-	Degnome* p2;
-};
-
 void usage(void);
-int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
-void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
+void calculate_diversity(Degnome* generation, double** percent_descent, double* diversity);
 
 const char *usageMsg =
     "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+    "devosim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b] [-x]\n"
     "\n"
     "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
     "is thenumber of generations that the simulation will run,\n"
@@ -54,6 +46,7 @@ int uniform;
 int verbose;
 int reduced;
 int break_at_zero_diversity;
+int barebones;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
@@ -95,25 +88,25 @@ double get_fitness(double hat_size){
 	return hat_size;
 }
 
-void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity){
+void calculate_diversity(Degnome* generation, double** percent_descent, double* diversity){
 	*diversity = 0;
-	for(int i = 0; i < pop_size; i++){			//calculate percent decent for each degnome
+	for(int i = 0; i < pop_size; i++){			//calculate percent descent for each degnome
 		for(int j = 0; j < pop_size; j++){
-			percent_decent[i][j] = 0;
+			percent_descent[i][j] = 0;
 			for(int k = 0; k < chrom_size; k++){
 				if(generation[i].GOI_array[k] == j){
-					percent_decent[i][j]++;
+					percent_descent[i][j]++;
 				}
 			}
-			percent_decent[i][j] /= chrom_size;
+			percent_descent[i][j] /= chrom_size;
 		}
 	}
 	for(int j = 0; j < pop_size; j++){			//sum and average
-		percent_decent[pop_size][j] = 0;
+		percent_descent[pop_size][j] = 0;
 		for(int k = 0; k < pop_size; k++){
-			percent_decent[pop_size][j] += percent_decent[k][j];
+			percent_descent[pop_size][j] += percent_descent[k][j];
 		}
-		percent_decent[pop_size][j] /= pop_size;
+		percent_descent[pop_size][j] /= pop_size;
 	}
 
 	for(int i = 0; i < pop_size; i++){			//calculate percent diversity for the entire generation
@@ -144,6 +137,7 @@ int main(int argc, char **argv){
 	verbose = 0;
 	reduced = 0;
 	break_at_zero_diversity = 0;
+	barebones = 0;
 
 	if(argc > 17){
 		printf("\n");
@@ -195,6 +189,9 @@ int main(int argc, char **argv){
 			}
 			else if (strcmp(argv[i], "-b") == 0){
 				break_at_zero_diversity = 1;
+			}
+			else if (strcmp(argv[i], "-x") == 0){
+				barebones = 1;
 			}
 			else{
 				printf("\n");
@@ -250,27 +247,27 @@ int main(int argc, char **argv){
 	}
 
 	double* diversity;
-	double** percent_decent;
+	double** percent_descent;
 
 	diversity = malloc(sizeof(double));
 	*diversity = 1;
-	percent_decent = malloc((pop_size+1)*sizeof(double*));
+	percent_descent = malloc((pop_size+1)*sizeof(double*));
 	for(int i = 0; i < pop_size+1; i++){
-		percent_decent[i] = malloc(pop_size*sizeof(double));
+		percent_descent[i] = malloc(pop_size*sizeof(double));
 		if(i == pop_size){
 			continue;
 		}
 		for(int j = 0; j < pop_size; j++){
 			if(i == j){
-				percent_decent[i][j] = 1;
+				percent_descent[i][j] = 1;
 			}
 			else{
-				percent_decent[i][j] = 0;
+				percent_descent[i][j] = 0;
 			}
 		}
 	}
 
-	if(!reduced && !verbose){
+	if(!reduced && !barebones){
 		printf("\nGeneration 0:\n\n");
 		for(int i = 0; i < pop_size; i++){
 			printf("Degnome %u allele values:\n", i);
@@ -307,7 +304,7 @@ int main(int argc, char **argv){
 
 	for(int i = 0; i < num_gens; i++){
 		if(break_at_zero_diversity){
-			calculate_diversity(parents, percent_decent, diversity);
+			calculate_diversity(parents, percent_descent, diversity);
 			if((*diversity) <= 0){
 				final_gen = i;
 				broke_early = 1;
@@ -428,7 +425,8 @@ int main(int argc, char **argv){
 		children = parents;
 		parents = temp;
 		if(verbose){
-			calculate_diversity(parents, percent_decent, diversity);
+			calculate_diversity(parents, percent_descent, diversity);
+			if(!barebones){
 			printf("\nGeneration %u:\n", i);
 			if(!reduced){
 				for(int k = 0; k < pop_size; k++){
@@ -451,19 +449,27 @@ int main(int argc, char **argv){
 					printf("\n");
 
 					for(int j = 0; j < pop_size; j++){
-						if(percent_decent[k][j] > 0){
-							printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
+						if(percent_descent[k][j] > 0){
+							printf("%lf%% Degnome %u\t", (100*percent_descent[k][j]), j);
 						}
 					}
 				}
 			}
-			printf("\nAverage population descent percentages:\n");
-			for(int j = 0; j < pop_size; j++){
-				if(percent_decent[pop_size][j] > 0){
-					printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
+				printf("\nAverage population descent percentages:\n");
+				for(int j = 0; j < pop_size; j++){
+					if(percent_descent[pop_size][j] > 0){
+						printf("%lf%% Degnome %u\t", (100*percent_descent[pop_size][j]), j);
+					}
 				}
 			}
+			else{
+				for(int j = 0; j < pop_size; j++){
+						printf("%lf\n", (100*percent_descent[pop_size][j]));
+				}
+			}
+			if(!barebones){
 			printf("\nPercent diversity: %lf\n", (100* (*diversity)));
+			}
 		printf("\n\n");
 		}
 	}
@@ -474,53 +480,69 @@ int main(int argc, char **argv){
 		printf("\n");
 	}
 
-	calculate_diversity(parents, percent_decent, diversity);
+	calculate_diversity(parents, percent_descent, diversity);
 	// printf("\n\n DIVERSITY%lf\n\n\n", *diversity);
-	if(broke_early){
-		printf("Generation %u:\n", final_gen);
-	}
-	else{
-		printf("Generation %u:\n", num_gens);
-	}
-	if(!reduced){
-		for(int i = 0; i < pop_size; i++){
-			printf("\n\nDegnome %u allele values:\n", i);		
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
-					printf("%lf\t", parents[i].dna_array[j]);
+	if(!barebones){
+		if(broke_early){
+			printf("Generation %u:\n", final_gen);
+		}
+		else{
+			printf("Generation %u:\n", num_gens);
+		}
+		if(!reduced && !barebones){
+			for(int i = 0; i < pop_size; i++){
+				printf("\n\nDegnome %u allele values:\n", i);		
+				if(!reduced){
+					for(int j = 0; j < chrom_size; j++){
+						printf("%lf\t", parents[i].dna_array[j]);
+					}
 				}
-			}
 
-			printf("\n\nDegnome %u ancestries:\n", i);
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
-					printf("%u\t", parents[i].GOI_array[j]);
+				printf("\n\nDegnome %u ancestries:\n", i);
+				if(!reduced){
+					for(int j = 0; j < chrom_size; j++){
+						printf("%u\t", parents[i].GOI_array[j]);
+					}
+					printf("\n");
+				}
+
+				if(!barebones){
+					for(int j = 0; j < pop_size; j++){
+						if(percent_descent[pop_size][j] > 0){
+							printf("%lf%% Degnome %u\t", (100*percent_descent[pop_size][j]), j);
+						}
+					}
+				}
+				else{
+					for(int j = 0; j < pop_size; j++){
+						if(percent_descent[pop_size][j] > 0){
+							printf("Degnome %u\t : %lf%% \n", j, (100*percent_descent[pop_size][j]));
+						}
+					}
 				}
 				printf("\n");
-			}
 
-			for(int j = 0; j < pop_size; j++){
-				if(percent_decent[i][j] > 0){
-					printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
+				if(selective){
+					printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
+				}
+				else{
+					printf("\n\n");
 				}
 			}
-			printf("\n");
-
-			if(selective){
-				printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
+		}
+		printf("Average population descent percentages:\n");
+			for(int j = 0; j < pop_size; j++){
+				if(percent_descent[pop_size][j] > 0){
+					printf("%lf%% Degnome %u\t", (100*percent_descent[pop_size][j]), j);
+				}
 			}
-			else{
-				printf("\n\n");
-			}
+			printf("\nPercent diversity: %lf\n", (100* (*diversity)));
+	}
+	else{
+		for(int j = 0; j < pop_size; j++){
+			printf("%lf\n", (100*percent_descent[pop_size][j]));
 		}
 	}
-	printf("Average population decent percentages:\n");
-	for(int j = 0; j < pop_size; j++){
-		if(percent_decent[pop_size][j] > 0){
-			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
-		}
-	}
-	printf("\nPercent diversity: %lf\n", (100* (*diversity)));
 	printf("\n\n\n");
 
 	//free everything
@@ -532,14 +554,14 @@ int main(int argc, char **argv){
 		free(children[i].dna_array);
 		parents[i].hat_size = 0;
 
-		free(percent_decent[i]);
+		free(percent_descent[i]);
 	}
-	free(percent_decent[pop_size]);
+	free(percent_descent[pop_size]);
 
 	free(parents);
 	free(children);
 
-	free(percent_decent);
+	free(percent_descent);
 	free(diversity);
 
 	gsl_rng_free (rng);
