@@ -22,8 +22,8 @@ int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 
 const char* usageMsg =
-	"Usage: polygensim [-c chromosome_length] [-e mutation_effect]\n"
-	"\t\t  [-g num_generations] [-h help] [-m mutation_rate] \n"
+	"Usage: polygensim [-h] [-c chromosome_length] [-e mutation_effect]\n"
+	"\t\t  [-g num_generations] [-m mutation_rate] \n"
 	"\t\t  [-o crossover_rate] [-p population_size]\n";
 
 const char* helpMsg =
@@ -46,7 +46,7 @@ const char* helpMsg =
 	"\t\t Default crossover rate is 2.\n\n"
 	"\t -p population_size\n"
 	"\t\t Set the population size for the current simulation.\n"
-	"\t\t Default population size is 100.\n\n";
+	"\t\t Default population size is 100.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed = 0;
@@ -113,7 +113,6 @@ int main(int argc, char **argv){
 	crossover_rate = 2;
 
 	if(argc > 13){
-		// printf("\n");
 		usage();
 	}
 	for(int i = 1; i < argc; i += 2){
@@ -140,12 +139,10 @@ int main(int argc, char **argv){
 				help_menu();
 			}
 			else{
-				printf("\n");
 				usage();
 			}
 		}
 		else{
-			printf("\n");
 			usage();
 		}
 	}
