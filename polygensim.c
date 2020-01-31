@@ -22,15 +22,19 @@ int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 
 const char *usageMsg =
-	"Usage: polygensim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR]\n"
-	"\n"
-	"\"CL\" is chromosome length.  \"PS\" is the population size, and\n"
-	"\"G\" is thenumber of generations that the simulation will\n"
-	"run.  \"MR\" is mutation rate, \"ME\" is how much a mutation\n"
-	"will effect a gene on average, and \"CR\" is crossover rate.\n"
-	"They can be in any order, and not all are needed.\n"
-	"Default CL is 50, default PS is 100, and the default G is\n"
-	"1000.  Default MR is 1, default ME is 2 and defualt CR is 2\n";
+	"Usage: polygensim [-c chromosome_length] [-e mutation_effect]\n"
+	"\t\t  [-g num_generation] [-h help] [-m mutation_rate] \n"
+	"\t\t  [-o crossover_rate] [-p population_size]\n";
+
+	// "Usage: polygensim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR]\n"
+	// "\n"
+	// "\"CL\" is chromosome length.  \"PS\" is the population size, and\n"
+	// "\"G\" is thenumber of generations that the simulation will\n"
+	// "run.  \"MR\" is mutation rate, \"ME\" is how much a mutation\n"
+	// "will effect a gene on average, and \"CR\" is crossover rate.\n"
+	// "They can be in any order, and not all are needed.\n"
+	// "Default CL is 50, default PS is 100, and the default G is\n"
+	// "1000.  Default MR is 1, default ME is 2 and defualt CR is 2\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed = 0;
@@ -92,7 +96,7 @@ int main(int argc, char **argv){
 	crossover_rate = 2;
 
 	if(argc > 13 || (argc%2) == 0){
-		printf("\n");
+		// printf("\n");
 		usage();
 	}
 	for(int i = 1; i < argc; i += 2){
