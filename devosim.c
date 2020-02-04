@@ -17,28 +17,43 @@ struct JobData {
 };
 
 void usage(void);
+void help_menu(void);
 int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
-const char *usageMsg =
-    "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
-    "\n"
-    "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
-    "is thenumber of generations that the simulation will run,\n"
-    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
-    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
-    "is present, there will be selection, while if \"-u\" is present\n"
-    "all degnomes will contribute to two offspring.\n"
-    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
-    "If \"-v\" is present there will be output at every single\n"
-    "generation, and if \"-r\" is present only percentages will be\n"
-    "printed (you wont get to see the genomes of each degnome).  If\n"
-    "\"-b\" is present, the program will break once all degnomes are\n"
-    "identical. They can be in any order, and not all are needed.\n"
-    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
-    "defualt CR is 2.\n";
+const char* usageMsg =
+	"Usage: devosim [-bhrv] [-s | -u] [-c chromosome_length]\n"
+	"\t       [-e mutation_effect] [-g num_generations]\n"
+	"\t       [-m mutation_rate] [-o crossover_rate]\n"
+	"\t       [-p population_size]\n";
+
+const char* helpMsg =
+	"OPTIONS\n"
+	"\t -b\t Simulation will stop when all degnomes are identical.\n\n"
+	"\t -c chromosome_length\n"
+	"\t\t Set chromosome length for the current simulation.\n"
+	"\t\t Default chromosome length is 10.\n\n"
+	"\t -e mutation_effect\n"
+	"\t\t Set how much a mutation will effect a gene on average.\n"
+	"\t\t Default mutation effect is 2.\n\n"
+	"\t -g num_generations\n"
+	"\t\t Set how many generations this simulation will run for.\n"
+	"\t\t Default number of generations is 1000.\n\n"
+	"\t -h\t Display this help menu.\n\n"
+	"\t -m mutation_rate\n"
+	"\t\t Set the mutation rate for the current simulation.\n"
+	"\t\t Default mutation rate is 1.\n\n"
+	"\t -o crossover_rate\n"
+	"\t\t Set the crossover rate for the current simulation.\n"
+	"\t\t Default crossover rate is 2.\n\n"
+	"\t -p population_size\n"
+	"\t\t Set the population size for the current simulation.\n"
+	"\t\t Default population size is 10.\n\n"
+	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
+	"\t -s\t Degnome selection will occur.\n\n"
+	"\t -u\t All degnomes contribute to two offspring.\n\n"
+	"\t -v\t Output will be given for every generation.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -57,6 +72,11 @@ int break_at_zero_diversity;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
+	exit(EXIT_FAILURE);
+}
+
+void help_menu(void) {
+	fputs(helpMsg, stderr);
 	exit(EXIT_FAILURE);
 }
 
@@ -146,7 +166,6 @@ int main(int argc, char **argv){
 	break_at_zero_diversity = 0;
 
 	if(argc > 17){
-		printf("\n");
 		usage();
 	}
 	for(int i = 1; i < argc; i++){
@@ -196,8 +215,10 @@ int main(int argc, char **argv){
 			else if (strcmp(argv[i], "-b") == 0){
 				break_at_zero_diversity = 1;
 			}
+			else if (strcmp(argv[i], "-h") == 0){
+				help_menu();
+			}
 			else{
-				printf("\n");
 				usage();
 			}
 		}
