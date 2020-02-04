@@ -23,7 +23,7 @@ double get_fitness(double hat_size);
 
 const char* usageMsg =
 	"Usage: polygensim [-h] [-c chromosome_length] [-e mutation_effect]\n"
-	"\t\t  [-g num_generations] [-m mutation_rate] \n"
+	"\t\t  [-g num_generations] [-m mutation_rate]\n"
 	"\t\t  [-o crossover_rate] [-p population_size]\n";
 
 const char* helpMsg =
@@ -36,7 +36,7 @@ const char* helpMsg =
 	"\t\t Default mutation effect is 2.\n\n"
 	"\t -g num_generations\n"
 	"\t\t Set how many generations this simulation will run for.\n"
-	"\t\t Default number of generations is 1000\n\n"
+	"\t\t Default number of generations is 1000.\n\n"
 	"\t -h\t Display this help menu.\n\n"
 	"\t -m mutation_rate\n"
 	"\t\t Set the mutation rate for the current simulation.\n"
