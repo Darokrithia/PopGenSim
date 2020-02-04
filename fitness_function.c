@@ -15,3 +15,6 @@
 
 #import "fitness_function.h"
 
+void set_function(char*){
+	func_to_run = &linear_returns;
+}
