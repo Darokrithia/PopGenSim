@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 	
 	
 	
-	for(int i = 0; i < chrom_size; i++) {
+	for (int i = 0; i < chrom_size; i++) {
 		bom_mom->dna_array[i] = 2*i;
 		bad_dad->dna_array[i] = 1*i;
 
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 
 	if (verbose) {
 		printf("pre-mating values:\n");
-		for(int i = 0; i < chrom_size; i++) {
+		for (int i = 0; i < chrom_size; i++) {
        	 	printf("Mom: %lf\t Dad: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i]);
 		}
 		printf("Mom hat_size: %lf\t Dad hat_size: %f\n", bom_mom->hat_size, bad_dad->hat_size);
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 
 	if (verbose) {
 		printf("post-mating values:\n");
-		for(int i = 0; i < chrom_size; i++) {
+		for (int i = 0; i < chrom_size; i++) {
        	 	printf("Mom: %lf\t Dad: %f\t Kid: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i], tst_bby->dna_array[i]);
 		}
 		printf("Mom hat_size: %lf\t Dad hat_size: %f\t Kid hat_size: %f\n", bom_mom->hat_size, bad_dad->hat_size, tst_bby->hat_size);

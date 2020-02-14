@@ -241,7 +241,7 @@ void *threadfun(void *arg) {
         CHECKMEM(threadState);
     }
 
-    for(;;) {
+    for (;;) {
         //        clock_gettime(CLOCK_REALTIME, &timeout);
         //        timeout.tv_sec += 3;
 

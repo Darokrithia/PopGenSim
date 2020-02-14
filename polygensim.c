@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 		printf("\n");
 		usage();
 	}
-	for(int i = 1; i < argc; i += 2) {
+	for (int i = 1; i < argc; i += 2) {
 		if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-c") == 0) {
 				sscanf(argv[i+1], "%u", &chrom_size);
@@ -158,16 +158,16 @@ int main(int argc, char **argv) {
 		children[i].dna_array = malloc(chrom_size*sizeof(double));
 		parents[i].hat_size = 0;
 
-		for(int j = 0; j < chrom_size; j++) {
+		for (int j = 0; j < chrom_size; j++) {
 			parents[i].dna_array[j] = (i+j);	//children isn't initiilized
 			parents[i].hat_size += (i+j);
 		}
 	}
 
 	printf("Generation 0:\n");
-	for(int i = 0; i < pop_size; i++) {
+	for (int i = 0; i < pop_size; i++) {
 		printf("Degnome %u\n", i);
-		for(int j = 0; j < chrom_size; j++) {
+		for (int j = 0; j < chrom_size; j++) {
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
 
 	JobData* dat = malloc(pop_size*sizeof(JobData));
 
-	for(int i = 0; i < num_gens; i++) {
+	for (int i = 0; i < num_gens; i++) {
 
 		double fit = get_fitness(parents[0].hat_size);
 
@@ -185,14 +185,14 @@ int main(int argc, char **argv) {
 		double cum_hat_size[pop_size];
 		cum_hat_size[0] = fit;
 
-		for(int j = 1; j < pop_size; j++) {
+		for (int j = 1; j < pop_size; j++) {
 			fit = get_fitness(parents[j].hat_size);
 
 			total_hat_size += fit;
 			cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 		}
 
-		for(int j = 0; j < pop_size; j++) {
+		for (int j = 0; j < pop_size; j++) {
 
 			int m, d;
 
@@ -228,9 +228,9 @@ int main(int argc, char **argv) {
 	JobQueue_noMoreJobs(jq);
 
 	printf("Generation %u:\n", num_gens);
-	for(int i = 0; i < pop_size; i++) {
+	for (int i = 0; i < pop_size; i++) {
 		printf("Degnome %u\n", i);
-		for(int j = 0; j < chrom_size; j++) {
+		for (int j = 0; j < chrom_size; j++) {
 			printf("%lf\t", parents[i].dna_array[j]);
 		}
 		printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);

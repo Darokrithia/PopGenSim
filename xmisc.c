@@ -32,17 +32,17 @@ int main(int argc, char **argv) {
 	int max_3 = 3;
 
 	if (verbose) {
-		for(int i = 0; i < max_1; i++) {
+		for (int i = 0; i < max_1; i++) {
 			printf("a_1[%u] = %u\n", i, a_1[i]);
 		}
 		printf("\n\n");
 
-		for(int i = 0; i < max_2; i++) {
+		for (int i = 0; i < max_2; i++) {
 			printf("a_2[%u] = %u\n", i, a_2[i]);
 		}
 		printf("\n\n");
 
-		for(int i = 0; i < max_3; i++) {
+		for (int i = 0; i < max_3; i++) {
 			printf("a_3[%u] = %u\n", i, a_3[i]);
 		}
 		printf("\n\n");
@@ -53,17 +53,17 @@ int main(int argc, char **argv) {
 	int_qsort(a_3, max_3);//changed
 
 	if (verbose) {
-		for(int i = 0; i < max_1; i++) {
+		for (int i = 0; i < max_1; i++) {
 			printf("a_1[%u] = %u\n", i, a_1[i]);
 		}
 		printf("\n\n");
 
-		for(int i = 0; i < max_2; i++) {
+		for (int i = 0; i < max_2; i++) {
 			printf("a_2[%u] = %u\n", i, a_2[i]);
 		}
 		printf("\n\n");
 
-		for(int i = 0; i < max_3; i++) {
+		for (int i = 0; i < max_3; i++) {
 			printf("a_3[%u] = %u\n", i, a_3[i]);
 		}
 		printf("\n\n");

@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
                                 ThreadState_new,
                                 ThreadState_free);
 
-    for(i = 0; i < njobs; ++i) {
+    for (i = 0; i < njobs; ++i) {
         jobs[i].arg = i + 1.0;
         jobs[i].result = -99.0;
         JobQueue_addJob(jq, jobfunc, jobs + i);
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 
     JobQueue_waitOnJobs(jq);
 
-    for(i = 0; i < njobs; ++i) {
+    for (i = 0; i < njobs; ++i) {
         if (verbose) {
             printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
             fflush(stdout);
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
         assert(jobs[i].result == (i + 1.0) * multiplier);
     }
 
-    for(i = 0; i < njobs; ++i) {
+    for (i = 0; i < njobs; ++i) {
         jobs[i].arg = i + 11.0;
         jobs[i].result = -99.0;
         JobQueue_addJob(jq, jobfunc, jobs + i);
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
     JobQueue_waitOnJobs(jq);
     JobQueue_noMoreJobs(jq);
 
-    for(i = 0; i < njobs; ++i) {
+    for (i = 0; i < njobs; ++i) {
         if (verbose) {
             printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
             fflush(stdout);
