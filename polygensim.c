@@ -91,12 +91,12 @@ int main(int argc, char **argv) {
 	mutation_effect = 2;
 	crossover_rate = 2;
 
-	if(argc > 13 || (argc%2) == 0) {
+	if (argc > 13 || (argc%2) == 0) {
 		printf("\n");
 		usage();
 	}
 	for(int i = 1; i < argc; i += 2) {
-		if(argv[i][0] == '-') {
+		if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-c") == 0) {
 				sscanf(argv[i+1], "%u", &chrom_size);
 			}
@@ -126,8 +126,8 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	if(num_threads <= 0) {
-		if(num_threads < 0) {
+	if (num_threads <= 0) {
+		if (num_threads < 0) {
 			#ifdef DEBUG_MODE
 				fprintf(stderr, "Error invalid number of threads: %u\n", num_threads);
 			#endif

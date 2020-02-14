@@ -35,7 +35,7 @@ static void unitTstResult(const char *facility, const char *result) {
 
 void *ThreadState_new(void *dat) {
     ThreadState *ts = malloc(sizeof *ts);
-    if(ts == NULL) {
+    if (ts == NULL) {
         fprintf(stderr, "%s:%d: bad malloc\n", __FILE__, __LINE__);
         exit(1);
     }
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
     case 1:
         break;
     case 2:
-        if(strncmp(argv[1], "-v", 2) != 0) {
+        if (strncmp(argv[1], "-v", 2) != 0) {
             fprintf(stderr, "usage: xjobqueue [-v]\n");
             exit(1);
         }
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     JobQueue_waitOnJobs(jq);
 
     for(i = 0; i < njobs; ++i) {
-        if(verbose) {
+        if (verbose) {
             printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
             fflush(stdout);
         }
@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
     JobQueue_noMoreJobs(jq);
 
     for(i = 0; i < njobs; ++i) {
-        if(verbose) {
+        if (verbose) {
             printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
             fflush(stdout);
         }

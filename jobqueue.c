@@ -46,7 +46,7 @@ pthread_mutex_t outputLock = PTHREAD_MUTEX_INITIALIZER;
 
 #undef CHECKMEM
 #define   CHECKMEM(x) do {                                  \
-        if(!(x)) {                                          \
+        if (!(x)) {                                          \
             fprintf(stderr, "%s:%s:%d: allocation error\n", \
                     __FILE__,__func__,__LINE__);            \
             exit(EXIT_FAILURE);                             \
@@ -100,7 +100,7 @@ void Job_free(Job * job);
 void Job_print(Job * job);
 
 void Job_print(Job * job) {
-    if(job == NULL) {
+    if (job == NULL) {
         putchar('\n');
         return;
     }
@@ -125,30 +125,30 @@ JobQueue *JobQueue_new(int maxThreads, void *threadData,
     jq->ThreadState_free = ThreadState_free;
 
     // set attr for detached threads
-    if((i = pthread_attr_init(&jq->attr))) {
+    if ((i = pthread_attr_init(&jq->attr))) {
         fprintf(stderr, "%s:%d: pthread_attr_init returned %d (%s)",
                 __FILE__, __LINE__, i, strerror(i));
         exit(1);
     }
-    if((i = pthread_attr_setdetachstate(&jq->attr, PTHREAD_CREATE_DETACHED))) {
+    if ((i = pthread_attr_setdetachstate(&jq->attr, PTHREAD_CREATE_DETACHED))) {
         fprintf(stderr, "%s:%d: pthread_attr_setdetachstate returned %d (%s)",
                 __FILE__, __LINE__, i, strerror(i));
         exit(1);
     }
 
-    if((i = pthread_mutex_init(&jq->lock, NULL))) {
+    if ((i = pthread_mutex_init(&jq->lock, NULL))) {
         fprintf(stderr, "%s:%d: pthread_mutex_init returned %d (%s)",
                 __FILE__, __LINE__, i, strerror(i));
         exit(1);
     }
 
-    if((i = pthread_cond_init(&jq->wakeWorker, NULL))) {
+    if ((i = pthread_cond_init(&jq->wakeWorker, NULL))) {
         fprintf(stderr, "%s:%d: pthread_cond_init returned %d (%s)",
                 __FILE__, __LINE__, i, strerror(i));
         exit(1);
     }
 
-    if((i = pthread_cond_init(&jq->wakeMain, NULL))) {
+    if ((i = pthread_cond_init(&jq->wakeMain, NULL))) {
         fprintf(stderr, "%s:%d: pthread_cond_init returned %d (%s)",
                 __FILE__, __LINE__, i, strerror(i));
         exit(1);
@@ -166,13 +166,13 @@ void JobQueue_addJob(JobQueue * jq, int (*jobfun) (void *, void *),
     int status;
     pthread_t id;
 
-    if(jq->valid != JOBQUEUE_VALID) {
+    if (jq->valid != JOBQUEUE_VALID) {
         fprintf(stderr, "%s:%d: JobQueue not initialized", __func__,
                 __LINE__);
         exit(1);
     }
 
-    if(!jq->acceptingJobs) {
+    if (!jq->acceptingJobs) {
         fprintf(stderr, "%s:%s:%d: JobQueue not accepting jobs\n",
                 __FILE__, __func__, __LINE__);
         exit(1);
@@ -184,7 +184,7 @@ void JobQueue_addJob(JobQueue * jq, int (*jobfun) (void *, void *),
     job->param = param;
 
     status = pthread_mutex_lock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "lock");
 
     job->next = jq->todo;
@@ -196,18 +196,18 @@ void JobQueue_addJob(JobQueue * jq, int (*jobfun) (void *, void *),
 #endif
 
     // If threads are idling, wake one
-    if(jq->idle > 0) {
+    if (jq->idle > 0) {
 
         status = pthread_cond_signal(&jq->wakeWorker);
-        if(status)
+        if (status)
             ERR(status, "signal wakeWorker");
 
-    } else if(jq->nThreads < jq->maxThreads) {
+    } else if (jq->nThreads < jq->maxThreads) {
 
         // launch a new thread
         DPRINTF(("%s:%d launching thread\n", __func__, __LINE__));
         status = pthread_create(&id, &jq->attr, threadfun, (void *) jq);
-        if(status) {
+        if (status) {
             fprintf(stderr, "%s:%d: pthread_create returned %d (%s)\n",
                     __func__, __LINE__, status, strerror(status));
             exit(1);
@@ -217,7 +217,7 @@ void JobQueue_addJob(JobQueue * jq, int (*jobfun) (void *, void *),
     }
 
     status = pthread_mutex_unlock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "unlock");
     else
         DPRINTF(("%s:%s:%d: unlocked\n", __FILE__, __func__, __LINE__));
@@ -236,7 +236,7 @@ void *threadfun(void *arg) {
     Job *job;
     int status;
     void *threadState = NULL;
-    if(jq->ThreadState_new != NULL) {
+    if (jq->ThreadState_new != NULL) {
         threadState = jq->ThreadState_new(jq->threadData);
         CHECKMEM(threadState);
     }
@@ -246,7 +246,7 @@ void *threadfun(void *arg) {
         //        timeout.tv_sec += 3;
 
         status = pthread_mutex_lock(&jq->lock); // LOCK
-        if(status)
+        if (status)
             ERR(status, "lock");
         else
             DPRINTF(("%s:%s:%d: locked\n", __FILE__, __func__, __LINE__));
@@ -257,18 +257,18 @@ void *threadfun(void *arg) {
                      __func__, __LINE__, jq->todo));
 
             ++jq->idle;
-            if(jq->idle == jq->nThreads) {
+            if (jq->idle == jq->nThreads) {
                 status = pthread_cond_signal(&jq->wakeMain);
-                if(status)
+                if (status)
                     ERR(status, "signal wakeMain");
             }
             //status = pthread_cond_timedwait(&jq->wakeWorker, &jq->lock,
             //                                &timeout);
             status = pthread_cond_wait(&jq->wakeWorker, &jq->lock);
             --jq->idle;
-            //if(status == ETIMEDOUT)
+            //if (status == ETIMEDOUT)
             //    continue;
-            if(status)
+            if (status)
                 ERR(status, "wait wakeWorker");
         }
 
@@ -280,7 +280,7 @@ void *threadfun(void *arg) {
          *   1     1  <- do work
          */
 
-        if(NULL == jq->todo) {  // shutting down
+        if (NULL == jq->todo) {  // shutting down
             assert(!jq->acceptingJobs);
             break;
         } else {                // do job
@@ -298,7 +298,7 @@ void *threadfun(void *arg) {
 #endif
 
             status = pthread_mutex_unlock(&jq->lock);   // UNLOCK
-            if(status)
+            if (status)
                 ERR(status, "unlock");
             else
                 DPRINTF(("%s:%s:%d: unlocked\n", __FILE__, __func__,
@@ -316,16 +316,16 @@ void *threadfun(void *arg) {
     --jq->nThreads;
 
     status = pthread_cond_signal(&jq->wakeMain);
-    if(status)
+    if (status)
         ERR(status, "signal wakeMain");
 
     status = pthread_mutex_unlock(&jq->lock);   // UNLOCK
-    if(status)
+    if (status)
         ERR(status, "unlock");
     else
         DPRINTF(("%s:%s:%d: unlocked\n", __FILE__, __func__, __LINE__));
 
-    if(threadState)
+    if (threadState)
         jq->ThreadState_free(threadState);
 
     DPRINTF(("%s %lu exit\n", __func__, (unsigned long) pthread_self()));
@@ -338,30 +338,30 @@ void JobQueue_noMoreJobs(JobQueue * jq) {
 
     DPRINTF(("%s:%d: entry\n", __func__, __LINE__));
 
-    if(jq->valid != JOBQUEUE_VALID) {
+    if (jq->valid != JOBQUEUE_VALID) {
         fprintf(stderr, "%s:%d: JobQueue not initialized", __func__,
                 __LINE__);
         exit(1);
     }
 
     status = pthread_mutex_lock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "lock");
     else
         DPRINTF(("%s:%s:%d: locked\n", __FILE__, __func__, __LINE__));
 
     jq->acceptingJobs = false;
 
-    if(jq->idle > 0) {
+    if (jq->idle > 0) {
         // Wake workers so they can quit
         DPRINTF(("%s:%d: telling workers to quit\n", __func__, __LINE__));
         status = pthread_cond_broadcast(&jq->wakeWorker);
-        if(status)
+        if (status)
             ERR(status, "broadcast wakeWorker");
     }
 
     status = pthread_mutex_unlock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "unlock");
     else
         DPRINTF(("%s:%s:%d: unlocked\n", __FILE__, __func__, __LINE__));
@@ -375,14 +375,14 @@ void JobQueue_waitOnJobs(JobQueue * jq) {
 
     DPRINTF(("%s:%d: entry\n", __func__, __LINE__));
 
-    if(jq->valid != JOBQUEUE_VALID) {
+    if (jq->valid != JOBQUEUE_VALID) {
         fprintf(stderr, "%s:%d: JobQueue not initialized", __func__,
                 __LINE__);
         exit(1);
     }
 
     status = pthread_mutex_lock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "lock");
     else
         DPRINTF(("%s:%s:%d: locked\n", __FILE__, __func__, __LINE__));
@@ -393,14 +393,14 @@ void JobQueue_waitOnJobs(JobQueue * jq) {
                  __func__, __LINE__, jq->idle, jq->nThreads));
 
         // If any workers are idle, wake one
-        if(jq->idle > 0) {
+        if (jq->idle > 0) {
             status = pthread_cond_signal(&jq->wakeWorker);
-            if(status)
+            if (status)
                 ERR(status, "signal wakeWorker");
         }
 
         status = pthread_cond_wait(&jq->wakeMain, &jq->lock);
-        if(status)
+        if (status)
             ERR(status, "wait wakeMain");
     }
 
@@ -408,16 +408,16 @@ void JobQueue_waitOnJobs(JobQueue * jq) {
     DPRINTF(("%s:%d: queue is empty and all threads are idle\n",
              __func__, __LINE__));
 
-    if(!jq->acceptingJobs) {
+    if (!jq->acceptingJobs) {
         // We're done: wake all workers so they can quit
         DPRINTF(("%s:%d: telling workers to quit\n", __func__, __LINE__));
         status = pthread_cond_broadcast(&jq->wakeWorker);
-        if(status)
+        if (status)
             ERR(status, "broadcast wakeWorker");
     }
 
     status = pthread_mutex_unlock(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "unlock");
     else
         DPRINTF(("%s:%s:%d: unlocked\n", __FILE__, __func__, __LINE__));
@@ -426,7 +426,7 @@ void JobQueue_waitOnJobs(JobQueue * jq) {
 }
 
 void Job_free(Job * job) {
-    if(NULL == job)
+    if (NULL == job)
         return;
     Job_free(job->next);
     free(job);
@@ -435,7 +435,7 @@ void Job_free(Job * job) {
 void JobQueue_free(JobQueue * jq) {
     assert(jq);
 
-    if(jq->valid != JOBQUEUE_VALID) {
+    if (jq->valid != JOBQUEUE_VALID) {
         fprintf(stderr, "%s:%d: JobQueue not initialized", __func__,
                 __LINE__);
         exit(1);
@@ -452,23 +452,23 @@ void JobQueue_free(JobQueue * jq) {
         .tv_nsec = 10000000L    // 1/100 of a second
     };
     status = nanosleep(&t, NULL);
-    if(status)
+    if (status)
         ERR(status, "nanosleep");
 
     status = pthread_attr_destroy(&jq->attr);
-    if(status)
+    if (status)
         ERR(status, "destroy attr");
 
     status = pthread_mutex_destroy(&jq->lock);
-    if(status)
+    if (status)
         ERR(status, "destroy lock");
 
     status = pthread_cond_destroy(&jq->wakeWorker);
-    if(status)
+    if (status)
         ERR(status, "destroy wakeWorker");
 
     status = pthread_cond_destroy(&jq->wakeMain);
-    if(status)
+    if (status)
         ERR(status, "destroy wakeMain");
 
     Job_free(jq->todo);
@@ -498,10 +498,10 @@ int getNumCores(void) {
     nm[1] = HW_AVAILCPU;
     sysctl(nm, 2, &count, &len, NULL, 0);
 
-    if(count < 1) {
+    if (count < 1) {
         nm[1] = HW_NCPU;
         sysctl(nm, 2, &count, &len, NULL, 0);
-        if(count < 1) {
+        if (count < 1) {
             count = 1;
         }
     }

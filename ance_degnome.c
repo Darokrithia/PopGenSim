@@ -32,7 +32,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 	for (int i = 0; i < num_crossover; i++) {
 		crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_size);
 	}
-	if(num_crossover > 0) {
+	if (num_crossover > 0) {
 		int_qsort(crossover_locations, num_crossover);//changed
 	}
 	for (int i = 0; i < num_crossover; i++) {
@@ -48,7 +48,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 		}
 		distance = crossover_locations[i];
 	}
-	if(num_crossover > 0) {
+	if (num_crossover > 0) {
 		diff = chrom_size - crossover_locations[num_crossover-1];
 	}
 	else{

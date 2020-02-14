@@ -12,14 +12,14 @@
 int main(int argc, char **argv) {
 	int verbose = 0;
 
-	if(argc == 2) {
-        if(strncmp(argv[1], "-v", 2) != 0) {
+	if (argc == 2) {
+        if (strncmp(argv[1], "-v", 2) != 0) {
             fprintf(stderr, "usage: xmisc [-v]\n");
             exit(EXIT_FAILURE);
         }
         verbose = 1;
     }
-    else if(argc != 1) {
+    else if (argc != 1) {
         fprintf(stderr, "usage: xmisc [-v]\n");
         exit(EXIT_FAILURE);
     }
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	int a_3[] = {10, 60, 9};
 	int max_3 = 3;
 
-	if(verbose) {
+	if (verbose) {
 		for(int i = 0; i < max_1; i++) {
 			printf("a_1[%u] = %u\n", i, a_1[i]);
 		}
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 	int_qsort(a_2, max_2);//changed
 	int_qsort(a_3, max_3);//changed
 
-	if(verbose) {
+	if (verbose) {
 		for(int i = 0; i < max_1; i++) {
 			printf("a_1[%u] = %u\n", i, a_1[i]);
 		}
