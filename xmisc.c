@@ -13,16 +13,16 @@ int main(int argc, char **argv) {
 	int verbose = 0;
 
 	if (argc == 2) {
-        if (strncmp(argv[1], "-v", 2) != 0) {
-            fprintf(stderr, "usage: xmisc [-v]\n");
-            exit(EXIT_FAILURE);
-        }
-        verbose = 1;
-    }
-    else if (argc != 1) {
-        fprintf(stderr, "usage: xmisc [-v]\n");
-        exit(EXIT_FAILURE);
-    }
+		if (strncmp(argv[1], "-v", 2) != 0) {
+			fprintf(stderr, "usage: xmisc [-v]\n");
+			exit(EXIT_FAILURE);
+		}
+		verbose = 1;
+	}
+	else if (argc != 1) {
+		fprintf(stderr, "usage: xmisc [-v]\n");
+		exit(EXIT_FAILURE);
+	}
 
 	int a_1[] = {5, 4, 3, 10, 10, 0, 6, 2, 16, 1};
 	int max_1 = 10;

@@ -20,37 +20,37 @@ int main(int argc, char **argv) {
 	int seeded =0;
 
 	if (argc == 2) {
-        if (strncmp(argv[1], "-v", 2) != 0) {
-            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
-            exit(EXIT_FAILURE);
-        }
-        verbose = 1;
-    }
+		if (strncmp(argv[1], "-v", 2) != 0) {
+			fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
+			exit(EXIT_FAILURE);
+		}
+		verbose = 1;
+	}
 	else if (argc == 3) {
 		if (strncmp(argv[1], "-s", 2) != 0) {
-            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
-            exit(EXIT_FAILURE);
-        }
+			fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
+			exit(EXIT_FAILURE);
+		}
 		rngseed = (unsigned long) atoi(argv[2]);
 	}
 	else if (argc == 4) {
 		if (strncmp(argv[1], "-v", 2) != 0) {
-            fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
-            exit(EXIT_FAILURE);
-        }
+			fprintf(stderr, "usage: xdegnome [-v] [-s] [0000000000]\n");
+			exit(EXIT_FAILURE);
+		}
 		else if (strncmp(argv[2], "-s", 2) != 0) {		
-            fprintf(stderr, "usage: xdegnome [-v] [-s]  [0000000000]\n");
-            exit(EXIT_FAILURE);
-        }
-        verbose = 1;
+			fprintf(stderr, "usage: xdegnome [-v] [-s]  [0000000000]\n");
+			exit(EXIT_FAILURE);
+		}
+		verbose = 1;
 		seeded = 1;
 		rngseed = (unsigned long) atoi(argv[3]);
 		
 	}
-    else if (argc != 1) {
-        fprintf(stderr, "usage: xdegnome [-v] [-s] [seed]\n");
-        exit(EXIT_FAILURE);
-    }
+	else if (argc != 1) {
+		fprintf(stderr, "usage: xdegnome [-v] [-s] [seed]\n");
+		exit(EXIT_FAILURE);
+	}
 
 	chrom_size = 15;
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 	if (verbose) {
 		printf("pre-mating values:\n");
 		for (int i = 0; i < chrom_size; i++) {
-       	 	printf("Mom: %lf\t Dad: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i]);
+			printf("Mom: %lf\t Dad: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i]);
 		}
 		printf("Mom hat_size: %lf\t Dad hat_size: %f\n", bom_mom->hat_size, bad_dad->hat_size);
 	}
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 	if (verbose) {
 		printf("post-mating values:\n");
 		for (int i = 0; i < chrom_size; i++) {
-       	 	printf("Mom: %lf\t Dad: %f\t Kid: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i], tst_bby->dna_array[i]);
+			printf("Mom: %lf\t Dad: %f\t Kid: %f\n", bom_mom->dna_array[i], bad_dad->dna_array[i], tst_bby->dna_array[i]);
 		}
 		printf("Mom hat_size: %lf\t Dad hat_size: %f\t Kid hat_size: %f\n", bom_mom->hat_size, bad_dad->hat_size, tst_bby->hat_size);
 	}

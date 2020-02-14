@@ -13,10 +13,10 @@
 typedef struct JobQueue JobQueue;
 
 JobQueue   *JobQueue_new(int nthreads, void *threadData,
-                         void *(*ThreadState_new) (void *),
-                         void (*ThreadState_free) (void *));
+						 void *(*ThreadState_new) (void *),
+						 void (*ThreadState_free) (void *));
 void        JobQueue_addJob(JobQueue * jq,
-                            int (*jobfun) (void *, void *), void *param);
+							int (*jobfun) (void *, void *), void *param);
 void        JobQueue_noMoreJobs(JobQueue * jq);
 void        JobQueue_waitOnJobs(JobQueue * jq);
 void        JobQueue_free(JobQueue * jq);

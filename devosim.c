@@ -22,23 +22,23 @@ double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char *usageMsg =
-    "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
-    "\n"
-    "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
-    "is thenumber of generations that the simulation will run,\n"
-    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
-    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
-    "is present, there will be selection, while if \"-u\" is present\n"
-    "all degnomes will contribute to two offspring.\n"
-    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
-    "If \"-v\" is present there will be output at every single\n"
-    "generation, and if \"-r\" is present only percentages will be\n"
-    "printed (you wont get to see the genomes of each degnome).  If\n"
-    "\"-b\" is present, the program will break once all degnomes are\n"
-    "identical. They can be in any order, and not all are needed.\n"
-    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
-    "defualt CR is 2.\n";
+	"Usage:\n"
+	"devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
+	"\n"
+	"\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
+	"is thenumber of generations that the simulation will run,\n"
+	"\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
+	"effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
+	"is present, there will be selection, while if \"-u\" is present\n"
+	"all degnomes will contribute to two offspring.\n"
+	"Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
+	"If \"-v\" is present there will be output at every single\n"
+	"generation, and if \"-r\" is present only percentages will be\n"
+	"printed (you wont get to see the genomes of each degnome).  If\n"
+	"\"-b\" is present, the program will break once all degnomes are\n"
+	"identical. They can be in any order, and not all are needed.\n"
+	"Default CL is 10, default PS is 10, the default G is 1000, and\n"
+	"defualt CR is 2.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-    if (num_threads <= 0) {
+	if (num_threads <= 0) {
 		if (num_threads < 0) {
 			#ifdef DEBUG_MODE
 				fprintf(stderr, "Error invalid number of threads: %u\n", num_threads);
@@ -341,10 +341,10 @@ int main(int argc, char **argv) {
 
 			for (int j = 0; j < pop_size; j++) {
 
-			    pthread_mutex_lock(&seedLock);
+				pthread_mutex_lock(&seedLock);
 				gsl_rng_set(rng, rngseed);
-			    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-	    		pthread_mutex_unlock(&seedLock);
+				rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+				pthread_mutex_unlock(&seedLock);
 
 				int m, d;
 
@@ -388,9 +388,9 @@ int main(int argc, char **argv) {
 			for (int j = 0; j < pop_size; j++) {
 				pthread_mutex_lock(&seedLock);
 				gsl_rng_set(rng, rngseed);
-			    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+				rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
 
-	    		pthread_mutex_unlock(&seedLock);
+				pthread_mutex_unlock(&seedLock);
 
 				int index_m = (int) gsl_rng_uniform_int (rng, mom_max);
 				int index_d = (int) gsl_rng_uniform_int (rng, dad_max);
@@ -403,7 +403,7 @@ int main(int argc, char **argv) {
 				//reduce the pool of available degnomes
 				//in order to make sure everybody get's two chances to mate
 				//one as a dad and one as a mom
-			    
+				
 				int temp_m = moms[index_m];
 				int temp_d = dads[index_d];
 				moms[index_m] = moms[mom_max-1];
