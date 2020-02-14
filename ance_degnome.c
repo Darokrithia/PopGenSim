@@ -42,7 +42,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 			memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 		}
-		else{
+		else {
 			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 		}
@@ -51,7 +51,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 	if (num_crossover > 0) {
 		diff = chrom_size - crossover_locations[num_crossover-1];
 	}
-	else{
+	else {
 		diff = chrom_size;
 	}
 
@@ -59,7 +59,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 		memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 		memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 	}
-	else{
+	else {
 		memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 		memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 	}

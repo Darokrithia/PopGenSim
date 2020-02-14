@@ -196,12 +196,12 @@ int main(int argc, char **argv) {
 			else if (strcmp(argv[i], "-b") == 0) {
 				break_at_zero_diversity = 1;
 			}
-			else{
+			else {
 				printf("\n");
 				usage();
 			}
 		}
-		else{
+		else {
 			usage();
 		}
 	}
@@ -264,7 +264,7 @@ int main(int argc, char **argv) {
 			if (i == j) {
 				percent_decent[i][j] = 1;
 			}
-			else{
+			else {
 				percent_decent[i][j] = 0;
 			}
 		}
@@ -280,7 +280,7 @@ int main(int argc, char **argv) {
 				}
 				printf("\n");
 			}
-			else{
+			else {
 				printf("%lf\n", parents[i].dna_array[0]);
 			}
 
@@ -291,7 +291,7 @@ int main(int argc, char **argv) {
 				}
 				printf("\n");
 			}
-			else{
+			else {
 				printf("%u\n", parents[i].GOI_array[0]);
 			}
 		}
@@ -319,7 +319,7 @@ int main(int argc, char **argv) {
 			if (selective) {
 				fit = get_fitness(parents[0].hat_size);
 			}
-			else{
+			else {
 				fit = 100;			//in runs withoutslection, everybody is equally fit
 			}
 
@@ -331,7 +331,7 @@ int main(int argc, char **argv) {
 				if (selective) {
 					fit = get_fitness(parents[j].hat_size);
 				}
-				else{
+				else {
 					fit = 100;
 				}
 
@@ -370,7 +370,7 @@ int main(int argc, char **argv) {
 
 				JobQueue_addJob(jq, jobfunc, dat + j);			}
 		}
-		else{
+		else {
 			// printf("uniform!!!\n");
 
 			int moms[pop_size];
@@ -440,7 +440,7 @@ int main(int argc, char **argv) {
 					if (selective) {
 						printf("\nTOTAL HAT SIZE: %lg\n\n", parents[k].hat_size);
 					}
-					else{
+					else {
 						printf("\n");
 					}
 
@@ -479,7 +479,7 @@ int main(int argc, char **argv) {
 	if (broke_early) {
 		printf("Generation %u:\n", final_gen);
 	}
-	else{
+	else {
 		printf("Generation %u:\n", num_gens);
 	}
 	if (!reduced) {
@@ -509,7 +509,7 @@ int main(int argc, char **argv) {
 			if (selective) {
 				printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 			}
-			else{
+			else {
 				printf("\n\n");
 			}
 		}

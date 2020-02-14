@@ -115,12 +115,12 @@ int main(int argc, char **argv) {
 			else if (strcmp(argv[i], "-o") == 0) {
 				sscanf(argv[i+1], "%u", &crossover_rate);
 			}
-			else{
+			else {
 				printf("\n");
 				usage();
 			}
 		}
-		else{
+		else {
 			printf("\n");
 			usage();
 		}
