@@ -57,15 +57,15 @@ XDEGNOME := xdegnome.o degnome.o misc.o
 xdegnome : $(XDEGNOME)
 	$(CC) $(CFLAGS) -o $@ $(XDEGNOME) $(lib)
 
-#test misc.c
-XMISC := xmisc.o misc.o
-xmisc : $(XMISC)
-	$(CC) $(CFLAGS) -o $@ $(XMISC) $(lib)
-
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o
 xjobqueue : $(XJOBQUEUE)
 	$(CC) $(CFLAGS) -o $@ $(XJOBQUEUE) $(lib)
+
+#test misc.c
+XMISC := xmisc.o misc.o
+xmisc : $(XMISC)
+	$(CC) $(CFLAGS) -o $@ $(XMISC) $(lib)
 
 # Make dependencies file
 depend : *.c *.h
