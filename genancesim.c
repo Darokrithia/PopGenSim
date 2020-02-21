@@ -154,11 +154,29 @@ int main(int argc, char **argv) {
 	reduced = 0;
 	break_at_zero_diversity = 0;
 
-	if (argc > 13) {
-		usage();
-	}
 	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-') {
+		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+			int j = 1;
+			while (argv[i][j] != '\0') {
+				if (argv[i][j] == 'b') {
+					break_at_zero_diversity = 1;
+				}
+				else if (argv[i][j] == 'h') {
+					help_menu();
+				}
+				else if (argv[i][j] == 'r') {
+					reduced = 1;
+				}
+				else if (argv[i][j] == 'v') {
+					verbose = 1;
+				}
+				else {
+					usage();
+				}
+				j++;
+			}
+		}
+		else if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
 				sscanf(argv[i+1], "%u", &chrom_size);
 				i++;
