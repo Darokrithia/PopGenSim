@@ -13,7 +13,10 @@
 
 */
 
-#import "fitfunc.h"
+#include "fitfunc.h"
+#include "string.h"
+#include "math.h"
+#include "stdlib.h"
 
 void set_function(char* func_name) {
 	if(strcmp(func_name, "linear")) {
@@ -33,23 +36,23 @@ void set_function(char* func_name) {
 	}
 }
 
-double linear_returns(double input) {
-	return input;
+double linear_returns(double x) {
+	return x;
 }
 
-double sqrt_returns(double input) {
-	return sqrt(input);
+double sqrt_returns(double x) {
+	return sqrt(x);
 }
 
-double close_returns(double input) {
-	return (target_num - abs(target_num - input));
+double close_returns(double x) {
+	return (target_num - abs(target_num - x));
 }
 
-double ceiling_returns(double input) {
-	if (input < target_num) {
-		return input;
+double ceiling_returns(double x) {
+	if (x < target_num) {
+		return x;
 	}
 	else {
-		(target_num) - 10 * abs(target_num - input);
+		return (target_num) - 10 * abs(target_num - x);
 	}
 }
