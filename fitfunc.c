@@ -6,14 +6,14 @@
 */
 
 /**
-@file fitness_function.c
-@page fitness_function
+@file fitfunc.c
+@page fitfunc
 @author Daniel R. Tabin
 @brief Transforms fitness via multiple functions
 
 */
 
-#import "fitness_function.h"
+#import "fitfunc.h"
 
 void set_function(char* func_name) {
 	if(strcmp(func_name, "linear")) {
