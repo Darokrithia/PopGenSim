@@ -112,31 +112,31 @@ int main(int argc, char **argv) {
 	mutation_effect = 2;
 	crossover_rate = 2;
 
-	for (int i = 1; i < argc; i += 1) {
+	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-c") == 0) {
 				sscanf(argv[i+1], "%u", &chrom_size);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-p") == 0) {
 				sscanf(argv[i+1], "%u", &pop_size);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-g") == 0) {
 				sscanf(argv[i+1], "%u", &num_gens);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-m") == 0) {
 				sscanf(argv[i+1], "%u", &mutation_rate);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-e") == 0) {
 				sscanf(argv[i+1], "%u", &mutation_effect);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-o") == 0) {
 				sscanf(argv[i+1], "%u", &crossover_rate);
-				i += 1;
+				i++;
 			}
 			else if (strcmp(argv[i], "-h") == 0) {
 				help_menu();
