@@ -18,17 +18,17 @@
 #include "math.h"
 #include "stdlib.h"
 
-void set_function(char* func_name) {
-	if(strcmp(func_name, "linear")) {
+void set_function(const char* func_name) {
+	if (strcmp(func_name, "linear") == 0) {
 		func_to_run = &linear_returns;
 	}
-	else if (strcmp(func_name, "sqrt")){
+	else if (strcmp(func_name, "sqrt") == 0){
 		func_to_run = &sqrt_returns;
 	}
-	else if (strcmp(func_name, "close")){
+	else if (strcmp(func_name, "close") == 0){
 		func_to_run = &close_returns;
 	}
-	else if (strcmp(func_name, "ceiling")){
+	else if (strcmp(func_name, "ceiling") == 0){
 		func_to_run = &ceiling_returns;
 	}
 	else {
@@ -53,6 +53,6 @@ double ceiling_returns(double x) {
 		return x;
 	}
 	else {
-		return (target_num) - 10 * abs(target_num - x);
+		return (target_num) - 5 * abs(target_num - x);
 	}
 }

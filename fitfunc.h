@@ -9,12 +9,12 @@ double target_num;
 fit_func_ptr func_to_run;
 //(*func_to_run)(hat_height)
 
-void set_function(char*);
+void set_function(const char*);
 
 
-double linear_returns(double input);
-double sqrt_returns(double input);
-double close_returns(double input);
-double ceiling_returns(double input);
+double linear_returns(double x);
+double sqrt_returns(double x);
+double close_returns(double x);
+double ceiling_returns(double x);
 
 #endif
