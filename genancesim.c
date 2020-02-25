@@ -155,7 +155,9 @@ int main(int argc, char **argv) {
 	break_at_zero_diversity = 0;
 
 	for (int i = 1; i < argc; i++) {
+		printf("HERE1\n");
 		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+			printf("HERE2\n");
 			int j = 1;
 			while (argv[i][j] != '\0') {
 				if (argv[i][j] == 'b') {
@@ -169,6 +171,18 @@ int main(int argc, char **argv) {
 				}
 				else if (argv[i][j] == 'v') {
 					verbose = 1;
+				}
+				else if (strcmp(argv[i], "-s") == 0) {
+					if (uniform) {
+						usage();
+					}
+					selective = 1;
+				}
+				else if (strcmp(argv[i], "-u") == 0) {
+					if (selective) {
+						usage();
+					}
+					uniform = 1;
 				}
 				else {
 					usage();

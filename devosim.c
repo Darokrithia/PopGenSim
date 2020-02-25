@@ -181,6 +181,18 @@ int main(int argc, char **argv) {
 				else if (argv[i][j] == 'v') {
 					verbose = 1;
 				}
+				else if (strcmp(argv[i], "-s") == 0) {
+					if (uniform) {
+						usage();
+					}
+					selective = 1;
+				}
+				else if (strcmp(argv[i], "-u") == 0) {
+					if (selective) {
+						usage();
+					}
+					uniform = 1;
+				}
 				else {
 					usage();
 				}
