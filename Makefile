@@ -8,7 +8,7 @@ opt :=  -O0 -fno-inline-functions      # For debugging
 
 targets := devosim polygensim genancesim
 
-tests := xdegnome xmisc xjobqueue
+tests := xdegnome xfitfunc xjobqueue xmisc 
 
 CC := gcc
 
@@ -52,20 +52,25 @@ GENANCESIM := genancesim.o degnome.o misc.o jobqueue.o
 genancesim : $(GENANCESIM)
 	$(CC) $(CFLAGS) -o $@ $(GENANCESIM) $(lib)
 
+# test fitfunc.c
+XFITFUNC := xfitfunc.o fitfunc.o
+xfitfunc : $(XFITFUNC)
+	$(CC) $(CFLAGS) -o $@ $(XFITFUNC) $(lib)
+
 # test degnome.c
 XDEGNOME := xdegnome.o degnome.o misc.o
 xdegnome : $(XDEGNOME)
 	$(CC) $(CFLAGS) -o $@ $(XDEGNOME) $(lib)
 
-#test misc.c
-XMISC := xmisc.o misc.o
-xmisc : $(XMISC)
-	$(CC) $(CFLAGS) -o $@ $(XMISC) $(lib)
-
 # test jobqueue.c
 XJOBQUEUE := xjobqueue.o jobqueue.o
 xjobqueue : $(XJOBQUEUE)
 	$(CC) $(CFLAGS) -o $@ $(XJOBQUEUE) $(lib)
+
+#test misc.c
+XMISC := xmisc.o misc.o
+xmisc : $(XMISC)
+	$(CC) $(CFLAGS) -o $@ $(XMISC) $(lib)
 
 # Make dependencies file
 depend : *.c *.h
