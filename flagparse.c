@@ -3,13 +3,12 @@
 
 int parse_flags(int argc, char ** argv, int * flags) {
 
-
 	// Flags formatting:
 	// flags[0] ->  	Caller program (0: popgensim, 1: genancesim, 2: devosim)
-	// flags[1] ->		-b	break						(Default: None)
-	// flags[2] ->		-h	help						(Default: None)
-	// flags[3] ->		-r	reduced						(Default: None)
-	// flags[4] ->		-v 	verbose						(Default: None)
+	// flags[1] ->		-b	break						(Default:  Off)
+	// flags[2] ->		-h	help						(Default:  Off)
+	// flags[3] ->		-r	reduced						(Default:  Off)
+	// flags[4] ->		-v 	verbose						(Default:  Off)
 	// flags[5] ->		-s | -u selective / uniform		(Default: None)
 	// flags[6] ->		-c chromosome_length			(Default:   10)
 	// flags[7] ->		-e mutation_effect				(Default:    2)
@@ -17,6 +16,110 @@ int parse_flags(int argc, char ** argv, int * flags) {
 	// flags[9] ->		-m mutation_rate				(Default:    1)
 	// flags[10] ->		-o crossover_rate				(Default:    2)
 	// flags[11] ->		-p population_size				(Default:   10)
+
+	flags[1] = 0;
+	flags[2] = 0;
+	flags[3] = 0;
+	flags[4] = 0;
+	flags[5] = 0;
+	flags[6] = 10;
+	flags[7] = 2;
+	flags[8] = 1000;
+	flags[9] = 1;
+	flags[10] = 2;
+	flags[11] = 10;
+
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+			int j = 1;
+			while (argv[i][j] != '\0') {
+				if (argv[i][j] == 'b') {
+					break_at_zero_diversity = 1;
+				}
+				else if (argv[i][j] == 'h') {
+					flags[2] = 1;
+				}
+				else if (argv[i][j] == 'r') {
+					flags[3] = 1;
+				}
+				else if (argv[i][j] == 'v') {
+					flags[4] = 1;
+				}
+				else if (strcmp(argv[i], "-s") == 0) {
+					if (flags[5] != 1) {
+						return -1;
+					}
+					flags[5] = 1;
+				}
+				else if (strcmp(argv[i], "-u") == 0) {
+					if (flags[5] != 2) {
+						return -1;
+					}
+					flags[5] = 2;
+				}
+				else {
+					return -1;
+				}
+				j++;
+			}
+		}
+		else if (argv[i][0] == '-') {
+			if (strcmp(argv[i], "-b") == 0) {
+				flags[1] = 1;
+			}
+			else if (strcmp(argv[i], "-h") == 0) {
+				flags[2] = 1;
+			}
+			else if (strcmp(argv[i], "-r") == 0) {
+				flags[3] = 1;
+			}
+			else if (strcmp(argv[i], "-v") == 0) {
+				flags[4] = 1;
+			}
+			else if (strcmp(argv[i], "-s") == 0) {
+				if (flags[5] != 1) {
+					return -1;
+				}
+				flags[5] = 1;
+			}
+			else if (strcmp(argv[i], "-u") == 0) {
+				if (flags[5] != 2) {
+					return -1;
+				}
+				flags[5] = 2;
+			}
+			else if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
+				sscanf(argv[i+1], "%u", &flags[6]);
+				i++;
+			}
+			else if (strcmp(argv[i], "-e") == 0) {
+				sscanf(argv[i+1], "%u", &flags[7]);
+				i++;
+			}
+			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)) {
+				sscanf(argv[i+1], "%u", &flags[8]);
+				i++;
+			}
+			else if (strcmp(argv[i], "-m") == 0) {
+				sscanf(argv[i+1], "%u", &flags[9]);
+				i++;
+			}
+			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)) {
+				sscanf(argv[i+1], "%u", &flags[10]);
+				i++;
+			}
+			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)) {
+				sscanf(argv[i+1], "%u", &flags[11]);
+				i++;
+			}
+			else {
+				return -1;
+			}
+		}
+		else {
+			return -1;
+		}
+	}
 
 	return 0;
 }
