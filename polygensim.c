@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "degnome.h"
+#include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -105,50 +106,24 @@ double get_fitness(double hat_size) {
 
 int main(int argc, char **argv) {
 
-	chrom_size = 10;
-	pop_size = 10;
-	num_gens = 1000;
-	mutation_rate = 1;
-	mutation_effect = 2;
-	crossover_rate = 2;
+	int * flags = (int*)calloc(12, sizeof(int));
 
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-') {
-			if (strcmp(argv[i], "-c") == 0) {
-				sscanf(argv[i+1], "%u", &chrom_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-p") == 0) {
-				sscanf(argv[i+1], "%u", &pop_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-g") == 0) {
-				sscanf(argv[i+1], "%u", &num_gens);
-				i++;
-			}
-			else if (strcmp(argv[i], "-m") == 0) {
-				sscanf(argv[i+1], "%u", &mutation_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-e") == 0) {
-				sscanf(argv[i+1], "%u", &mutation_effect);
-				i++;
-			}
-			else if (strcmp(argv[i], "-o") == 0) {
-				sscanf(argv[i+1], "%u", &crossover_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-h") == 0) {
-				help_menu();
-			}
-			else {
-				usage();
-			}
-		}
-		else {
-			usage();
-		}
+	flags[0] = 1;
+
+	if (parse_flags(argc, argv, flags) == -1) {
+		usage();
 	}
+
+	if (flags[2] == 1) {
+		help_menu();
+	}
+
+	chrom_size = flags[6];
+	mutation_effect = flags[7];
+	num_gens = flags[8];
+	mutation_rate = flags[9];
+	crossover_rate = flags[10];
+	pop_size = flags[11];
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
