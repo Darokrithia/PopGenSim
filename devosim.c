@@ -581,6 +581,8 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < pop_size; i++) {
 		free(parents[i].dna_array);
 		free(children[i].dna_array);
+		free(parents[i].GOI_array);
+		free(children[i].GOI_array);
 		parents[i].hat_size = 0;
 
 		free(percent_decent[i]);
