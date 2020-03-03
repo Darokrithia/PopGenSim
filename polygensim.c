@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "degnome.h"
+#include "fitfunc.h"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -19,7 +20,6 @@ struct JobData {
 void usage(void);
 void help_menu(void);
 int jobfunc(void* p, void* tdat);
-double get_fitness(double hat_size);
 
 const char* usageMsg =
 	"Usage: polygensim [-h] [-c chromosome_length] [-e mutation_effect]\n"
@@ -97,10 +97,6 @@ void usage(void) {
 void help_menu(void) {
 	fputs(helpMsg, stderr);
 	exit(EXIT_FAILURE);
-}
-
-double get_fitness(double hat_size) {
-	return hat_size;
 }
 
 int main(int argc, char **argv) {

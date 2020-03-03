@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "ance_degnome.h"
+#include "fitfunc.h"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -19,7 +20,6 @@ struct JobData {
 void usage(void);
 void help_menu(void);
 int jobfunc(void* p, void* tdat);
-double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char* usageMsg =
@@ -109,10 +109,6 @@ int jobfunc(void* p, void* tdat) {
 	Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
 
 	return 0;		//exited without error
-}
-
-double get_fitness(double hat_size) {
-	return hat_size;
 }
 
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity) {

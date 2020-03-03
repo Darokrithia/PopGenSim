@@ -56,3 +56,7 @@ double ceiling_returns(double x) {
 		return (target_num) - 5 * abs(target_num - x);
 	}
 }
+
+double get_fitness(double hat_size) {
+	return (*func_to_run)(hat_size);
+}
