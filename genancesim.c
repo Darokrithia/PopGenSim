@@ -17,27 +17,36 @@ struct JobData {
 };
 
 void usage(void);
+void help_menu(void);
 int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
-const char *usageMsg =
-	"Usage:\n"
-	"genancesim [-c CL] [-p PS] [-g G] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
-	"\n"
-	"\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
-	"is thenumber of generations that the simulation will run,\n"
-	"and \"CR\" is crossover rate.  If \"-s\" is present, there will\n"
-	"be selection, while if \"-u\" is present all degnomes will\n"
-	"contribute to two offspring.  Note: \"-s\" and \"-u\" cannot be\n"
-	"simultaneously active. If \"-v\" is present there will be\n"
-	"output at every single generation, and if \"-r\" is present\n"
-	"only percentages will be printed (you wont get to see the"
-	"genomes of each degnome).  If \"-b\" is present, the program\n"
-	"will break once all degnomes are identical."
-	"They can be in any order, and not all are needed. Default CL\n"
-	"is 10, default PS is 10, the default G is 1000, and defualt\n"
-	"CR is 2.\n";
+const char* usageMsg =
+	"Usage: genancesim [-bhrv] [-s | -u] [-c chromosome_length]\n"
+	"\t\t  [-g num_generations] [-o crossover_rate]\n"
+	"\t\t  [-p population_size]\n";
+
+const char* helpMsg =
+	"OPTIONS\n"
+	"\t -b\t Simulation will stop when all degnomes are identical.\n\n"
+	"\t -c chromosome_length\n"
+	"\t\t Set chromosome length for the current simulation.\n"
+	"\t\t Default chromosome length is 10.\n\n"
+	"\t -g num_generations\n"
+	"\t\t Set how many generations this simulation will run for.\n"
+	"\t\t Default number of generations is 1000.\n\n"
+	"\t -h\t Display this help menu.\n\n"
+	"\t -o crossover_rate\n"
+	"\t\t Set the crossover rate for the current simulation.\n"
+	"\t\t Default crossover rate is 2.\n\n"
+	"\t -p population_size\n"
+	"\t\t Set the population size for the current simulation.\n"
+	"\t\t Default population size is 10.\n\n"
+	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
+	"\t -s\t Degnome selection will occur.\n\n"
+	"\t -u\t All degnomes contribute to two offspring.\n\n"
+	"\t -v\t Output will be given for every generation.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -88,6 +97,10 @@ void usage(void) {
 	exit(EXIT_FAILURE);
 }
 
+void help_menu(void) {
+	fputs(helpMsg, stderr);
+	exit(EXIT_FAILURE);
+}
 
 double get_fitness(double hat_size) {
 	return hat_size;
@@ -141,12 +154,41 @@ int main(int argc, char **argv) {
 	reduced = 0;
 	break_at_zero_diversity = 0;
 
-	if (argc > 13) {
-		printf("\n");
-		usage();
-	}
 	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-') {
+		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+			int j = 1;
+			while (argv[i][j] != '\0') {
+				if (argv[i][j] == 'b') {
+					break_at_zero_diversity = 1;
+				}
+				else if (argv[i][j] == 'h') {
+					help_menu();
+				}
+				else if (argv[i][j] == 'r') {
+					reduced = 1;
+				}
+				else if (argv[i][j] == 'v') {
+					verbose = 1;
+				}
+				else if (strcmp(argv[i], "-s") == 0) {
+					if (uniform) {
+						usage();
+					}
+					selective = 1;
+				}
+				else if (strcmp(argv[i], "-u") == 0) {
+					if (selective) {
+						usage();
+					}
+					uniform = 1;
+				}
+				else {
+					usage();
+				}
+				j++;
+			}
+		}
+		else if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
 				sscanf(argv[i+1], "%u", &chrom_size);
 				i++;
@@ -184,8 +226,10 @@ int main(int argc, char **argv) {
 			else if (strcmp(argv[i], "-b") == 0) {
 				break_at_zero_diversity = 1;
 			}
+			else if (strcmp(argv[i], "-h") == 0) {
+				help_menu();
+			}
 			else {
-				printf("\n");
 				usage();
 			}
 		}
