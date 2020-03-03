@@ -30,7 +30,7 @@ const char* helpMsg =
 	"OPTIONS\n"
 	"\t -c chromosome_length\n"
 	"\t\t Set chromosome length for the current simulation.\n"
-	"\t\t Default chromosome length is 50.\n\n"
+	"\t\t Default chromosome length is 10.\n\n"
 	"\t -e mutation_effect\n"
 	"\t\t Set how much a mutation will effect a gene on average.\n"
 	"\t\t Default mutation effect is 2.\n\n"
@@ -46,7 +46,7 @@ const char* helpMsg =
 	"\t\t Default crossover rate is 2.\n\n"
 	"\t -p population_size\n"
 	"\t\t Set the population size for the current simulation.\n"
-	"\t\t Default population size is 100.\n";
+	"\t\t Default population size is 10.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed = 0;
@@ -105,8 +105,8 @@ double get_fitness(double hat_size) {
 
 int main(int argc, char **argv) {
 
-	chrom_size = 50;
-	pop_size = 100;
+	chrom_size = 10;
+	pop_size = 10;
 	num_gens = 1000;
 	mutation_rate = 1;
 	mutation_effect = 2;

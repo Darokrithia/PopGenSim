@@ -153,9 +153,9 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 int main(int argc, char **argv) {
 
-	chrom_size = 20;
-	pop_size = 30;
-	num_gens = 60;
+	chrom_size = 10;
+	pop_size = 10;
+	num_gens = 1000;
 	mutation_rate = 1;
 	mutation_effect = 2;
 	crossover_rate = 2;
