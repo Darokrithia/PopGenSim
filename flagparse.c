@@ -49,13 +49,13 @@ int parse_flags(int argc, char ** argv, int * flags) {
 				else if (argv[i][j] == 'v') {
 					flags[4] = 1;
 				}
-				else if (strcmp(argv[i], "-s") == 0) {
+				else if (strcmp(argv[i], "s") == 0) {
 					if (flags[5] != 1) {
 						return -1;
 					}
 					flags[5] = 1;
 				}
-				else if (strcmp(argv[i], "-u") == 0) {
+				else if (strcmp(argv[i], "u") == 0) {
 					if (flags[5] != 2) {
 						return -1;
 					}
