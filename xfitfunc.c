@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 	x = 100;
 	set_function("linear");
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf = %lf\n", x,y);
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
 	set_function("sqrt");
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("sqrt(%lf) = %lf\n", x,y);
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
 	target_num = 100;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose) {
 		printf("%lf is \"%lf close\" to %lf\n", x, y, target_num);
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
 	target_num = 90;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf is \"%lf close\" to %lf\n", x, y, target_num);
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
 	target_num = 110;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf is \"%lf close\" to %lf\n", x, y, target_num);
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 
 	target_num = 100;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf gets a score of %lf for %lf\n", x, y, target_num);
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 
 	target_num = 90;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf gets a score of %lf for %lf\n", x, y, target_num);
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
 	target_num = 110;
 
-	y = (*func_to_run)(x);
+	y = get_fitness(x);
 
 	if (verbose){
 		printf("%lf gets a score of %lf for %lf\n", x, y, target_num);

@@ -18,6 +18,8 @@
 #include "math.h"
 #include "stdlib.h"
 
+fit_func_ptr func_to_run = &linear_returns;
+
 void set_function(const char* func_name) {
 	if (strcmp(func_name, "linear") == 0) {
 		func_to_run = &linear_returns;
