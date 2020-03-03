@@ -4,7 +4,7 @@
 int parse_flags(int argc, char ** argv, int * flags) {
 
 	// Flags formatting:
-	// flags[0] ->  	Caller program (0: popgensim, 1: genancesim, 2: devosim)
+	// flags[0] ->  	Caller program (1: popgensim, 2: genancesim, 3: devosim)
 	// flags[1] ->		-b	break						(Default:  Off)
 	// flags[2] ->		-h	help						(Default:  Off)
 	// flags[3] ->		-r	reduced						(Default:  Off)
@@ -16,6 +16,10 @@ int parse_flags(int argc, char ** argv, int * flags) {
 	// flags[9] ->		-m mutation_rate				(Default:    1)
 	// flags[10] ->		-o crossover_rate				(Default:    2)
 	// flags[11] ->		-p population_size				(Default:   10)
+
+	if (flags[0] == 0) {
+		return -1;
+	}
 
 	flags[1] = 0;
 	flags[2] = 0;
@@ -34,7 +38,7 @@ int parse_flags(int argc, char ** argv, int * flags) {
 			int j = 1;
 			while (argv[i][j] != '\0') {
 				if (argv[i][j] == 'b') {
-					break_at_zero_diversity = 1;
+					flags[1] = 1;
 				}
 				else if (argv[i][j] == 'h') {
 					flags[2] = 1;
