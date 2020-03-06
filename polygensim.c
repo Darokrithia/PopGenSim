@@ -125,6 +125,8 @@ int main(int argc, char **argv) {
 	crossover_rate = flags[10];
 	pop_size = flags[11];
 
+	free(flags);
+
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
 			#ifdef DEBUG_MODE
