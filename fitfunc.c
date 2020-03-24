@@ -3,6 +3,8 @@
  NOTE: it wouuld be very nice if this compartment had its own
  usage which could / would be called by anything that uses this
 
+Also add command line args and testing for seeding and threading
+
 */
 
 /**
