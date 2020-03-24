@@ -1,40 +1,26 @@
 # header
 
-## Step 0: Install WSL
-
-
 [how to link](https://github.com/michaeltreat/Windows-Subsystem-For-Linux-Setup-Guide)
 
-## Step 1: Install GSL 
-```
-code block 
-```
+# DevoSim
 
-## Step 2: Run MakeFile
-```
-make
-```
-
-## DevoSim
-
-#Notable features
+## Notable features
 
 Simulation will stop when all degnomes are identical.
 
-#Commands
+# Commands
 
-#-c chromosome_length
+## -c chromosome_length
 Set chromosome length for the current simulation.
 Default chromosome length is 10.
 
 
-#-e mutation_effect
+## -e mutation_effect
 Set how much a mutation will effect a gene on average.
 Default mutation effect is 2.
 
 
-'''-g'''
- num_generations
+```-g num_generations```
 Set how many generations this simulation will run for.
 Default number of generations is 1000.
 
