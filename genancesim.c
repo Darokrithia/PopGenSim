@@ -145,11 +145,9 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 int main(int argc, char **argv) {
 
-	int * flags = (int*)calloc(12, sizeof(int));
+	int * flags = NULL;
 
-	flags[0] = 2;
-
-	if (parse_flags(argc, argv, flags) == -1) {
+	if (parse_flags(argc, argv, 3, flags) == -1) {
 		usage();
 	}
 

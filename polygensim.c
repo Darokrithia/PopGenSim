@@ -106,11 +106,9 @@ double get_fitness(double hat_size) {
 
 int main(int argc, char **argv) {
 
-	int * flags = (int*)calloc(12, sizeof(int));
+	int * flags = NULL;
 
-	flags[0] = 1;
-
-	if (parse_flags(argc, argv, flags) == -1) {
+	if (parse_flags(argc, argv, 1, flags) == -1) {
 		usage();
 	}
 
