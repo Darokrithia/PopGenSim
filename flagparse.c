@@ -1,7 +1,7 @@
 #include "flagparse.h"
 #include <string.h>
 
-int parse_flags(int argc, char ** argv, int caller, int * flags) {
+int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 
 	// Flags formatting:
 	// flags[0] ->  	Caller program (1: popgensim, 2: genancesim, 3: devosim)
@@ -21,7 +21,7 @@ int parse_flags(int argc, char ** argv, int caller, int * flags) {
 		return -1;
 	}
 
-	flags = (int*)calloc(12, sizeof(int));
+	int * flags = (int*)calloc(12, sizeof(int));
 
 	flags[0] = caller;
 	flags[1] = 0;
@@ -127,6 +127,8 @@ int parse_flags(int argc, char ** argv, int caller, int * flags) {
 			return -1;
 		}
 	}
+
+	*ret_flags = flags;
 
 	return 0;
 }
