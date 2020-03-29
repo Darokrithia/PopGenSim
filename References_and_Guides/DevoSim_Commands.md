@@ -1,7 +1,7 @@
 
 # DevoSim Commands
 
-```-b Simulation will stop when all degnomes are identical.``
+```-b Simulation will stop when all degnomes are identical.```
 
 ```-c chromosome_length```
 
