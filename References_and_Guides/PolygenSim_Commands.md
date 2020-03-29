@@ -15,7 +15,9 @@
 - Set how many generations this simulation will run for.
 - Default number of generations is 1000.
 
-```-h Display this help menu.```
+```-h help```
+
+- Displays this guide in program.
 
 ```-m mutation_rate```
 
