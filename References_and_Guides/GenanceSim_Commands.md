@@ -1,6 +1,8 @@
 # GenAnce Commands
 
-```-b Simulation will stop when all degnomes are identical.```
+```-b```
+
+- Simulation will stop when all degnomes are identical.
 
 ```-c chromosome_length```
 
@@ -12,7 +14,9 @@
 - Set how many generations this simulation will run for.
 - Default number of generations is 1000.
 
-```-h Display this help menu.```
+```-h ```
+
+- Displays this guide in program.
 
 ```-o crossover_rate```
 
@@ -24,10 +28,16 @@
 - Set the population size for the current simulation.
 - Default population size is 10.
 
-```-r Only show percentages of descent from the original genomes.```
+```-r```
 
-```-s Degnome selection will occur.```
+- Only show percentages of descent from the original genomes.
 
-```-u All degnomes contribute to two offspring.```
+```-s```
 
-```-v Output will be given for every generation.```
+- Degnome selection will occur.
+
+```-u```
+- All degnomes contribute to two offspring.
+
+```-v```
+- Output will be given for every generation.
