@@ -95,5 +95,15 @@ int main(int argc, char **argv) {
 		printf("%lf gets a score of %lf for %lf\n", x, y, target_num);
 	}
 
+	set_function("logarithmic");
+
+	y = (*func_to_run)(x);
+
+	if (verbose){
+		printf("log(%lf) = %lf\n", x,y);
+	}
+
+
+
 	printf("All tests for xfitfunc completed\n");
 }

@@ -56,3 +56,7 @@ double ceiling_returns(double x) {
 		return (target_num) - 5 * abs(target_num - x);
 	}
 }
+
+double logarithmic_returns(double x) {
+	return log(x);
+}
