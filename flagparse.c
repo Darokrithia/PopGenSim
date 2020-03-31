@@ -36,6 +36,8 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	flags[10] = 2;
 	flags[11] = 10;
 
+    *ret_flags = flags;
+
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
 			int j = 1;
@@ -127,8 +129,6 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 			return -1;
 		}
 	}
-
-	*ret_flags = flags;
 
 	return 0;
 }
