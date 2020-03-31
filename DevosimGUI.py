@@ -171,7 +171,27 @@ def processDataForFigure(inputData, dgnumber, population, chromosomeLength, desi
     return x, y, xlabel
 
 def updateFigure(window):
-    sns.set(context="talk", style="white", palette="muted") # Future feature idea: make these user-set
+    
+    context = devosimGUI.getOptionBox("Context")
+    style = devosimGUI.getOptionBox("Style")
+
+    if(context == "Talk"):
+        sns.set(context="talk")
+    elif(context == "Paper"):
+        sns.set(context="paper")
+    elif(context == "Poster"):
+        sns.set(context="poster")
+
+    if(style == "White"):
+        sns.set(style="white", palette="muted")
+    elif(style == "Dark"):
+        sns.set(style="dark", palette="muted")
+    elif(style == "Whitegrid"):
+        sns.set(style="whitegrid", palette="muted")
+    elif(style == "Darkgrid"):
+        sns.set(style="darkgrid", palette="muted")
+    elif(style == "Ticks"):
+        sns.set(style="ticks", palette="muted")
 
     # Clear the figure of anything it may be currently showing.
     window.fig.clear()
@@ -200,8 +220,21 @@ def updateFigure(window):
     #print(x)
     #print(y)
 
+    palette = devosimGUI.getOptionBox("Palette")
+    
     axis1 = window.fig.add_subplot(111)
-    sns.barplot(x=x, y=y[window.displayIndex], palette="rocket", ax=axis1)
+    if(palette == "Purple"):
+        sns.barplot(x=x, y=y[window.displayIndex], palette="rocket", ax=axis1)
+    elif(palette == "Blue"):
+        sns.barplot(x=x, y=y[window.displayIndex], palette="Blues", ax=axis1)
+    elif(palette == "Green"):
+        sns.barplot(x=x, y=y[window.displayIndex], palette="BuGn_r", ax=axis1)
+    elif(palette == "Teal"):
+        sns.barplot(x=x, y=y[window.displayIndex], palette="GnBu_d", ax=axis1)
+    elif(palette == "Rainbow"):
+        sns.barplot(x=x, y=y[window.displayIndex], palette="Paired", ax=axis1)
+    
+    
     axis1.axhline(0, color="k", clip_on=False)
     axis1.set_xlabel(xlabel)
     axis1.set_ylabel(f"Generation {window.generation.number}, Dgnome {dgnumber}\n{window.optionBoxChoice}")
@@ -249,6 +282,8 @@ def createNewChartWindowForGeneration(generation):
                             1, 1, callFunction=True)
     devosimGUI.setOptionBoxChangeFunction(f"optionBox{window.number}", optionBoxChanged)
 
+
+
     devosimGUI.addButton(f"next{window.number}", nextChart, 1, 2)
     devosimGUI.setButtonImage(f"next{window.number}", "arrow-next.gif")
 
@@ -257,7 +292,7 @@ def createNewChartWindowForGeneration(generation):
 
     # Draw the figure.
     window.updateOptionBoxChoice(f"optionBox{window.number}")
-    updateFigure(window)
+    updateFigure(window, )
 
     #Add myself to the dictionary of all windows.
     ChartWindow.allWindows[window.number] = window
@@ -291,6 +326,7 @@ def runDevosim(button):
                            "-e", f"{mutationEffectInt}"
                            ]
 
+    
     selectionModeString = devosimGUI.getRadioButton("selectionMode")
     # Append no flag for Random Selection Mode
     if selectionModeString == "Selective Pressure":
@@ -368,6 +404,13 @@ devosimGUI.addCheckBox("Percentages Only", 3, 1)  # -r
 # -- Not like I'm sure this needs to be in a final GUI version...
 devosimGUI.addCheckBox("Stop if all dgnomes are identical", 3, 2)  # -b
 
+
+#
+devosimGUI.addLabelOptionBox("Context", ["Talk", "Paper", "Poster"])
+devosimGUI.addLabelOptionBox("Style", ["White", "Dark", "Whitegrid", "Darkgrid", "Ticks"])
+devosimGUI.addLabelOptionBox("Palette", ["Purple", "Blue", "Green", "Teal", "Rainbow"])
+
+
 # Some systems (My Linux computer) have the text near buttons change color when "activated" (moused over).
 # Naturally, this color defaults to black. Let's make it the same color as the text is normally...
 
@@ -398,7 +441,7 @@ devosimGUI.setEntryDefault("Mutation Effect", "Mutation Effect")
 devosimGUI.setImageLocation("./res")
 
 # Now, here comes the Run button.
-devosimGUI.addButton("Go!", runDevosim, 4, 0, 3, 1)
+devosimGUI.addButton("Go!", runDevosim, 7, 0, 3, 1)
 
 # And this "runs" the thing.
 devosimGUI.go()
