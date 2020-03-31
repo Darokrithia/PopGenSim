@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (flags[2] == 1) {
-		flags(flags);
+		free(flags);
 		help_menu();
 	}
 
