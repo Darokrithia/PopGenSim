@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (flags[2] == 1) {
+        free(flags);
 		help_menu();
 	}
 
