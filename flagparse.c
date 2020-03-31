@@ -95,7 +95,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				}
 				flags[5] = 2;
 			}
-			else if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
+			else if (strcmp(argv[i], "-c" ) == 0) {
 				sscanf(argv[i+1], "%u", &flags[6]);
 				i++;
 			}
@@ -103,7 +103,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				sscanf(argv[i+1], "%u", &flags[7]);
 				i++;
 			}
-			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)) {
+			else if (strcmp(argv[i], "-g") == 0) {
 				sscanf(argv[i+1], "%u", &flags[8]);
 				i++;
 			}
@@ -111,11 +111,11 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				sscanf(argv[i+1], "%u", &flags[9]);
 				i++;
 			}
-			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)) {
+			else if (strcmp(argv[i], "-o") == 0) {
 				sscanf(argv[i+1], "%u", &flags[10]);
 				i++;
 			}
-			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)) {
+			else if (strcmp(argv[i], "-p") == 0) {
 				sscanf(argv[i+1], "%u", &flags[11]);
 				i++;
 			}
