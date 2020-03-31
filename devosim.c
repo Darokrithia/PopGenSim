@@ -157,10 +157,12 @@ int main(int argc, char **argv) {
 	int * flags = NULL;
 
 	if (parse_flags(argc, argv, 3, &flags) == -1) {
+		free(flags);
 		usage();
 	}
 
 	if (flags[2] == 1) {
+		flags(flags);
 		help_menu();
 	}
 
