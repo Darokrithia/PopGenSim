@@ -109,6 +109,7 @@ int main(int argc, char **argv) {
 	int * flags = NULL;
 
 	if (parse_flags(argc, argv, 1, &flags) == -1) {
+		free(flags);
 		usage();
 	}
 
