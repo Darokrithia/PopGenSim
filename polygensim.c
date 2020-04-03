@@ -1,6 +1,7 @@
 #include "jobqueue.h"
 #include "degnome.h"
 #include "fitfunc.h"
+#include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -30,7 +31,7 @@ const char* helpMsg =
 	"OPTIONS\n"
 	"\t -c chromosome_length\n"
 	"\t\t Set chromosome length for the current simulation.\n"
-	"\t\t Default chromosome length is 50.\n\n"
+	"\t\t Default chromosome length is 10.\n\n"
 	"\t -e mutation_effect\n"
 	"\t\t Set how much a mutation will effect a gene on average.\n"
 	"\t\t Default mutation effect is 2.\n\n"
@@ -46,7 +47,7 @@ const char* helpMsg =
 	"\t\t Default crossover rate is 2.\n\n"
 	"\t -p population_size\n"
 	"\t\t Set the population size for the current simulation.\n"
-	"\t\t Default population size is 100.\n";
+	"\t\t Default population size is 10.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed = 0;
@@ -101,50 +102,26 @@ void help_menu(void) {
 
 int main(int argc, char **argv) {
 
-	chrom_size = 50;
-	pop_size = 100;
-	num_gens = 1000;
-	mutation_rate = 1;
-	mutation_effect = 2;
-	crossover_rate = 2;
+	int * flags = NULL;
 
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-') {
-			if (strcmp(argv[i], "-c") == 0) {
-				sscanf(argv[i+1], "%u", &chrom_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-p") == 0) {
-				sscanf(argv[i+1], "%u", &pop_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-g") == 0) {
-				sscanf(argv[i+1], "%u", &num_gens);
-				i++;
-			}
-			else if (strcmp(argv[i], "-m") == 0) {
-				sscanf(argv[i+1], "%u", &mutation_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-e") == 0) {
-				sscanf(argv[i+1], "%u", &mutation_effect);
-				i++;
-			}
-			else if (strcmp(argv[i], "-o") == 0) {
-				sscanf(argv[i+1], "%u", &crossover_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-h") == 0) {
-				help_menu();
-			}
-			else {
-				usage();
-			}
-		}
-		else {
-			usage();
-		}
+	if (parse_flags(argc, argv, 1, &flags) == -1) {
+		free(flags);
+		usage();
 	}
+
+	if (flags[2] == 1) {
+        free(flags);
+		help_menu();
+	}
+
+	chrom_size = flags[6];
+	mutation_effect = flags[7];
+	num_gens = flags[8];
+	mutation_rate = flags[9];
+	crossover_rate = flags[10];
+	pop_size = flags[11];
+
+	free(flags);
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
