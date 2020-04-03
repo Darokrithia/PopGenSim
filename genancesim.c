@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "degnome.h"
+#include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -144,99 +145,33 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 int main(int argc, char **argv) {
 
-	chrom_size = 10;
-	pop_size = 10;
-	num_gens = 1000;
-	crossover_rate = 2;
-	selective = 0;
-	uniform = 0;
-	verbose = 0;
-	reduced = 0;
-	break_at_zero_diversity = 0;
+	int * flags = NULL;
 
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
-			int j = 1;
-			while (argv[i][j] != '\0') {
-				if (argv[i][j] == 'b') {
-					break_at_zero_diversity = 1;
-				}
-				else if (argv[i][j] == 'h') {
-					help_menu();
-				}
-				else if (argv[i][j] == 'r') {
-					reduced = 1;
-				}
-				else if (argv[i][j] == 'v') {
-					verbose = 1;
-				}
-				else if (strcmp(argv[i], "-s") == 0) {
-					if (uniform) {
-						usage();
-					}
-					selective = 1;
-				}
-				else if (strcmp(argv[i], "-u") == 0) {
-					if (selective) {
-						usage();
-					}
-					uniform = 1;
-				}
-				else {
-					usage();
-				}
-				j++;
-			}
-		}
-		else if (argv[i][0] == '-') {
-			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &chrom_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &pop_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &num_gens);
-				i++;
-			}
-			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &crossover_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-s") == 0) {
-				if (uniform) {
-					usage();
-				}
-				selective = 1;
-			}
-			else if (strcmp(argv[i], "-u") == 0) {
-				if (selective) {
-					usage();
-				}
-				uniform = 1;
-			}
-			else if (strcmp(argv[i], "-v") == 0) {
-				verbose = 1;
-			}
-			else if (strcmp(argv[i], "-r") == 0) {
-				reduced = 1;
-			}
-			else if (strcmp(argv[i], "-b") == 0) {
-				break_at_zero_diversity = 1;
-			}
-			else if (strcmp(argv[i], "-h") == 0) {
-				help_menu();
-			}
-			else {
-				usage();
-			}
-		}
-		else {
-			usage();
-		}
+	if (parse_flags(argc, argv, 2, &flags) == -1) {
+		free(flags);
+		usage();
 	}
+
+	if (flags[2] == 1) {
+        free(flags);
+		help_menu();
+	}
+
+	break_at_zero_diversity = flags[1];
+	reduced = flags[3];
+	verbose = flags[4];
+	if (flags[5] == 1) {
+		selective = 1;
+	}
+	else if (flags[5] == 2) {
+		uniform = 1;
+	}
+	chrom_size = flags[6];
+	num_gens = flags[8];
+	crossover_rate = flags[10];
+	pop_size = flags[11];
+
+	free(flags);
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
