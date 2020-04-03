@@ -34,7 +34,9 @@ lib := -L/usr/local/lib -lgsl -lgslcblas -lpthread -lm
 .c.o:
 	$(CC) $(CFLAGS) $(incl) -c -o ${@F}  $<
 
-all : $(targets)
+pkg : $(targets)
+
+all : $(targets) $(tests)
 
 test : $(tests)
 
