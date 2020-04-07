@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "ance_degnome.h"
+#include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -17,28 +18,43 @@ struct JobData {
 };
 
 void usage(void);
+void help_menu(void);
 int jobfunc(void* p, void* tdat);
 double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
-const char *usageMsg =
-    "Usage:\n"
-    "devosim [-c CL] [-p PS] [-g G] [-m MR] [-e ME] [-o CR] [-s]|[-u] [-v] [-r] [-b]\n"
-    "\n"
-    "\"CL\" is chromosome length.  \"PS\" is the population size, \"G\"\n"
-    "is thenumber of generations that the simulation will run,\n"
-    "\"MR\" is mutation rate, \"ME\" is how much a mutation will\n"
-    "effect a gene on average, and \"CR\" is crossover rate.  If \"-s\"\n"
-    "is present, there will be selection, while if \"-u\" is present\n"
-    "all degnomes will contribute to two offspring.\n"
-    "Note: \"-s\" and \"-u\" cannot be\n simultaneously active.\n"
-    "If \"-v\" is present there will be output at every single\n"
-    "generation, and if \"-r\" is present only percentages will be\n"
-    "printed (you wont get to see the genomes of each degnome).  If\n"
-    "\"-b\" is present, the program will break once all degnomes are\n"
-    "identical. They can be in any order, and not all are needed.\n"
-    "Default CL is 10, default PS is 10, the default G is 1000, and\n"
-    "defualt CR is 2.\n";
+const char* usageMsg =
+	"Usage: devosim [-bhrv] [-s | -u] [-c chromosome_length]\n"
+	"\t       [-e mutation_effect] [-g num_generations]\n"
+	"\t       [-m mutation_rate] [-o crossover_rate]\n"
+	"\t       [-p population_size]\n";
+
+const char* helpMsg =
+	"OPTIONS\n"
+	"\t -b\t Simulation will stop when all degnomes are identical.\n\n"
+	"\t -c chromosome_length\n"
+	"\t\t Set chromosome length for the current simulation.\n"
+	"\t\t Default chromosome length is 10.\n\n"
+	"\t -e mutation_effect\n"
+	"\t\t Set how much a mutation will effect a gene on average.\n"
+	"\t\t Default mutation effect is 2.\n\n"
+	"\t -g num_generations\n"
+	"\t\t Set how many generations this simulation will run for.\n"
+	"\t\t Default number of generations is 1000.\n\n"
+	"\t -h\t Display this help menu.\n\n"
+	"\t -m mutation_rate\n"
+	"\t\t Set the mutation rate for the current simulation.\n"
+	"\t\t Default mutation rate is 1.\n\n"
+	"\t -o crossover_rate\n"
+	"\t\t Set the crossover rate for the current simulation.\n"
+	"\t\t Default crossover rate is 2.\n\n"
+	"\t -p population_size\n"
+	"\t\t Set the population size for the current simulation.\n"
+	"\t\t Default population size is 10.\n\n"
+	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
+	"\t -s\t Degnome selection will occur.\n\n"
+	"\t -u\t All degnomes contribute to two offspring.\n\n"
+	"\t -v\t Output will be given for every generation.\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -57,6 +73,11 @@ int break_at_zero_diversity;
 
 void usage(void) {
 	fputs(usageMsg, stderr);
+	exit(EXIT_FAILURE);
+}
+
+void help_menu(void) {
+	fputs(helpMsg, stderr);
 	exit(EXIT_FAILURE);
 }
 
@@ -91,38 +112,38 @@ int jobfunc(void* p, void* tdat) {
 	return 0;		//exited without error
 }
 
-double get_fitness(double hat_size){
+double get_fitness(double hat_size) {
 	return hat_size;
 }
 
-void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity){
+void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity) {
 	*diversity = 0;
-	for(int i = 0; i < pop_size; i++){			//calculate percent decent for each degnome
-		for(int j = 0; j < pop_size; j++){
+	for (int i = 0; i < pop_size; i++) {			//calculate percent decent for each degnome
+		for (int j = 0; j < pop_size; j++) {
 			percent_decent[i][j] = 0;
-			for(int k = 0; k < chrom_size; k++){
-				if(generation[i].GOI_array[k] == j){
+			for (int k = 0; k < chrom_size; k++) {
+				if (generation[i].GOI_array[k] == j) {
 					percent_decent[i][j]++;
 				}
 			}
 			percent_decent[i][j] /= chrom_size;
 		}
 	}
-	for(int j = 0; j < pop_size; j++){			//sum and average
+	for (int j = 0; j < pop_size; j++) {			//sum and average
 		percent_decent[pop_size][j] = 0;
-		for(int k = 0; k < pop_size; k++){
+		for (int k = 0; k < pop_size; k++) {
 			percent_decent[pop_size][j] += percent_decent[k][j];
 		}
 		percent_decent[pop_size][j] /= pop_size;
 	}
 
-	for(int i = 0; i < pop_size; i++){			//calculate percent diversity for the entire generation
-		for(int j = 0; j < pop_size; j++){
-			if(i == j){
+	for (int i = 0; i < pop_size; i++) {			//calculate percent diversity for the entire generation
+		for (int j = 0; j < pop_size; j++) {
+			if (i == j) {
 				continue;
 			}
-			for(int k = 0; k < chrom_size; k++){
-				if(generation[i].GOI_array[k] != generation[j].GOI_array[k]){
+			for (int k = 0; k < chrom_size; k++) {
+				if (generation[i].GOI_array[k] != generation[j].GOI_array[k]) {
 					(*diversity)++;
 				}
 			}
@@ -131,83 +152,40 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 	*diversity /= ((pop_size-1) * pop_size * chrom_size);
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
 
-	chrom_size = 20;
-	pop_size = 30;
-	num_gens = 60;
-	mutation_rate = 1;
-	mutation_effect = 2;
-	crossover_rate = 2;
-	selective = 0;
-	uniform = 0;
-	verbose = 0;
-	reduced = 0;
-	break_at_zero_diversity = 0;
+	int * flags = NULL;
 
-	if(argc > 17){
-		printf("\n");
+	if (parse_flags(argc, argv, 3, &flags) == -1) {
+		free(flags);
 		usage();
 	}
-	for(int i = 1; i < argc; i++){
-		if(argv[i][0] == '-'){
-			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)){
-				sscanf(argv[i+1], "%u", &chrom_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)){
-				sscanf(argv[i+1], "%u", &pop_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)){
-				sscanf(argv[i+1], "%u", &num_gens);
-				i++;
-			}
-			else if (strcmp(argv[i], "-m") == 0){
-				sscanf(argv[i+1], "%u", &mutation_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-e") == 0){
-				sscanf(argv[i+1], "%u", &mutation_effect);
-				i++;
-			}
-			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)){
-				sscanf(argv[i+1], "%u", &crossover_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-s") == 0){
-				if(uniform){
-					usage();
-				}
-				selective = 1;
-			}
-			else if (strcmp(argv[i], "-u") == 0){
-				if(selective){
-					usage();
-				}
-				uniform = 1;
-			}
-			else if (strcmp(argv[i], "-v") == 0){
-				verbose = 1;
-			}
-			else if (strcmp(argv[i], "-r") == 0){
-				reduced = 1;
-			}
-			else if (strcmp(argv[i], "-b") == 0){
-				break_at_zero_diversity = 1;
-			}
-			else{
-				printf("\n");
-				usage();
-			}
-		}
-		else{
-			usage();
-		}
+
+	if (flags[2] == 1) {
+		free(flags);
+		help_menu();
 	}
 
-    if(num_threads <= 0){
-		if(num_threads < 0){
+	break_at_zero_diversity = flags[1];
+	reduced = flags[3];
+	verbose = flags[4];
+	if (flags[5] == 1) {
+		selective = 1;
+	}
+	else if (flags[5] == 2) {
+		uniform = 1;
+	}
+	chrom_size = flags[6];
+	mutation_effect = flags[7];
+	num_gens = flags[8];
+	mutation_rate = flags[9];
+	crossover_rate = flags[10];
+	pop_size = flags[11];
+
+	free(flags);
+
+	if (num_threads <= 0) {
+		if (num_threads < 0) {
 			#ifdef DEBUG_MODE
 				fprintf(stderr, "Error invalid number of threads: %u\n", num_threads);
 			#endif
@@ -233,7 +211,7 @@ int main(int argc, char **argv){
 	parents = malloc(pop_size*sizeof(Degnome));
 	children = malloc(pop_size*sizeof(Degnome));
 
-	for (int i = 0; i < pop_size; i++){
+	for (int i = 0; i < pop_size; i++) {
 		parents[i].dna_array = malloc(chrom_size*sizeof(double));
 		parents[i].GOI_array = malloc(chrom_size*sizeof(int));
 
@@ -242,7 +220,7 @@ int main(int argc, char **argv){
 
 		parents[i].hat_size = 0;
 
-		for(int j = 0; j < chrom_size; j++){
+		for (int j = 0; j < chrom_size; j++) {
 			parents[i].dna_array[j] = 10;	//children aren't initialized
 			parents[i].hat_size += 10;
 			parents[i].GOI_array[j] = (i);	//track ancestries
@@ -255,43 +233,43 @@ int main(int argc, char **argv){
 	diversity = malloc(sizeof(double));
 	*diversity = 1;
 	percent_decent = malloc((pop_size+1)*sizeof(double*));
-	for(int i = 0; i < pop_size+1; i++){
+	for (int i = 0; i < pop_size+1; i++) {
 		percent_decent[i] = malloc(pop_size*sizeof(double));
-		if(i == pop_size){
+		if (i == pop_size) {
 			continue;
 		}
-		for(int j = 0; j < pop_size; j++){
-			if(i == j){
+		for (int j = 0; j < pop_size; j++) {
+			if (i == j) {
 				percent_decent[i][j] = 1;
 			}
-			else{
+			else {
 				percent_decent[i][j] = 0;
 			}
 		}
 	}
 
-	if(!reduced && !verbose){
+	if (!reduced && !verbose) {
 		printf("\nGeneration 0:\n\n");
-		for(int i = 0; i < pop_size; i++){
+		for (int i = 0; i < pop_size; i++) {
 			printf("Degnome %u allele values:\n", i);
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
+			if (!reduced) {
+				for (int j = 0; j < chrom_size; j++) {
 					printf("%lf\t", parents[i].dna_array[j]);
 				}
 				printf("\n");
 			}
-			else{
+			else {
 				printf("%lf\n", parents[i].dna_array[0]);
 			}
 
 			printf("Degnome %u ancestries:\n", i);
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
+			if (!reduced) {
+				for (int j = 0; j < chrom_size; j++) {
 					printf("%u\t", parents[i].GOI_array[j]);
 				}
 				printf("\n");
 			}
-			else{
+			else {
 				printf("%u\n", parents[i].GOI_array[0]);
 			}
 		}
@@ -305,21 +283,21 @@ int main(int argc, char **argv){
 
 	JobData* dat = malloc(pop_size*sizeof(JobData));
 
-	for(int i = 0; i < num_gens; i++){
-		if(break_at_zero_diversity){
+	for (int i = 0; i < num_gens; i++) {
+		if (break_at_zero_diversity) {
 			calculate_diversity(parents, percent_decent, diversity);
-			if((*diversity) <= 0){
+			if ((*diversity) <= 0) {
 				final_gen = i;
 				broke_early = 1;
 				break;
 			}
 		}
-		if(!uniform){
+		if (!uniform) {
 			double fit;
-			if(selective){
+			if (selective) {
 				fit = get_fitness(parents[0].hat_size);
 			}
-			else{
+			else {
 				fit = 100;			//in runs withoutslection, everybody is equally fit
 			}
 
@@ -327,11 +305,11 @@ int main(int argc, char **argv){
 			double cum_hat_size[pop_size];
 			cum_hat_size[0] = fit;
 
-			for(int j = 1; j < pop_size; j++){
-				if(selective){
+			for (int j = 1; j < pop_size; j++) {
+				if (selective) {
 					fit = get_fitness(parents[j].hat_size);
 				}
-				else{
+				else {
 					fit = 100;
 				}
 
@@ -339,12 +317,12 @@ int main(int argc, char **argv){
 				cum_hat_size[j] = (cum_hat_size[j-1] + fit);
 			}
 
-			for(int j = 0; j < pop_size; j++){
+			for (int j = 0; j < pop_size; j++) {
 
-			    pthread_mutex_lock(&seedLock);
+				pthread_mutex_lock(&seedLock);
 				gsl_rng_set(rng, rngseed);
-			    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
-	    		pthread_mutex_unlock(&seedLock);
+				rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+				pthread_mutex_unlock(&seedLock);
 
 				int m, d;
 
@@ -355,11 +333,11 @@ int main(int argc, char **argv){
 
 				// printf("win_m:%lf, wind:%lf, max: %lf\n", win_m,win_d,total_hat_size);
 
-				for (m = 0; cum_hat_size[m] < win_m; m++){
+				for (m = 0; cum_hat_size[m] < win_m; m++) {
 					continue;
 				}
 
-				for (d = 0; cum_hat_size[d] < win_d; d++){
+				for (d = 0; cum_hat_size[d] < win_d; d++) {
 					continue;
 				}
 
@@ -370,7 +348,7 @@ int main(int argc, char **argv){
 
 				JobQueue_addJob(jq, jobfunc, dat + j);			}
 		}
-		else{
+		else {
 			// printf("uniform!!!\n");
 
 			int moms[pop_size];
@@ -380,17 +358,17 @@ int main(int argc, char **argv){
 
 			int m, d;
 
-			for(int j = 0; j < pop_size; j++){
+			for (int j = 0; j < pop_size; j++) {
 				moms[j] = j;
 				dads[j] = j;
 			}
 
-			for(int j = 0; j < pop_size; j++){
+			for (int j = 0; j < pop_size; j++) {
 				pthread_mutex_lock(&seedLock);
 				gsl_rng_set(rng, rngseed);
-			    rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
+				rngseed = (rngseed == ULONG_MAX ? 0 : rngseed + 1);
 
-	    		pthread_mutex_unlock(&seedLock);
+				pthread_mutex_unlock(&seedLock);
 
 				int index_m = (int) gsl_rng_uniform_int (rng, mom_max);
 				int index_d = (int) gsl_rng_uniform_int (rng, dad_max);
@@ -403,7 +381,7 @@ int main(int argc, char **argv){
 				//reduce the pool of available degnomes
 				//in order to make sure everybody get's two chances to mate
 				//one as a dad and one as a mom
-			    
+				
 				int temp_m = moms[index_m];
 				int temp_d = dads[index_d];
 				moms[index_m] = moms[mom_max-1];
@@ -427,39 +405,39 @@ int main(int argc, char **argv){
 		temp = children;
 		children = parents;
 		parents = temp;
-		if(verbose){
+		if (verbose) {
 			calculate_diversity(parents, percent_decent, diversity);
 			printf("\nGeneration %u:\n", i);
-			if(!reduced){
-				for(int k = 0; k < pop_size; k++){
+			if (!reduced) {
+				for (int k = 0; k < pop_size; k++) {
 					printf("\n\nDegnome %u allele values:\n", k);
 
-					for(int j = 0; j < chrom_size; j++){
+					for (int j = 0; j < chrom_size; j++) {
 						printf("%lf\t", parents[k].dna_array[j]);
 					}
-					if(selective){
+					if (selective) {
 						printf("\nTOTAL HAT SIZE: %lg\n\n", parents[k].hat_size);
 					}
-					else{
+					else {
 						printf("\n");
 					}
 
 					printf("\n\nDegnome %u ancestries:\n", k);
-					for(int j = 0; j < chrom_size; j++){
+					for (int j = 0; j < chrom_size; j++) {
 						printf("%u\t", parents[k].GOI_array[j]);
 					}
 					printf("\n");
 
-					for(int j = 0; j < pop_size; j++){
-						if(percent_decent[k][j] > 0){
+					for (int j = 0; j < pop_size; j++) {
+						if (percent_decent[k][j] > 0) {
 							printf("%lf%% Degnome %u\t", (100*percent_decent[k][j]), j);
 						}
 					}
 				}
 			}
 			printf("\nAverage population descent percentages:\n");
-			for(int j = 0; j < pop_size; j++){
-				if(percent_decent[pop_size][j] > 0){
+			for (int j = 0; j < pop_size; j++) {
+				if (percent_decent[pop_size][j] > 0) {
 					printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 				}
 			}
@@ -470,53 +448,53 @@ int main(int argc, char **argv){
 
 	JobQueue_noMoreJobs(jq);
 
-	if(verbose){
+	if (verbose) {
 		printf("\n");
 	}
 
 	calculate_diversity(parents, percent_decent, diversity);
 	// printf("\n\n DIVERSITY%lf\n\n\n", *diversity);
-	if(broke_early){
+	if (broke_early) {
 		printf("Generation %u:\n", final_gen);
 	}
-	else{
+	else {
 		printf("Generation %u:\n", num_gens);
 	}
-	if(!reduced){
-		for(int i = 0; i < pop_size; i++){
+	if (!reduced) {
+		for (int i = 0; i < pop_size; i++) {
 			printf("\n\nDegnome %u allele values:\n", i);		
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
+			if (!reduced) {
+				for (int j = 0; j < chrom_size; j++) {
 					printf("%lf\t", parents[i].dna_array[j]);
 				}
 			}
 
 			printf("\n\nDegnome %u ancestries:\n", i);
-			if(!reduced){
-				for(int j = 0; j < chrom_size; j++){
+			if (!reduced) {
+				for (int j = 0; j < chrom_size; j++) {
 					printf("%u\t", parents[i].GOI_array[j]);
 				}
 				printf("\n");
 			}
 
-			for(int j = 0; j < pop_size; j++){
-				if(percent_decent[i][j] > 0){
+			for (int j = 0; j < pop_size; j++) {
+				if (percent_decent[i][j] > 0) {
 					printf("%lf%% Degnome %u\t", (100*percent_decent[i][j]), j);
 				}
 			}
 			printf("\n");
 
-			if(selective){
+			if (selective) {
 				printf("\nTOTAL HAT SIZE: %lg\n\n", parents[i].hat_size);
 			}
-			else{
+			else {
 				printf("\n\n");
 			}
 		}
 	}
 	printf("Average population decent percentages:\n");
-	for(int j = 0; j < pop_size; j++){
-		if(percent_decent[pop_size][j] > 0){
+	for (int j = 0; j < pop_size; j++) {
+		if (percent_decent[pop_size][j] > 0) {
 			printf("%lf%% Degnome %u\t", (100*percent_decent[pop_size][j]), j);
 		}
 	}
@@ -527,9 +505,11 @@ int main(int argc, char **argv){
 	JobQueue_free(jq);
 	free(dat);
 
-	for (int i = 0; i < pop_size; i++){
+	for (int i = 0; i < pop_size; i++) {
 		free(parents[i].dna_array);
 		free(children[i].dna_array);
+		free(parents[i].GOI_array);
+		free(children[i].GOI_array);
 		parents[i].hat_size = 0;
 
 		free(percent_decent[i]);

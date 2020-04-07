@@ -1,6 +1,8 @@
-# PopGenSim WSL Windows Install Guide
+# PopGenSim Windows Install Guide
 
-This guide assumes you already have Windows Subsystems Fox Linux enabled and set up.
+## Step 0: Install WSL
+
+This guide assumes you already have "Windows Subsystems For Linux" enabled and set up.
 If you do not already have a linux shell running on your windows computer, please check out 
 this handy WSL installation guide from Michael Treat.
 [WSL Installation Guide](https://github.com/michaeltreat/Windows-Subsystem-For-Linux-Setup-Guide)

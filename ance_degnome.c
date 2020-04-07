@@ -13,7 +13,7 @@ quantitative traits by using Degnomes as defined above.
 #include <stdio.h>
 
 
-Degnome* Degnome_new(){
+Degnome* Degnome_new() {
 	Degnome* q = malloc(sizeof(Degnome));
 	q->dna_array = malloc(chrom_size*sizeof(double));
 	q->GOI_array = malloc(chrom_size*sizeof(int));
@@ -22,44 +22,44 @@ Degnome* Degnome_new(){
 }
 
 void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
-	int mutation_rate, int mutation_effect, int crossover_rate){
+	int mutation_rate, int mutation_effect, int crossover_rate) {
 	// printf("mating\n");
 	//Cross over
 	int num_crossover = gsl_ran_poisson(rng, crossover_rate);
 	int crossover_locations[num_crossover];
 	int distance = 0;
 	int diff;
-	for (int i = 0; i < num_crossover; i++){
+	for (int i = 0; i < num_crossover; i++) {
 		crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_size);
 	}
-	if(num_crossover > 0){
+	if (num_crossover > 0) {
 		int_qsort(crossover_locations, num_crossover);//changed
 	}
-	for (int i = 0; i < num_crossover; i++){
+	for (int i = 0; i < num_crossover; i++) {
 		diff = crossover_locations[i] - distance;
 
-		if (i % 2 == 0){
+		if (i % 2 == 0) {
 			memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 		}
-		else{
+		else {
 			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 		}
 		distance = crossover_locations[i];
 	}
-	if(num_crossover > 0){
+	if (num_crossover > 0) {
 		diff = chrom_size - crossover_locations[num_crossover-1];
 	}
-	else{
+	else {
 		diff = chrom_size;
 	}
 
-	if (num_crossover % 2 == 0){
+	if (num_crossover % 2 == 0) {
 		memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
 		memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
 	}
-	else{
+	else {
 		memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
 		memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
 	}
@@ -71,7 +71,7 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 	int num_mutations = gsl_ran_poisson(rng, mutation_rate);
 	int mutation_location;
 
-	for (int i = 0; i < num_mutations; i++){
+	for (int i = 0; i < num_mutations; i++) {
 		mutation_location = gsl_rng_uniform_int(rng, chrom_size);
 		mutation = gsl_ran_gaussian_ziggurat(rng, mutation_effect);
 		child->dna_array[mutation_location] += mutation;
@@ -79,13 +79,13 @@ void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
 
 	//calculate hat_size
 
-	for (int i = 0; i < chrom_size; i++){
+	for (int i = 0; i < chrom_size; i++) {
 		child->hat_size += child->dna_array[i];
 	}
 	//and we are done!
 }
 
-void Degnome_free(Degnome* q){
+void Degnome_free(Degnome* q) {
 	free(q->dna_array);
 	free(q->GOI_array);
 	free(q);

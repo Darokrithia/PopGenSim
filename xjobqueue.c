@@ -18,11 +18,11 @@
 #endif
 
 typedef struct {
-    double arg, result;
+	double arg, result;
 } TstParam;
 
 typedef struct {
-    int i;
+	int i;
 } ThreadState;
 
 void *ThreadState_new(void *dat);
@@ -30,97 +30,97 @@ void ThreadState_free(void *self);
 static void unitTstResult(const char *facility, const char *result);
 
 static void unitTstResult(const char *facility, const char *result) {
-    printf("%-26s %s\n", facility, result);
+	printf("%-26s %s\n", facility, result);
 }
 
 void *ThreadState_new(void *dat) {
-    ThreadState *ts = malloc(sizeof *ts);
-    if(ts == NULL) {
-        fprintf(stderr, "%s:%d: bad malloc\n", __FILE__, __LINE__);
-        exit(1);
-    }
+	ThreadState *ts = malloc(sizeof *ts);
+	if (ts == NULL) {
+		fprintf(stderr, "%s:%d: bad malloc\n", __FILE__, __LINE__);
+		exit(1);
+	}
 
-    int *ip = (int *) dat;
-    ts->i = *ip;
-    return (void *) ts;
+	int *ip = (int *) dat;
+	ts->i = *ip;
+	return (void *) ts;
 }
 
 void ThreadState_free(void *self) {
-    free(self);
+	free(self);
 }
 
 int jobfunc(void *p, void *tdat);
 
 int jobfunc(void *p, void *tdat) {
-    TstParam *param = (TstParam *) p;
-    ThreadState *ts = (ThreadState *) tdat;
+	TstParam *param = (TstParam *) p;
+	ThreadState *ts = (ThreadState *) tdat;
 
-    param->result = (param->arg) * ts->i;
+	param->result = (param->arg) * ts->i;
 
-    return 0;
+	return 0;
 }
 
 int main(int argc, char **argv) {
 
-    int verbose = 0;
+	int verbose = 0;
 
-    switch (argc) {
-    case 1:
-        break;
-    case 2:
-        if(strncmp(argv[1], "-v", 2) != 0) {
-            fprintf(stderr, "usage: xjobqueue [-v]\n");
-            exit(1);
-        }
-        verbose = 1;
-        break;
-    default:
-        fprintf(stderr, "usage: xjobqueue [-v]\n");
-        exit(1);
-    }
+	switch (argc) {
+	case 1:
+		break;
+	case 2:
+		if (strncmp(argv[1], "-v", 2) != 0) {
+			fprintf(stderr, "usage: xjobqueue [-v]\n");
+			exit(1);
+		}
+		verbose = 1;
+		break;
+	default:
+		fprintf(stderr, "usage: xjobqueue [-v]\n");
+		exit(1);
+	}
 
-    int i, njobs = 6, nthreads = 3;
-    TstParam jobs[njobs];
-    int multiplier = 3;
-    JobQueue *jq = JobQueue_new(nthreads,
-                                &multiplier,
-                                ThreadState_new,
-                                ThreadState_free);
+	int i, njobs = 6, nthreads = 3;
+	TstParam jobs[njobs];
+	int multiplier = 3;
+	JobQueue *jq = JobQueue_new(nthreads,
+								&multiplier,
+								ThreadState_new,
+								ThreadState_free);
 
-    for(i = 0; i < njobs; ++i) {
-        jobs[i].arg = i + 1.0;
-        jobs[i].result = -99.0;
-        JobQueue_addJob(jq, jobfunc, jobs + i);
-    }
+	for (i = 0; i < njobs; ++i) {
+		jobs[i].arg = i + 1.0;
+		jobs[i].result = -99.0;
+		JobQueue_addJob(jq, jobfunc, jobs + i);
+	}
 
-    JobQueue_waitOnJobs(jq);
+	JobQueue_waitOnJobs(jq);
 
-    for(i = 0; i < njobs; ++i) {
-        if(verbose) {
-            printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
-            fflush(stdout);
-        }
-        assert(jobs[i].result == (i + 1.0) * multiplier);
-    }
+	for (i = 0; i < njobs; ++i) {
+		if (verbose) {
+			printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
+			fflush(stdout);
+		}
+		assert(jobs[i].result == (i + 1.0) * multiplier);
+	}
 
-    for(i = 0; i < njobs; ++i) {
-        jobs[i].arg = i + 11.0;
-        jobs[i].result = -99.0;
-        JobQueue_addJob(jq, jobfunc, jobs + i);
-    }
+	for (i = 0; i < njobs; ++i) {
+		jobs[i].arg = i + 11.0;
+		jobs[i].result = -99.0;
+		JobQueue_addJob(jq, jobfunc, jobs + i);
+	}
 
-    JobQueue_waitOnJobs(jq);
-    JobQueue_noMoreJobs(jq);
+	JobQueue_waitOnJobs(jq);
+	JobQueue_noMoreJobs(jq);
 
-    for(i = 0; i < njobs; ++i) {
-        if(verbose) {
-            printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
-            fflush(stdout);
-        }
-        assert(jobs[i].result == (i + 11.0) * multiplier);
-    }
+	for (i = 0; i < njobs; ++i) {
+		if (verbose) {
+			printf("%d: %lg --> %lg\n", i, jobs[i].arg, jobs[i].result);
+			fflush(stdout);
+		}
+		assert(jobs[i].result == (i + 11.0) * multiplier);
+	}
 
-    JobQueue_free(jq);
-    unitTstResult("JobQueue", "OK");
-    return 0;
+	JobQueue_free(jq);
+	unitTstResult("JobQueue", "OK");
+	return 0;
 }
