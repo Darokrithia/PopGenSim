@@ -16,6 +16,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	// flags[9] ->		-m mutation_rate				(Default:    1)
 	// flags[10] ->		-o crossover_rate				(Default:    2)
 	// flags[11] ->		-p population_size				(Default:   10)
+	// flags[12] ->		-f fitness_function				(Default:    0)
 
 	if (caller == 0) {
 		return -1;
@@ -35,6 +36,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	flags[9] = 1;
 	flags[10] = 2;
 	flags[11] = 10;
+	flags[12] = 0;
 
     *ret_flags = flags;
 
