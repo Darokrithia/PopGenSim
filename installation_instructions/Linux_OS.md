@@ -10,7 +10,12 @@ sudo apt-get install libgsl-dev
 make
 ```
 
-## Step 3: Run some example simulations
+## Step 3: Install pip requirements
+```
+pip3 install -r requirements.txt
+```
+
+## Step 4: Run some example simulations
 ```
 ./PolyGenSim
 ./genancesim
