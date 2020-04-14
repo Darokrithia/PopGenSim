@@ -16,13 +16,17 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	// flags[9] ->		-m mutation_rate				(Default:    1)
 	// flags[10] ->		-o crossover_rate				(Default:    2)
 	// flags[11] ->		-p population_size				(Default:   10)
-	// flags[12] ->		-f fitness_function				(Default:    0)
+	// flags[12] ->		-t num_threads					(Default:	 0)
+	// flags[13] ->		--sqrt/linear/close/ceiling		(Default: None)
+	// flags[14] ->		--target						(Default: 9999)
+	// flags[15] ->		--seed							(Default:	 0)
+
 
 	if (caller == 0) {
 		return -1;
 	}
 
-	int * flags = (int*)calloc(12, sizeof(int));
+	int * flags = (int*)calloc(16, sizeof(int));
 
 	flags[0] = caller;
 	flags[1] = 0;
@@ -37,6 +41,9 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	flags[10] = 2;
 	flags[11] = 10;
 	flags[12] = 0;
+	flags[13] = 0;
+	flags[14] = 9999;
+	flags[15] = 0;
 
     *ret_flags = flags;
 
@@ -74,6 +81,29 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				j++;
 			}
 		}
+		else if (argv[i][0] == '-' && argv[i][1] == '-') {
+			if (strcmp(argv[i], "--linear") == 0) {
+				flags[13] = 0;
+			}
+			else if (strcmp(argv[i], "--sqrt") == 0) {
+				flags[13] = 1;
+			}
+			else if (strcmp(argv[i], "--close") == 0) {
+				flags[13] = 2;
+			}
+			else if (strcmp(argv[i], "--ceiling") == 0) {
+				flags[13] = 3;
+			}
+			else if (strcmp(argv[i], "--target") == 0) {
+				sscanf(argv[i+1], "%u", &flags[14]);
+				i++;
+			}
+			else if (strcmp(argv[i], "--seed") == 0) {
+				sscanf(argv[i+1], "%u", &flags[15]);
+				i++;
+			}
+		}
+
 		else if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-b") == 0 && caller != 1) {
 				flags[1] = 1;
@@ -123,6 +153,10 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				sscanf(argv[i+1], "%u", &flags[11]);
 				i++;
 			}
+			else if (strcmp(argv[i], "-t") == 0) {
+				sscanf(argv[i+1], "%u", &flags[12]);
+				i++;
+			}
 			else {
 				return -1;
 			}
@@ -130,6 +164,10 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 		else {
 			return -1;
 		}
+	}
+
+	if(flags[15] <= 0 && flags[12] != 1){
+		return -1;
 	}
 
 	return 0;

@@ -178,7 +178,35 @@ int main(int argc, char **argv) {
 	crossover_rate = flags[10];
 	pop_size = flags[11];
 
+	num_threads = flags[12];
+
+	if(flags[13] == 0){
+		set_function("linear");
+	}
+	else if(flags[13] == 1){
+		set_function("sqrt");
+	}
+	else if(flags[13] == 2){
+		set_function("close");
+	}
+	else if(flags[13] == 3){
+		set_function("ceiling");
+	}
+	target_num = flags[14];
+
+	if(flags[15] <= 0) {
+		time_t currtime = time(NULL);                  // time
+		unsigned long pid = (unsigned long) getpid();  // process id
+		rngseed = currtime ^ pid;                      // random seed
+	}
+	else{
+		rngseed = flags[15];
+	}
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+	gsl_rng_set(rng, rngseed);
+
 	free(flags);
+
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
@@ -191,12 +219,6 @@ int main(int argc, char **argv) {
 	#ifdef DEBUG_MODE
 		fprintf(stderr, "Final number of threads: %u\n", num_threads);
 	#endif
-
-	time_t currtime = time(NULL);                  // time
-	unsigned long pid = (unsigned long) getpid();  // process id
-	rngseed = currtime ^ pid;                      // random seed
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
-	gsl_rng_set(rng, rngseed);
 
 	Degnome* parents;
 	Degnome* children;
