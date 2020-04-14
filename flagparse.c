@@ -50,7 +50,8 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 		}
 		else if (argv[i][0] == '-' && argv[i][1] == '-') {
 			// if (strcmp(argv[i], "--example_flag") == 0) {
-			// 	flags[12] = 1;
+			// 	sscanf(argv[i+1], "%u", &flags[12]);
+			// 	i++;
 			// }
 			// else {
 			// 	return -1;
