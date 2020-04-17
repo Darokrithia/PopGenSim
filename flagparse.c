@@ -48,7 +48,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
     *ret_flags = flags;
 
 	for (int i = 1; i < argc; i++) {
-		if if (argv[i][0] == '-' && argv[i][1] == '-') {
+		if (argv[i][0] == '-' && argv[i][1] == '-') {
 			if (strcmp(argv[i], "--linear") == 0) {
 				flags[13] = 0;
 			}
