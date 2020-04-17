@@ -27,7 +27,9 @@ const char* usageMsg =
 	"Usage: devosim [-bhrv] [-s | -u] [-c chromosome_length]\n"
 	"\t       [-e mutation_effect] [-g num_generations]\n"
 	"\t       [-m mutation_rate] [-o crossover_rate]\n"
-	"\t       [-p population_size]\n";
+	"\t       [-p population_size] [-t num_threads]\n"
+	"\t       [--seed rngseed] [--target hat_height target]\n"
+	"\t       [--sqrt | --linear | --close | --ceiling]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -54,7 +56,21 @@ const char* helpMsg =
 	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
 	"\t -s\t Degnome selection will occur.\n\n"
 	"\t -u\t All degnomes contribute to two offspring.\n\n"
-	"\t -v\t Output will be given for every generation.\n";
+	"\t -v\t Output will be given for every generation.\n\n"
+	"\t -t num_threads\n"
+	"\t\t Select the number of threads to be used in the current run.\n"
+	"\t\t Default is 0 (which will result in 3/4 of cores being used).\n"
+	"\t\t Must be 1 if a seed is used in order to preven race conditions.\n\n"
+	"\t --seed rngseed\n"
+	"\t\t Select the seed used by the RNG in the current run.\n"
+	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n";
+	"\t --target hat_height target\n"
+	"\t\t Sets the ideal hat height for the current simulation\n"
+	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
+	"\t --sqrt\t fitness will be sqrt(hat_height)\n\n"
+	"\t --linear\t fitness will be hat_height\n\n"
+	"\t --close\t fitness will be (target - abs(target - hat_height))\n\n"
+	"\t --ceiling\t fitness will quickly level off after passing target\n\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
