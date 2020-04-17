@@ -166,7 +166,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 		}
 	}
 
-	if(flags[15] <= 0 && flags[12] != 1){
+	if(flags[15] > 0 && flags[12] != 1){
 		return -1;
 	}
 
