@@ -48,7 +48,29 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
     *ret_flags = flags;
 
 	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+		if if (argv[i][0] == '-' && argv[i][1] == '-') {
+			if (strcmp(argv[i], "--linear") == 0) {
+				flags[13] = 0;
+			}
+			else if (strcmp(argv[i], "--sqrt") == 0) {
+				flags[13] = 1;
+			}
+			else if (strcmp(argv[i], "--close") == 0) {
+				flags[13] = 2;
+			}
+			else if (strcmp(argv[i], "--ceiling") == 0) {
+				flags[13] = 3;
+			}
+			else if (strcmp(argv[i], "--target") == 0) {
+				sscanf(argv[i+1], "%u", &flags[14]);
+				i++;
+			}
+			else if (strcmp(argv[i], "--seed") == 0) {
+				sscanf(argv[i+1], "%u", &flags[15]);
+				i++;
+			}
+		}
+		else if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
 			int j = 1;
 			while (argv[i][j] != '\0') {
 				if (argv[i][j] == 'b' && caller != 1) {
@@ -76,34 +98,12 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 					flags[5] = 2;
 				}
 				else {
+					printf("yoinks\n");
 					return -1;
 				}
 				j++;
 			}
 		}
-		else if (argv[i][0] == '-' && argv[i][1] == '-') {
-			if (strcmp(argv[i], "--linear") == 0) {
-				flags[13] = 0;
-			}
-			else if (strcmp(argv[i], "--sqrt") == 0) {
-				flags[13] = 1;
-			}
-			else if (strcmp(argv[i], "--close") == 0) {
-				flags[13] = 2;
-			}
-			else if (strcmp(argv[i], "--ceiling") == 0) {
-				flags[13] = 3;
-			}
-			else if (strcmp(argv[i], "--target") == 0) {
-				sscanf(argv[i+1], "%u", &flags[14]);
-				i++;
-			}
-			else if (strcmp(argv[i], "--seed") == 0) {
-				sscanf(argv[i+1], "%u", &flags[15]);
-				i++;
-			}
-		}
-
 		else if (argv[i][0] == '-') {
 			if (strcmp(argv[i], "-b") == 0 && caller != 1) {
 				flags[1] = 1;

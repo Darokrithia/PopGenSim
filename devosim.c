@@ -25,11 +25,11 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 const char* usageMsg =
 	"Usage: devosim [-bhrv] [-s | -u] [-c chromosome_length]\n"
-	"\t       [-e mutation_effect] [-g num_generations]\n"
-	"\t       [-m mutation_rate] [-o crossover_rate]\n"
-	"\t       [-p population_size] [-t num_threads]\n"
-	"\t       [--seed rngseed] [--target hat_height target]\n"
-	"\t       [--sqrt | --linear | --close | --ceiling]\n";
+	"\t\t  [-e mutation_effect] [-g num_generations]\n"
+	"\t\t  [-m mutation_rate] [-o crossover_rate]\n"
+	"\t\t  [-p population_size] [-t num_threads]\n"
+	"\t\t  [--seed rngseed] [--target hat_height target]\n"
+	"\t\t  [--sqrt | --linear | --close | --ceiling]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -67,7 +67,7 @@ const char* helpMsg =
 	"\t --target hat_height target\n"
 	"\t\t Sets the ideal hat height for the current simulation\n"
 	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
-	"\t --sqrt\t fitness will be sqrt(hat_height)\n\n"
+	"\t --sqrt\t\t fitness will be sqrt(hat_height)\n\n"
 	"\t --linear\t fitness will be hat_height\n\n"
 	"\t --close\t fitness will be (target - abs(target - hat_height))\n\n"
 	"\t --ceiling\t fitness will quickly level off after passing target\n\n";

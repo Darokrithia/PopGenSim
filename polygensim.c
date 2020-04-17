@@ -25,7 +25,10 @@ int jobfunc(void* p, void* tdat);
 const char* usageMsg =
 	"Usage: polygensim [-h] [-c chromosome_length] [-e mutation_effect]\n"
 	"\t\t  [-g num_generations] [-m mutation_rate]\n"
-	"\t\t  [-o crossover_rate] [-p population_size]\n";
+	"\t\t  [-o crossover_rate] [-p population_size]\n"
+	"\t\t  [-t num_threads] [--seed rngseed]\n"
+	"\t\t  [--target hat_height target]\n"
+	"\t\t  [--sqrt | --linear | --close | --ceiling]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -47,7 +50,21 @@ const char* helpMsg =
 	"\t\t Default crossover rate is 2.\n\n"
 	"\t -p population_size\n"
 	"\t\t Set the population size for the current simulation.\n"
-	"\t\t Default population size is 10.\n";
+	"\t\t Default population size is 10.\n"
+	"\t -t num_threads\n"
+	"\t\t Select the number of threads to be used in the current run.\n"
+	"\t\t Default is 0 (which will result in 3/4 of cores being used).\n"
+	"\t\t Must be 1 if a seed is used in order to preven race conditions.\n\n"
+	"\t --seed rngseed\n"
+	"\t\t Select the seed used by the RNG in the current run.\n"
+	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n"
+	"\t --target hat_height target\n"
+	"\t\t Sets the ideal hat height for the current simulation\n"
+	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
+	"\t --sqrt\t\t fitness will be sqrt(hat_height)\n\n"
+	"\t --linear\t fitness will be hat_height\n\n"
+	"\t --close\t fitness will be (target - abs(target - hat_height))\n\n"
+	"\t --ceiling\t fitness will quickly level off after passing target\n\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed = 0;
