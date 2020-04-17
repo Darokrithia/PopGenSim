@@ -63,7 +63,7 @@ const char* helpMsg =
 	"\t\t Must be 1 if a seed is used in order to preven race conditions.\n\n"
 	"\t --seed rngseed\n"
 	"\t\t Select the seed used by the RNG in the current run.\n"
-	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n";
+	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n"
 	"\t --target hat_height target\n"
 	"\t\t Sets the ideal hat height for the current simulation\n"
 	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
