@@ -8,43 +8,43 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
-   version="1.1"
+   sodipodi:docname="Degnome.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
    id="svg8"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="Degnome.svg">
+   version="1.1"
+   viewBox="0 0 210 297"
+   height="297mm"
+   width="210mm">
   <defs
      id="defs2">
     <linearGradient
-       id="linearGradient1983"
-       osb:paint="solid">
+       osb:paint="solid"
+       id="linearGradient1983">
       <stop
-         style="stop-color:#000000;stop-opacity:1;"
+         id="stop1981"
          offset="0"
-         id="stop1981" />
+         style="stop-color:#000000;stop-opacity:1;" />
     </linearGradient>
   </defs>
   <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.1988674"
-     inkscape:cx="426.98775"
-     inkscape:cy="279.25709"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     inkscape:window-width="1566"
-     inkscape:window-height="1030"
-     inkscape:window-x="160"
+     inkscape:window-maximized="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0" />
+     inkscape:window-x="160"
+     inkscape:window-height="1030"
+     inkscape:window-width="1566"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="285.73321"
+     inkscape:cx="562.6271"
+     inkscape:zoom="0.5994337"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -53,18 +53,23 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
+     id="layer1"
      inkscape:groupmode="layer"
-     id="layer1">
+     inkscape:label="Layer 1">
     <path
-       id="path3950"
+       sodipodi:nodetypes="ccscccscsc"
+       d="m 48.294323,45.1915 c 0,9.674231 7.788272,20.905937 17.462499,25.183212 l 37.952468,16.779959 c 9.67423,4.27728 17.4625,15.508989 17.4625,25.183209 m 0,0 v 29.10417 c 0,-9.67423 -7.78827,-20.90594 -17.4625,-25.1832 L 65.756822,99.478881 C 56.082595,95.201601 48.294323,83.969894 48.294323,74.295669 V 45.191501"
        style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 62.860154,18.046088 c 0,9.674231 7.788272,20.905937 17.462499,25.183212 l 37.952467,16.779962 c 9.67423,4.277274 17.4625,15.50899 17.4625,25.183206 m 0,0 v 29.104172 c 0,-9.67423 -7.78827,-20.905942 -17.4625,-25.183202 L 80.322653,72.333468 C 70.648426,68.056193 62.860154,56.824482 62.860154,47.150257 V 18.046089"
+       id="path3950" />
+    <path
+       id="path3950-1"
+       style="fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 122.06817,45.449154 c 0,9.674231 -7.78827,20.905937 -17.4625,25.183212 L 66.653198,87.412325 c -9.67423,4.27728 -17.4625,15.508985 -17.4625,25.183215 m 0,0 v 29.10417 c 0,-9.67423 7.78827,-20.90595 17.4625,-25.18321 L 104.60567,99.736534 c 9.67423,-4.277278 17.4625,-15.508986 17.4625,-25.183211 V 45.449155"
        sodipodi:nodetypes="ccscccscsc" />
   </g>
 </svg>
