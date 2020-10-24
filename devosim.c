@@ -1,5 +1,6 @@
 #include "jobqueue.h"
 #include "ance_degnome.h"
+#include "fitfunc.h"
 #include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
@@ -20,14 +21,15 @@ struct JobData {
 void usage(void);
 void help_menu(void);
 int jobfunc(void* p, void* tdat);
-double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char* usageMsg =
 	"Usage: devosim [-bhrv] [-s | -u] [-c chromosome_length]\n"
-	"\t       [-e mutation_effect] [-g num_generations]\n"
-	"\t       [-m mutation_rate] [-o crossover_rate]\n"
-	"\t       [-p population_size]\n";
+	"\t\t  [-e mutation_effect] [-g num_generations]\n"
+	"\t\t  [-m mutation_rate] [-o crossover_rate]\n"
+	"\t\t  [-p population_size] [-t num_threads]\n"
+	"\t\t  [--seed rngseed] [--target hat_height target]\n"
+	"\t\t  [--sqrt | --linear | --close | --ceiling]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -54,7 +56,21 @@ const char* helpMsg =
 	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
 	"\t -s\t Degnome selection will occur.\n\n"
 	"\t -u\t All degnomes contribute to two offspring.\n\n"
-	"\t -v\t Output will be given for every generation.\n";
+	"\t -v\t Output will be given for every generation.\n\n"
+	"\t -t num_threads\n"
+	"\t\t Select the number of threads to be used in the current run.\n"
+	"\t\t Default is 0 (which will result in 3/4 of cores being used).\n"
+	"\t\t Must be 1 if a seed is used in order to preven race conditions.\n\n"
+	"\t --seed rngseed\n"
+	"\t\t Select the seed used by the RNG in the current run.\n"
+	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n"
+	"\t --target hat_height target\n"
+	"\t\t Sets the ideal hat height for the current simulation\n"
+	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
+	"\t --sqrt\t\t fitness will be sqrt(hat_height)\n\n"
+	"\t --linear\t fitness will be hat_height\n\n"
+	"\t --close\t fitness will be (target - abs(target - hat_height))\n\n"
+	"\t --ceiling\t fitness will quickly level off after passing target\n\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -110,10 +126,6 @@ int jobfunc(void* p, void* tdat) {
 	Degnome_mate(data->child, data->p1, data->p2, rng, mutation_rate, mutation_effect, crossover_rate);			//mate
 
 	return 0;		//exited without error
-}
-
-double get_fitness(double hat_size) {
-	return hat_size;
 }
 
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity) {
@@ -182,7 +194,35 @@ int main(int argc, char **argv) {
 	crossover_rate = flags[10];
 	pop_size = flags[11];
 
+	num_threads = flags[12];
+
+	if(flags[13] == 0){
+		set_function("linear");
+	}
+	else if(flags[13] == 1){
+		set_function("sqrt");
+	}
+	else if(flags[13] == 2){
+		set_function("close");
+	}
+	else if(flags[13] == 3){
+		set_function("ceiling");
+	}
+	target_num = flags[14];
+
+	if(flags[15] <= 0) {
+		time_t currtime = time(NULL);                  // time
+		unsigned long pid = (unsigned long) getpid();  // process id
+		rngseed = currtime ^ pid;                      // random seed
+	}
+	else{
+		rngseed = flags[15];
+	}
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+	gsl_rng_set(rng, rngseed);
+
 	free(flags);
+
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
@@ -195,12 +235,6 @@ int main(int argc, char **argv) {
 	#ifdef DEBUG_MODE
 		fprintf(stderr, "Final number of threads: %u\n", num_threads);
 	#endif
-
-	time_t currtime = time(NULL);                  // time
-	unsigned long pid = (unsigned long) getpid();  // process id
-	rngseed = currtime ^ pid;                      // random seed
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
-	gsl_rng_set(rng, rngseed);
 
 	Degnome* parents;
 	Degnome* children;

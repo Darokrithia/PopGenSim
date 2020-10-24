@@ -41,16 +41,16 @@ all : $(targets) $(tests)
 test : $(tests)
 
 # run polygensim.c
-DEVOSIM := devosim.o ance_degnome.o misc.o jobqueue.o
+DEVOSIM := devosim.o ance_degnome.o misc.o jobqueue.o fitfunc.o
 devosim : $(DEVOSIM)
 	$(CC) $(CFLAGS) -o $@ $(DEVOSIM) $(lib)
 # run polygensim.c
-POLYGENSIM := polygensim.o degnome.o misc.o jobqueue.o
+POLYGENSIM := polygensim.o degnome.o misc.o jobqueue.o fitfunc.o
 polygensim : $(POLYGENSIM)
 	$(CC) $(CFLAGS) -o $@ $(POLYGENSIM) $(lib)
 
 # run genancesim.c
-GENANCESIM := genancesim.o degnome.o misc.o jobqueue.o
+GENANCESIM := genancesim.o degnome.o misc.o jobqueue.o fitfunc.o
 genancesim : $(GENANCESIM)
 	$(CC) $(CFLAGS) -o $@ $(GENANCESIM) $(lib)
 

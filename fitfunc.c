@@ -3,6 +3,8 @@
  NOTE: it wouuld be very nice if this compartment had its own
  usage which could / would be called by anything that uses this
 
+Also add command line args and testing for seeding and threading
+
 */
 
 /**
@@ -17,6 +19,8 @@
 #include "string.h"
 #include "math.h"
 #include "stdlib.h"
+
+fit_func_ptr func_to_run = &linear_returns;
 
 void set_function(const char* func_name) {
 	if (strcmp(func_name, "linear") == 0) {
@@ -55,4 +59,8 @@ double ceiling_returns(double x) {
 	else {
 		return (target_num) - 5 * abs(target_num - x);
 	}
+}
+
+double get_fitness(double hat_size) {
+	return (*func_to_run)(hat_size);
 }
