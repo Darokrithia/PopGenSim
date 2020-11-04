@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 		printf("%lf gets a score of %lf for %lf\n", x, y, target_num);
 	}
 
-	set_function("logarithmic");
+	set_function("log");
 
 	y = (*func_to_run)(x);
 

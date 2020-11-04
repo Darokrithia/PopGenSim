@@ -31,7 +31,7 @@ void set_function(const char* func_name) {
 	else if (strcmp(func_name, "ceiling") == 0){
 		func_to_run = &ceiling_returns;
 	}
-	else if (strcmp(func_name, "logarithmic_returns") == 0)
+	else if (strcmp(func_name, "log") == 0)
 	{
 		func_to_run = &logarithmic_returns;
 	}
