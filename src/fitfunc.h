@@ -15,5 +15,6 @@ double linear_returns(double x);
 double sqrt_returns(double x);
 double close_returns(double x);
 double ceiling_returns(double x);
+double logarithmic_returns(double x);
 
 #endif
