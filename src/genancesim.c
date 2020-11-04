@@ -1,5 +1,7 @@
 #include "jobqueue.h"
 #include "degnome.h"
+#include "fitfunc.h"
+#include "flagparse.c"
 #include <stdio.h>
 #include <string.h>
 #include <gsl/gsl_rng.h>
@@ -19,13 +21,14 @@ struct JobData {
 void usage(void);
 void help_menu(void);
 int jobfunc(void* p, void* tdat);
-double get_fitness(double hat_size);
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity);
 
 const char* usageMsg =
 	"Usage: genancesim [-bhrv] [-s | -u] [-c chromosome_length]\n"
 	"\t\t  [-g num_generations] [-o crossover_rate]\n"
-	"\t\t  [-p population_size]\n";
+	"\t\t  [-p population_size] [-t num_threads]\n"
+	"\t\t  [--seed rngseed] [--target hat_height target]\n"
+	"\t\t  [--sqrt | --linear | --close | --ceiling]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -46,7 +49,21 @@ const char* helpMsg =
 	"\t -r\t Only show percentages of descent from the original genomes.\n\n"
 	"\t -s\t Degnome selection will occur.\n\n"
 	"\t -u\t All degnomes contribute to two offspring.\n\n"
-	"\t -v\t Output will be given for every generation.\n";
+	"\t -v\t Output will be given for every generation.\n"
+	"\t -t num_threads\n"
+	"\t\t Select the number of threads to be used in the current run.\n"
+	"\t\t Default is 0 (which will result in 3/4 of cores being used).\n"
+	"\t\t Must be 1 if a seed is used in order to preven race conditions.\n\n"
+	"\t --seed rngseed\n"
+	"\t\t Select the seed used by the RNG in the current run.\n"
+	"\t\t Default mutation rate is 0 (which will result in a random seed).\n\n"
+	"\t --target hat_height target\n"
+	"\t\t Sets the ideal hat height for the current simulation\n"
+	"\t\t Used for fitness functions that have an \"ideal\" value.\n\n"
+	"\t --sqrt\t\t fitness will be sqrt(hat_height)\n\n"
+	"\t --linear\t fitness will be hat_height\n\n"
+	"\t --close\t fitness will be (target - abs(target - hat_height))\n\n"
+	"\t --ceiling\t fitness will quickly level off after passing target\n\n";
 
 pthread_mutex_t seedLock = PTHREAD_MUTEX_INITIALIZER;
 unsigned long rngseed=0;
@@ -102,10 +119,6 @@ void help_menu(void) {
 	exit(EXIT_FAILURE);
 }
 
-double get_fitness(double hat_size) {
-	return hat_size;
-}
-
 void calculate_diversity(Degnome* generation, double** percent_decent, double* diversity) {
 	*diversity = 0;
 	for (int i = 0; i < pop_size; i++) {			//calculate percent decent for each degnome
@@ -144,99 +157,60 @@ void calculate_diversity(Degnome* generation, double** percent_decent, double* d
 
 int main(int argc, char **argv) {
 
-	chrom_size = 10;
-	pop_size = 10;
-	num_gens = 1000;
-	crossover_rate = 2;
-	selective = 0;
-	uniform = 0;
-	verbose = 0;
-	reduced = 0;
-	break_at_zero_diversity = 0;
+	int * flags = NULL;
 
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
-			int j = 1;
-			while (argv[i][j] != '\0') {
-				if (argv[i][j] == 'b') {
-					break_at_zero_diversity = 1;
-				}
-				else if (argv[i][j] == 'h') {
-					help_menu();
-				}
-				else if (argv[i][j] == 'r') {
-					reduced = 1;
-				}
-				else if (argv[i][j] == 'v') {
-					verbose = 1;
-				}
-				else if (strcmp(argv[i], "-s") == 0) {
-					if (uniform) {
-						usage();
-					}
-					selective = 1;
-				}
-				else if (strcmp(argv[i], "-u") == 0) {
-					if (selective) {
-						usage();
-					}
-					uniform = 1;
-				}
-				else {
-					usage();
-				}
-				j++;
-			}
-		}
-		else if (argv[i][0] == '-') {
-			if (strcmp(argv[i], "-c" ) == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &chrom_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-p") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &pop_size);
-				i++;
-			}
-			else if (strcmp(argv[i], "-g") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &num_gens);
-				i++;
-			}
-			else if (strcmp(argv[i], "-o") == 0 && argc > (i+1)) {
-				sscanf(argv[i+1], "%u", &crossover_rate);
-				i++;
-			}
-			else if (strcmp(argv[i], "-s") == 0) {
-				if (uniform) {
-					usage();
-				}
-				selective = 1;
-			}
-			else if (strcmp(argv[i], "-u") == 0) {
-				if (selective) {
-					usage();
-				}
-				uniform = 1;
-			}
-			else if (strcmp(argv[i], "-v") == 0) {
-				verbose = 1;
-			}
-			else if (strcmp(argv[i], "-r") == 0) {
-				reduced = 1;
-			}
-			else if (strcmp(argv[i], "-b") == 0) {
-				break_at_zero_diversity = 1;
-			}
-			else if (strcmp(argv[i], "-h") == 0) {
-				help_menu();
-			}
-			else {
-				usage();
-			}
-		}
-		else {
-			usage();
-		}
+	if (parse_flags(argc, argv, 2, &flags) == -1) {
+		free(flags);
+		usage();
 	}
+
+	if (flags[2] == 1) {
+        free(flags);
+		help_menu();
+	}
+
+	break_at_zero_diversity = flags[1];
+	reduced = flags[3];
+	verbose = flags[4];
+	if (flags[5] == 1) {
+		selective = 1;
+	}
+	else if (flags[5] == 2) {
+		uniform = 1;
+	}
+	chrom_size = flags[6];
+	num_gens = flags[8];
+	crossover_rate = flags[10];
+	pop_size = flags[11];
+
+	num_threads = flags[12];
+
+	if(flags[13] == 0){
+		set_function("linear");
+	}
+	else if(flags[13] == 1){
+		set_function("sqrt");
+	}
+	else if(flags[13] == 2){
+		set_function("close");
+	}
+	else if(flags[13] == 3){
+		set_function("ceiling");
+	}
+	target_num = flags[14];
+
+	if(flags[15] <= 0) {
+		time_t currtime = time(NULL);                  // time
+		unsigned long pid = (unsigned long) getpid();  // process id
+		rngseed = currtime ^ pid;                      // random seed
+	}
+	else{
+		rngseed = flags[15];
+	}
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
+	gsl_rng_set(rng, rngseed);
+
+	free(flags);
 
 	if (num_threads <= 0) {
 		if (num_threads < 0) {
@@ -250,11 +224,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Final number of threads: %u\n", num_threads);
 	#endif
 
-	time_t currtime = time(NULL);                  // time
-	unsigned long pid = (unsigned long) getpid();  // process id
-	rngseed = currtime ^ pid;                      // random seed
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_taus);    // rand generator
-	gsl_rng_set(rng, rngseed);
 
 	Degnome* parents;
 	Degnome* children;
