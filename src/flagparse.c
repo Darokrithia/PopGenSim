@@ -17,7 +17,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	// flags[10] ->		-o crossover_rate				(Default:    2)
 	// flags[11] ->		-p population_size				(Default:   10)
 	// flags[12] ->		-t num_threads					(Default:	 0)
-	// flags[13] ->		--sqrt/linear/close/ceiling		(Default: None)
+	// flags[13] ->		--sqrt/linear/close/ceiling/log	(Default: None)
 	// flags[14] ->		--target						(Default: 9999)
 	// flags[15] ->		--seed							(Default:	 0)
 
@@ -60,6 +60,9 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 			}
 			else if (strcmp(argv[i], "--ceiling") == 0) {
 				flags[13] = 3;
+			}
+			else if (strcmp(argv[i], "--log") == 0) {
+				flags[13] = 4;
 			}
 			else if (strcmp(argv[i], "--target") == 0) {
 				sscanf(argv[i+1], "%u", &flags[14]);

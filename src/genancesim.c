@@ -28,7 +28,7 @@ const char* usageMsg =
 	"\t\t  [-g num_generations] [-o crossover_rate]\n"
 	"\t\t  [-p population_size] [-t num_threads]\n"
 	"\t\t  [--seed rngseed] [--target hat_height target]\n"
-	"\t\t  [--sqrt | --linear | --close | --ceiling]\n";
+	"\t\t  [--sqrt | --linear | --close | --ceiling | --log]\n";
 
 const char* helpMsg =
 	"OPTIONS\n"
@@ -196,6 +196,9 @@ int main(int argc, char **argv) {
 	}
 	else if(flags[13] == 3){
 		set_function("ceiling");
+	}
+	else if(flags[13] == 4){
+		set_function("log");
 	}
 	target_num = flags[14];
 
