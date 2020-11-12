@@ -3,6 +3,8 @@
  NOTE: it wouuld be very nice if this compartment had its own
  usage which could / would be called by anything that uses this
 
+Also add command line args and testing for seeding and threading
+
 */
 
 /**
@@ -18,6 +20,8 @@
 #include "math.h"
 #include "stdlib.h"
 
+fit_func_ptr func_to_run = &linear_returns;
+
 void set_function(const char* func_name) {
 	if (strcmp(func_name, "linear") == 0) {
 		func_to_run = &linear_returns;
@@ -30,6 +34,10 @@ void set_function(const char* func_name) {
 	}
 	else if (strcmp(func_name, "ceiling") == 0){
 		func_to_run = &ceiling_returns;
+	}
+	else if (strcmp(func_name, "log") == 0)
+	{
+		func_to_run = &logarithmic_returns;
 	}
 	else {
 		func_to_run = &linear_returns;
@@ -55,4 +63,12 @@ double ceiling_returns(double x) {
 	else {
 		return (target_num) - 5 * abs(target_num - x);
 	}
+}
+double logarithmic_returns(double x) {
+	return log(x);
+}
+
+
+double get_fitness(double hat_size) {
+	return (*func_to_run)(hat_size);
 }

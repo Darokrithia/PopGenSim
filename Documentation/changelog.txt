@@ -1,0 +1,66 @@
+42	| Made Unit tests seedable
+41	| Made generation zero only print once
+	|=====================================================
+40	| VERSION 1.4.0 (Pretty Python)
+39	| Changed sorting to improve compatability
+38	| Fixed Jobqueue for all programs
+37	| Added basic python to graph devosim	
+	|=====================================================
+36	| VERSION 1.3.0 (Separation Solution)
+35	| Added "devosim" a new simulation which makes use of
+	| the new ance_degnome
+34	| Added new "ance_degnome" which holds its "DNA" and
+	| it's ancestry separately.  This will allow for
+	| testing ancestry and fitness at the same time
+	| without losing clarity 
+33	| Made gitignore ignore all .o files instead of having
+	| to list them one by one
+	|=====================================================
+32	| VERSION 1.2.1 (Discovering Diversity)
+31	| Added diversity.  This let's you see how different
+	| each degnome is at every generation.  The program
+	| also can break upon reaching zero diversity.
+30	| Last update broke xdegnome.  This fixes it.
+	|=====================================================
+29	| VERSION 1.2.0 (Generated GenAnceSim)
+28	| Added GenAnceSim to the package.  This is the sister
+	| program to PolygenSim and works nearly the same.
+	| There is no mutation, and more information is given
+	| about genetic contribution of ancestors
+27	| Added more options of PolygenSim in command line
+	|=====================================================
+26	| VERSION 1.1.2 (Valid Valgrind)
+25	| Now all jumps are valid
+	|=====================================================
+24	| VERSION 1.1.1 (Memory Managed)
+23	| Now properly freeing memory
+	|=====================================================
+22	| VERSION 1.1.0 (Fast fixes)
+21	| Fixed bug where last crossover would never happen
+20	| Made crossover more likely
+19	| Fixed random in xdegnome
+	|=====================================================
+18	| VERSION 1.0.0 (Envoking Evolution)
+17	| Added test misc file
+16	| Added misc file and merge sort method
+15	| Added randomness to crossover
+14	| Added randomness to mutation
+	|=====================================================
+13	| VERSION 0.2.0 (Starting Selection)
+12	| Added randomness to selection
+11	| Implemented selection
+	|=====================================================
+10	| VERSION 0.1.2 (Defining Degnomes)
+9	| Made the back bone of PolygenSim
+8	| Renamed Qepos Degnome (digital genome)
+ 	|=====================================================
+7	| VERSION 0.1.0 (Qepo Creation)
+6	| Made a test program for qepo
+5	| Implemented basic allocation and freeing for Qepos
+ 	| as well as the ability for mating for Qepos to mate
+4	| Added multi-threading code by Alan R. Rogers
+3	| Added gitignore
+2	| Added version history to help detail changes
+1	| Initialized directory with README
+ 	|=====================================================
+0	| VERSION 0.0.0 (Program Genesis)
