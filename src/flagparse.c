@@ -48,16 +48,7 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
     *ret_flags = flags;
 
 	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && argv[i][1] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
-			// if (strcmp(argv[i], "--example_flag") == 0) {
-			// 	flags[12] = 1;
-			// }
-			// else {
-			// 	return -1;
-			// }
-			return -1;
-		}
-		else if (argv[i][0] == '-' && argv[i][1] == '-') {
+		if (argv[i][0] == '-' && argv[i][1] == '-') {
 			if (strcmp(argv[i], "--linear") == 0) {
 				flags[13] = 0;
 			}
@@ -81,6 +72,15 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 				sscanf(argv[i+1], "%u", &flags[15]);
 				i++;
 			}
+		}
+		else if (argv[i][0] == '-' && argv[i][1] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
+			// if (strcmp(argv[i], "--example_flag") == 0) {
+			// 	flags[12] = 1;
+			// }
+			// else {
+			// 	return -1;
+			// }
+			return -1;
 		}
 		else if (argv[i][0] == '-' && (i + 1 == argc || argv[i + 1][0] == '-')) {
 			int j = 1;
