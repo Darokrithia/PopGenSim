@@ -179,7 +179,13 @@ int parse_flags(int argc, char ** argv, int caller, int ** ret_flags) {
 	}
 
 	if(flags[15] > 0 && flags[12] != 1){
-		return -1;
+		//if no threads have been selected but a seed has been fix it, otherwise break
+		if(flags[12] == 0) {
+			flags[12] = 1;
+		}
+		else {
+			return -1;
+		}
 	}
 
 	return 0;
