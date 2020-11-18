@@ -5,7 +5,7 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-//Degnomedia Rogerus
+//Degnomedia Antegnosii
 typedef struct Degnome Degnome;
 struct Degnome {
 	double* dna_array;
