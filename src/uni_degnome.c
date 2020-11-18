@@ -11,7 +11,7 @@ quantitative traits by using Degnomes as defined above.
 
 
 */
-#include "ance_degnome.h"
+#include "uni_degnome.h"
 #include "misc.h"
 #include <string.h>
 #include <stdio.h>
