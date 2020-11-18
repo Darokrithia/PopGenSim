@@ -4,11 +4,11 @@
 @author Daniel R. Tabin
 @brief Digital Genomes aka Degnomes
 
-Derived from ance_degnome by Katherine Roughan
-
 This program will be used to simulated Polygenic evoltion of
 quantitative traits by using Degnomes as defined above.
 
+
+MULTICRHOMOSOMES REMOVEATTRIBUTES
 
 */
 #include "uni_degnome.h"
