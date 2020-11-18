@@ -7,9 +7,6 @@
 This program will be used to simulated Polygenic evoltion of
 quantitative traits by using Degnomes as defined above.
 
-
-MULTICRHOMOSOMES REMOVEATTRIBUTES
-
 */
 #include "uni_degnome.h"
 #include "misc.h"

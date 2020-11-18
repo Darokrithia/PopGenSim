@@ -1,7 +1,6 @@
 #ifndef DEGNOME
 #define DEGNOME
 
-#include <stdlib.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
@@ -9,9 +8,9 @@
 typedef struct Degnome Degnome;
 struct Degnome {
 	double* dna_array;
-	double hat_size;
 	int* GOI_array;		// goi = Gene Origin ID
 
+	double hat_size;
 };
 
 Degnome* Degnome_new(void);
