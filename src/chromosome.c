@@ -2,7 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
-Chromosome* Chromosome_new(int mutation_rate, int mutation_effect, int chrom_size) {
+//  Make and return a new chromosome
+Chromosome* Chromosome_new (int mutation_rate, int mutation_effect, int chrom_size) {
 	Chromosome* c = malloc(sizeof(Chromosome));
 
 	c->dna_array = malloc(chrom_size*sizeof(double));
@@ -13,7 +14,18 @@ Chromosome* Chromosome_new(int mutation_rate, int mutation_effect, int chrom_siz
 	return c;
 }
 
-void Chromosome_mutate(Chromosome* chr, gsl_rng* rng) {
+// Like Chromosome_new but it works pre allocatd data
+void Chromosome_fill (Chromosome* c, int mutation_rate, int mutation_effect, int chrom_size) {
+	c->dna_array = malloc(chrom_size*sizeof(double));
+	c->mutation_rate = mutation_rate;
+	c->mutation_effect = mutation_effect;
+	c->chrom_size = chrom_size;
+
+	return c;
+}
+
+// Mutate a chromosome
+void Chromosome_mutate (Chromosome* chr, gsl_rng* rng) {
 	double mutation;
 	int num_mutations = gsl_ran_poisson(rng, chr->mutation_rate);
 	int mutation_location;
@@ -28,7 +40,8 @@ void Chromosome_mutate(Chromosome* chr, gsl_rng* rng) {
 	}
 }
 
-void Chromosome_free(Chromosome* c) {
+// Free a chromosome
+void Chromosome_free (Chromosome* c) {
 	free(c->dna_array);
 	free(c);
 }

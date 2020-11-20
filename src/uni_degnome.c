@@ -9,6 +9,7 @@ quantitative traits by using Degnomes as defined above.
 
 */
 #include "uni_degnome.h"
+#include "chromosome.h"
 #include "misc.h"
 #include <string.h>
 #include <stdio.h>
@@ -16,80 +17,99 @@ quantitative traits by using Degnomes as defined above.
 
 Degnome* Degnome_new() {
 	Degnome* q = malloc(sizeof(Degnome));
-	q->dna_array = malloc(chrom_size*sizeof(double));
-	q->GOI_array = malloc(chrom_size*sizeof(int));
+	q->chromosome_array = malloc(num_o_chroms*sizeof(Chromosome));
+
+	int i = 0;	// track all chromosomes
+	// go through each group
+	for (int j = 0; j < chrom_groups; j++) {
+		num_o_chroms_in_group = chrom_g_szs[i];
+
+		// go through each chromosome within each group
+		for(int k = 0; k < num_o_chroms_in_group; k++) {
+			Chromosome_fill((q->chromosome_array + i), mutat_rates[i], mutat_effct[i], chrom_sizes[j]);
+			i++;
+
+			//minor basic errorchecking
+			if (i >= num_o_chroms){
+				fprintf(stderr, "Error, invalid chromsome inputs\n");
+				return NULL;
+			}
+		}
+	}
 
 	return q;
 }
 
-void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng,
-	int mutation_rate, int mutation_effect, int crossover_rate, int USE_GOI) {
+void Degnome_mate(Degnome* child, Degnome* p1, Degnome* p2, gsl_rng* rng) {
 	// printf("mating\n");
 	//Cross over
-	int num_crossover = gsl_ran_poisson(rng, crossover_rate);
-	int crossover_locations[num_crossover];
-	int distance = 0;
-	int diff;
-	for (int i = 0; i < num_crossover; i++) {
-		crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_size);
-	}
-	if (num_crossover > 0) {
-		int_qsort(crossover_locations, num_crossover);//changed
-	}
-	for (int i = 0; i < num_crossover; i++) {
-		diff = crossover_locations[i] - distance;
+	int chrom_itr = 0;  // track all chromosomes
+	for (int j = 0; j < chrom_groups; j++) {		//go through each group
+		int num_crossover = gsl_ran_poisson(rng, chrom_co_rs[j]);	//randomize number of chrossovers on jth group
+		int crossover_locations[num_crossover];
+		int distance;
+		int diff;
 
-		if (i % 2 == 0) {
-			memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
-			if(USE_GOI == 1){
-				memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
-			}
+		for (int i = 0; i < num_crossover; i++) {
+			crossover_locations[i] = gsl_rng_uniform_int(rng, chrom_sizes[j]); //randomize location of chrossovers on jth group
 		}
-		else {
-			memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
-			if(USE_GOI == 1){
-				memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
-			}
+		if (num_crossover > 0) {
+			int_qsort(crossover_locations, num_crossover);		//sort crossover locations to 
 		}
-		distance = crossover_locations[i];
-	}
-	if (num_crossover > 0) {
-		diff = chrom_size - crossover_locations[num_crossover-1];
-	}
-	else {
-		diff = chrom_size;
-	}
 
-	if (num_crossover % 2 == 0) {
-		memcpy(child->dna_array+distance, p1->dna_array+distance, (diff*sizeof(double)));
-		if(USE_GOI == 1){
-			memcpy(child->GOI_array+distance, p1->GOI_array+distance, (diff*sizeof(int)));
-		}
-	}
-	else {
-		memcpy(child->dna_array+distance, p2->dna_array+distance, (diff*sizeof(double)));
-		if(USE_GOI == 1){
-			memcpy(child->GOI_array+distance, p2->GOI_array+distance, (diff*sizeof(int)));
+		num_o_chroms_in_group = chrom_g_szs[j];		//get number in this group
+		for (int k = 0; k < num_o_chroms_in_group; k++) {		//go through each chromosome in this group
+			int distance = 0;
+
+			//get the locations of the DNA
+			child_chrome = (child->chromosome_array + chrom_itr)->dna_array
+			p1_chrome = (p1->chromosome_array + chrom_itr)->dna_array
+			p2_chrome = (p2->chromosome_array + chrom_itr)->dna_array
+
+			for (int i = 0; i < num_crossover; i++) {
+				diff = crossover_locations[i] - distance;	//find amount to copy
+
+				if (i % 2 == 0) {
+					memcpy(child_chrome+distance, p1_chrome+distance, (diff*sizeof(double)));
+				}
+				else {
+					memcpy(child_chrome+distance, p2_chrome+distance, (diff*sizeof(double)));
+				}
+				distance = crossover_locations[i];
+			}
+			//see how far we are from the end
+			if (num_crossover > 0) {
+				diff = chrom_size - crossover_locations[num_crossover-1];
+			}
+			else {
+				diff = chrom_size;
+			}
+
+			// do the final cross over
+			if (num_crossover % 2 == 0) {
+				memcpy(child_chrome+distance, p1_chrome+distance, (diff*sizeof(double)));
+			}
+			else {
+				memcpy(child_chrome+distance, p2_chrome+distance, (diff*sizeof(double)));
+			}
+
+			chrom_itr++; // update number of chromosomes we've been through
 		}
 	}
 
 	child->hat_size = 0;
 
-	//mutate
-	double mutation;
-	int num_mutations = gsl_ran_poisson(rng, mutation_rate);
-	int mutation_location;
+	// mutate chromosomes
+	for (int i = 0; i < num_o_chroms; i++) {
+		Chromosome_mutate(chromosome_array + i, rng);
 
-	for (int i = 0; i < num_mutations; i++) {
-		mutation_location = gsl_rng_uniform_int(rng, chrom_size);
-		mutation = gsl_ran_gaussian_ziggurat(rng, mutation_effect);
-		child->dna_array[mutation_location] += mutation;
-	}
+		//calculate hat_size
 
-	//calculate hat_size
-
-	for (int i = 0; i < chrom_size; i++) {
-		child->hat_size += child->dna_array[i];
+		for (int j = 0;  j< num_o_chroms; j++) {
+			if(contribs[i]) {
+				child->hat_size += child->chromosome_array[i]->dna_array[j];
+			}
+		}
 	}
 	//and we are done!
 }
