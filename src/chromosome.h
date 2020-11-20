@@ -9,10 +9,11 @@ struct Chromosome {
 	double* dna_array;
 	int mutation_rate;
 	int mutation_effect;
+	int chrom_size;
 };
 
-Chromosome* Chromosome_new(void);
+Chromosome* Chromosome_new(int mutation_rate, int mutation_effect, int chrom_size);
 void Chromosome_mutate(Chromosome* chr, gsl_rng* rng);
-void Chromosome_free(Chromosome* q);
+void Chromosome_free(Chromosome* c);
 
 #endif
